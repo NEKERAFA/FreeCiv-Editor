@@ -5,41 +5,61 @@
 rows = 0
 columns = 0
 
-usage = "lua ./parser.lua <rows> <columns>"
+usage = "lua ./parser.lua <rows> <columns> <solutions>"
 
-parser_string = "cell%((%d+),(%d+),(%l)%)"
+parser_string = "cell%((%d+),(%d+),(%l+)%)"
 
 -- Get the parse table and translate it into a Freeciv map file
 translate = (file, terrain) ->
-  print "Translate"
+  df = io.open file, "w+"
+
+  for i = 1, rows do
+    df\write string.format "t%04i=\"", (i-1)
+    for j = 1, columns do
+      value = terrain[i][j]
+      switch value
+        when 'water'
+          df\write ":"
+        when 'grass'
+          df\write "g"
+    df\write "\"\r\n"
+
+  df\flush!
+  df\close!
 
 -- Gets a string result and parse it
 parse = (answer, str) ->
+  -- Creates a array map
   map = {}
-
   for i = 1, rows
     row = {}
     for j = 1, columns
-      table.insert row ':'
-    table.insert map row
+      table.insert row, ''
+    table.insert map, row
 
-  for row, col, c in string.gmatch str
+  -- Parses the result and inserts in the map
+  for row, col, contain in string.gmatch str, parser_string
     i = tonumber row
     j = tonumber col
-    map[j] = c
+    unless map[i][j] == '' then
+      error "cell (#{i}, #{j}) not empty. Assigned #{map[i][j]}, got #{contain}"
+
+    map[i][j] = contain
+
+  return map
 
 -- Main function
 main = (number, args) ->
-  if number ~= 2 then
+  -- Checks arguments
+  if number ~= 3 then
     print usage
     os.exit(0)
 
+  -- Variables
   rows = args[1]
   columns = args[2]
-
-  -- Variables
   solver = "clingo"
-  sol = "0"
+  sol = args[3]
   files = "map.txt"
   info = {}
   answers = {}
@@ -64,9 +84,14 @@ main = (number, args) ->
 
   results = #answers
 
-  -- Parse the contain
+  -- Parse the answers
   if results > 0 then
-    print "Answers: " .. (tostring results)
+    print "Answers: #{tostring results}"
+
+    for i = 1, results do
+      map = parse i, answers[i]
+      translate "map-#{i}.txt", map
+
   else
     for info_str in *info
       print info_str

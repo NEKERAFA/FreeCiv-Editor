@@ -11,9 +11,7 @@
 % Types
 row(1..rows).
 column(1..columns).
-contain(w).
-contain(g).
+contain(water).
+contain(grass).
 
-cell(X,Y,C) :- row(X), column(Y), contain(C).
-
-:- row(X), column(Y).
+1{cell(X,Y,C): contain(C)}1 :- row(X), column(Y).
