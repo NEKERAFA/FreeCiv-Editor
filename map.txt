@@ -1,0 +1,19 @@
+% Rafael Alcalde Azpiazu - 31 Jan 2018
+% This file describes how is the playable map, defining all the cells in the map
+% and which they contain
+
+#show cell/3.
+
+% Constants
+#const rows = 10.
+#const columns = 10.
+
+% Types
+row(1..rows).
+column(1..columns).
+contain(w).
+contain(g).
+
+cell(X,Y,C) :- row(X), column(Y), contain(C).
+
+:- row(X), column(Y).
