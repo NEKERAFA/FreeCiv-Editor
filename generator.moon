@@ -8,37 +8,48 @@ parser     = require 'parser'
 translator = require 'translator'
 
 -- Variables
-export rows = 10
-export columns = 20
-export solutions = 1
-export output = "my_map"
+rows = 10
+columns = 20
+solutions = 1
+answer = 0
+name = "My Map"
+output = "map"
 
-usage = "lua ./generate.lua [-d=rows,columns] [-s=solutions] [-o=output]"
-parse_dim = "-d=(%d+),(%d+)"
-parse_sol = "-s=(%d+)"
-parse_out = "-o=(%w+)"
+USAGE = "lua ./generate.lua options\n"
+USAGE = "\n\t-d=rows,columns\n\t-s=solutions\n\t-a=answer\n\t-n=name\n\t-o=output"
+PARSE_DIM = "-d=(%d+),(%d+)"
+PARSE_SOL = "-s=(%d+)"
+PARSE_ANSWER = "-a=(%d+)"
+PARSE_NAME = "-n=(%w+)"
+PARSE_OUT = "-o=(%w+)"
 
-files = "map.txt"
+FILES = "map.asp generate_map.asp"
 
 -- This function prints a error if a argument not matches
 error_arg = (arg) ->
-  error "Format #{arg} not recognize\n#{usage}", 2
+  error "Format #{arg} not recognize\n#{USAGE}", 2
 
 -- This function parse all arguments
 parse_args = (args) ->
   for arg in *args do
     switch string.sub arg, 1, 2
       when "-d"
-        if not string.find arg, parse_dim then error_arg arg
-        rows, columns = string.match arg, parse_dim
+        if not string.find arg, PARSE_DIM then error_arg arg
+        rows, columns = string.match arg, PARSE_DIM
       when "-s"
-        if not string.find arg, parse_sol then error_arg arg
-        solutions = string.match arg, parse_sol
+        if not string.find arg, PARSE_SOL then error_arg arg
+        solutions = string.match arg, PARSE_SOL
+      when "-a"
+        if not string.find arg, PARSE_ANSWER then error_arg arg
+        answer = string.match arg, PARSE_ANSWER
+      when "-n"
+        if not string.find arg, PARSE_NAME then error_arg arg
+        name = string.match arg, PARSE_NAME
       when "-o"
-        if not string.find arg, parse_out then error_arg arg
-        output = string.match arg, parse_out
+        if not string.find arg, PARSE_OUT then error_arg arg
+        output = string.match arg, PARSE_OUT
       when "-h"
-        print usage
+        print usage .. "\n"
         os.exit()
       else
         error_arg arg
@@ -50,10 +61,10 @@ generate_startpos = (terrain) ->
   line = 1
 
   -- Generate the list of cells that can travel
-  for i = 1, rows do
-    for j = 1, columns do
-      if terrain[i][j] == "grass" then
-        table.insert(map[line], {x: i-1, y: j-1})
+  for row = 1, rows do
+    for col = 1, columns do
+      if terrain[row][col] != "water" then
+        table.insert(map[line], {x: col-1, y: row-1})
     if #map[line] > 0 then
       table.insert(map, {})
       line += 1
@@ -77,7 +88,7 @@ generate_startpos = (terrain) ->
 main = (number, args) ->
   -- Checks arguments
   if number > 3 then
-    print usage
+    print USAGE
     os.exit(0)
 
   parse_args args
@@ -87,8 +98,8 @@ main = (number, args) ->
   answer = false
 
   -- Loads Solver
-  print "> clingo #{solutions} #{files}"
-  result = io.popen "clingo #{solutions} #{files}"
+  print "> clingo #{solutions} #{FILES}"
+  result = io.popen "clingo #{solutions} #{FILES}"
 
   -- Splits the result in lines into a table
   for line_str in result\lines!
@@ -110,9 +121,9 @@ main = (number, args) ->
     print "Answers: #{tostring results}"
 
     for i = 1, results do
-      map = parser.parse i, answers[i]
+      map = parser.parse i, rows, columns, answers[i]
       startpos = generate_startpos map
-      translator.translate output, "map-#{i}.sav", rows, columns, map, startpos
+      translator.translate "map-#{i}.sav", name, rows, columns, map, startpos
 
   else
     for info_str in *info

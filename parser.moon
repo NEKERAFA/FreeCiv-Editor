@@ -7,20 +7,20 @@
 parser_string = "cell%((%d+),(%d+),(%l+)%)"
 
 -- Gets a string result and parse it
-parse = (answer, str) ->
+parse = (answer, rows, columns, str) ->
   -- Creates a array map
   map = {}
   for i = 1, rows
     row = {}
     for j = 1, columns
-      table.insert row, ''
+      table.insert row, 'water'
     table.insert map, row
 
   -- Parses the result and inserts in the map
   for row, col, contain in string.gmatch str, parser_string
     i = tonumber row
     j = tonumber col
-    unless map[i][j] == '' then
+    unless map[i][j] == 'water' then
       error "cell (#{i}, #{j}) not empty. Assigned #{map[i][j]}, got #{contain}"
 
     map[i][j] = contain

@@ -4,7 +4,7 @@
 # Makefile for create the proyect
 
 all: generator.lua parser.lua translator.lua
-	lua ./generator.lua -o=Test
+	lua ./generator.lua -n=Test
 
 %.lua: %.moon
 	moonc $<
