@@ -1,5 +1,10 @@
-all: generate.lua parser.lua translator.lua
-	lua ./generate.lua
+# Rafael Alcalde Azpiazu - 01 Feb 2018
+# Facultade de Informática da Coruña - Universidade da Coruña
+#
+# Makefile for create the proyect
+
+all: generator.lua parser.lua translator.lua
+	lua ./generator.lua -o=Test
 
 %.lua: %.moon
 	moonc $<

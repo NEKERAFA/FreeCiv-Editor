@@ -1,4 +1,6 @@
 -- Rafael Alcalde Azpiazu - 31 Jan 2018
+-- Facultade de Informática da Coruña - Universidade da Coruña
+--
 -- This file parsers the output of the ASP Clingo Solver and converts it in a
 -- Freeciv map file
 
