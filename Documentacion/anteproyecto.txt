@@ -1,0 +1,15 @@
+Título: Herramienta de generación procedural de entornos mediante Programación Lógica
+
+Titulación: Grado en Ingeniería Informática
+
+Objetivo: Construcción de una herramienta para la creación y manipulación de entornos jugables, partiendo de una generación procedural previa generada a través de Programación Lógica.
+
+Descripción: El proyecto consiste en el diseño e implementación de una herramienta para la creación y manipulación de entornos jugables para el software FreeCiv, el cual es un proyecto libre multiplataforma basado en la serie de videojuegos Sid Meier's: Civilization. Esta herramienta presenta su base en el paradigma de programación lógica para la generación de estos entornos, en concreto el paradigma Answer Set Programming (ASP), el cual es un tipo de programación declarativa orientado hacia la representación de conocimiento y resolución de problemas. Con ASP se puede definir mediante predicados simples el formato y composición del entorno, así como reglas y restricciones que definiran como se forma el entorno.
+
+Departamento: Computación
+
+Material: Un ordenador que tenga instalado el siguiente software: Herramientas de Potassco para la resolución de problemas en ASP, intérpretes de los lenguajes Lua y Moonscript sobre los que se ejecutará la herramienta principal y llamará al software de Potassco, y el videojuego FreeCiv sobre el que se ejecutarán los ficheros generados para realizar las pruebas.
+
+Metodología: Para la realización de este proyecto se usará la metodología scrum, la cual permite el desarrollo ágil del software mediante un ciclo de vida incremental dividido en periodos cortos llamados sprints. Al principio de cada sprint se decide las tareas a realizar en base al resultado del sprint anterior. El objetivo de esta metodología es presentar un producto al final de cada sprint, ya sea un prototipo o un elemento software funcional.
+
+Fases: 1. Estudio y análisis del estado del arte sobre la generación procedural en entornos similares, así como la investigación y estudio de la documentación del software elegido para el proyecto (en este caso FreeCiv). 2. Diseño e implementación del generador de entornos y módulo traductor ASP-FreeCiv. 3. Diseño de una herramienta para la manipulación de entornos en FreeCiv

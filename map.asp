@@ -3,18 +3,22 @@
 %
 % This file describes how is the playable map, defining all the cells in the map
 % and which they contain
+%
+% Edited on 19 Feb 2018 - 18:15
 
-#show cell/3.
+#show cell/2.
 
 % Constants
-#const rows = 10.
-#const columns = 20.
+#const rows = 30.
+#const cols = 40.
 
 % Types
-row(1..rows).
-column(1..columns).
-contain(grass).
-start(1,1).
-finish(rows,columns).
-move(1,0 ;; -1,0 ;; 0,1 ;; 0,-1).
-3*rows*columns/5 {cell(X,Y,C) : contain(C), row(X), column(Y)}.
+% Position in the map
+position(0..cols*rows-1).
+% Contain in the cells
+land(grass; hills; desert; forest; plains).
+contain(C) :- land(C).
+contain(ocean).
+
+% Generator rule of all cells
+1 {cell(C,N) : contain(N)} 1 :- position(C).

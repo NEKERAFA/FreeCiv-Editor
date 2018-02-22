@@ -8,15 +8,15 @@ parser     = require 'parser'
 translator = require 'translator'
 
 -- Variables
-rows = 10
-columns = 20
+rows = 30
+columns = 40
 solutions = 1
 answer = 0
 name = "My Map"
 output = "map"
 
 USAGE = "lua ./generate.lua options\n"
-USAGE = "\n\t-d=rows,columns\n\t-s=solutions\n\t-a=answer\n\t-n=name\n\t-o=output"
+USAGE ..= "\nOPTIONS:\n\t-d=rows,columns\n\t-s=solutions\n\t-a=answer\n\t-n=name\n\t-o=output"
 PARSE_DIM = "-d=(%d+),(%d+)"
 PARSE_SOL = "-s=(%d+)"
 PARSE_ANSWER = "-a=(%d+)"
@@ -49,7 +49,7 @@ parse_args = (args) ->
         if not string.find arg, PARSE_OUT then error_arg arg
         output = string.match arg, PARSE_OUT
       when "-h"
-        print usage .. "\n"
+        print USAGE .. "\n"
         os.exit()
       else
         error_arg arg
@@ -63,7 +63,7 @@ generate_startpos = (terrain) ->
   -- Generate the list of cells that can travel
   for row = 1, rows do
     for col = 1, columns do
-      if terrain[row][col] != "water" then
+      if terrain[row][col][1] != "ocean" then
         table.insert(map[line], {x: col-1, y: row-1})
     if #map[line] > 0 then
       table.insert(map, {})
@@ -97,9 +97,11 @@ main = (number, args) ->
   answers = {}
   answer = false
 
+  prog = "clingo #{solutions} #{FILES} -c rows=#{rows} -c cols=#{columns}"
+
   -- Loads Solver
-  print "> clingo #{solutions} #{FILES}"
-  result = io.popen "clingo #{solutions} #{FILES}"
+  print "> #{prog}"
+  result = io.popen prog
 
   -- Splits the result in lines into a table
   for line_str in result\lines!

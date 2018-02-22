@@ -20,12 +20,31 @@ get_map = (rows, columns, terrain) ->
   for i = 1, rows do
     map ..= string.format "t%04i=\"", (i-1)
     for j = 1, columns do
-      value = terrain[i][j]
+      value = terrain[i][j][1]
       switch value
-        when "water"
+        when "glacier"
+          map ..= "a"
+        when "ocean"
           map ..= ":"
+        when "desert"
+          map ..= "d"
+        when "forest"
+          map ..= "f"
+        when "plains"
+          map ..= "p"
         when "grass"
           map ..= "g"
+        when "hills"
+          map ..= "h"
+        when "jungle"
+          map ..= "j"
+        when "mountains"
+          map ..= "m"
+        when "swamp"
+          map ..= "s"
+        when "tundra"
+          map ..= "t"
+
     if i < rows then
       map ..= "\"\n"
     else
