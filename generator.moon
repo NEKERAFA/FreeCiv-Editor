@@ -16,7 +16,8 @@ name = "My Map"
 output = "map"
 
 USAGE = "lua ./generate.lua options\n"
-USAGE ..= "\nOPTIONS:\n\t-d=rows,columns\n\t-s=solutions\n\t-a=answer\n\t-n=name\n\t-o=output"
+USAGE ..= "\nOPTIONS:\n\t-d=rows,columns\n\t-s=solutions\n\t-a=answer\n"
+USAGE ..= "\t-n=name\n\t-o=output"
 PARSE_DIM = "-d=(%d+),(%d+)"
 PARSE_SOL = "-s=(%d+)"
 PARSE_ANSWER = "-a=(%d+)"
@@ -36,6 +37,8 @@ parse_args = (args) ->
       when "-d"
         if not string.find arg, PARSE_DIM then error_arg arg
         rows, columns = string.match arg, PARSE_DIM
+        rows = tonumber(rows)
+        columns = tonumber(columns)
       when "-s"
         if not string.find arg, PARSE_SOL then error_arg arg
         solutions = string.match arg, PARSE_SOL

@@ -26,6 +26,8 @@ get_map = (rows, columns, terrain) ->
           map ..= "a"
         when "ocean"
           map ..= ":"
+        when "shore"
+          map ..= " "
         when "desert"
           map ..= "d"
         when "forest"

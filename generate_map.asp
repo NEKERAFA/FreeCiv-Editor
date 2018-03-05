@@ -5,41 +5,25 @@
 % and the IA of Freeciv could cross
 %
 % Edited on 19 Feb 2018 - 18:20
+% Edited on 28 Feb 2018 - 18:15
 
-#show rootcell/1.
-%#show reached/2.
+% #show reached/2.
 
-% Generates a root cell in order to create a island
-1 {rootcell(C): position(C)} 1.
-cell(C, N): land(N) :- rootcell(C).
+% Generates the root cell of the island
+1 { rootcell(C, I): position(C) } 1 :- island(I).
+:- rootcell(C, I), rootcell(C, J), I != J.
 
-% This rules creates a island
-reached(C) :- rootcell(C).
-reached(C) :- reached(D), cell(C, N), land(N), adjacent(C, D).
-:- cell(C, N), position(C), land(N), not reached(C).
+% Generates
+reached(C, I) :- rootcell(C, I).
+0 {reached(C, I)} 1 :- reached(D, I), adjacent(C, D).
+:- reached(C, I), reached(C, J), I!=J.
 
-% Definition of adjacent cells
 adjacent(C, C-1) :- position(C), C \ cols > 0.
 adjacent(C, C+1) :- position(C), C \ cols < cols-1.
-adjacent(C, C+cols) :- position(C), C < (rows-1)*cols.
+adjacent(C, C+cols) :- position(C), C < cols*(rows-1).
 adjacent(C, C-cols) :- position(C), C >= cols.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+1 { cell(C, N): land(N) } 1 :- reached(C, I).
+cell(C, ocean) :- position(C), not reached(C, I), island(I).
 
-% Constants
-%#const max_islands = 3.
-
-%islands(1..max_islands).
-
-% Generates a root cell in order to create a island
-%max_islands {rootcell(C, I) : C=0..cols*rows-1, I=1..max_islands} max_islands.
-%cell(C, N): land(N) :- rootcell(C, I), islands(I).
-%:- rootcell(C, I), rootcell(D, J), C!=D, I==J.
-
-% This rules creates a island
-%reached(C, I) :- rootcell(C, I).
-%reached(C, I) :- reached(D, I), cell(C, N), land(N), adjacent(C, D).
-% Restriction to set not reachable cell like not walkable cell.
-%:- cell(C, N), land(N), not reached(C, I), I=1..max_islands.
-% Restriction to set island cell with cells adjacent
-%:- reached(C, I), reached(D, J), I=1..max_islands, J=1..max_islands, adjacent(C, D).
+:- not 40 { cell(C, N): land(N), position(C) } 40.
