@@ -16,7 +16,7 @@
 % Generates
 reached(C, I) :- rootcell(C, I).
 0 {reached(C, I)} 1 :- reached(D, I), adjacent(C, D).
-:- reached(C, I), reached(C, J), I!=J.
+:- reached(C, I), reached(C, J), I != J.
 
 adjacent(C, C-1) :- position(C), C \ cols > 0.
 adjacent(C, C+1) :- position(C), C \ cols < cols-1.
