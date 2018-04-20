@@ -8,7 +8,7 @@ write_row(M,I) :-
 write_cell(C):-
     %rootcell(C,I),!,write(I)
     %; cell(C,X), !, text(L),member(X=V,L),write(V)
-    cell(C,X), !, text(L),member(X=V,L),write(V)
+    cell(C,X), !,write(X)
     ; write('X').
 
 text([ocean=':', deepocean=';',land='l',grass='g',hills='h',desert='d',forest='f',plains='p']).
