@@ -1,5 +1,3 @@
-require 'busted'
-
 describe("Map Model", function()
   local map = require "main.model.map"
 

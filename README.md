@@ -1,0 +1,5 @@
+# Generación de Escenarios de un Videojuego 2D mediante Programación Lógica [![Build Status](https://travis-ci.org/NEKERAFA/TFG-UDC.svg?branch=master)](https://travis-ci.org/NEKERAFA/TFG-UDC) [![Coverage Status](https://coveralls.io/repos/github/NEKERAFA/TFG-UDC/badge.svg?branch=master)](https://coveralls.io/github/NEKERAFA/TFG-UDC?branch=master)
+
+El objetivo final de este proyecto es la construcción de una herramienta declarativa para la creación y manipulación de escenarios o mapas para el videojuego FreeCiv, un juego de estrategia por turnos entre varios jugadores y que se desarrolla sobre un mapa tipo rejilla bidimensional.
+
+El propósito final es lograr, en la medida de lo posible, que la generación de escenarios sea gobernada por un conjunto de reglas, expresadas como restricciones en programación lógica, de modo que el usuario pueda variar sustancialmente la configuración de los escenarios obtenidos en función de la representación que haga del problema en términos de un programa lógico. Dada su adecuación para resolución de problemas, el paradigma de programación lógica que se usará es Answer Set Programming.
