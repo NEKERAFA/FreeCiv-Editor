@@ -3,11 +3,8 @@
 #
 # Makefile for create the proyect
 
-all: generator.lua parser.lua translator.lua
-	lua ./generator.lua -n=Test
-
-%.lua: %.moon
-	moonc $<
+test:
+	busted
 
 clean:
-	rm -f *.lua *.sav
+	rm -f *.sav

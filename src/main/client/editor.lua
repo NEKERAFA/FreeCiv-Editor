@@ -1,6 +1,7 @@
 local class = require 'libs.middleclass.middleclass'
 local map = require "main.client.map"
 
+local SELECTOR_CELL = 0
 local LAND_CELL = 1
 local EMPTY_LAND_CELL = 2
 local UPPER_LAND_CELL = 3
@@ -41,21 +42,24 @@ function editor:initialize(rows, cols, offset)
   self.quads_info = {size = 30, quads = {}}
 
   -- Loads the tileset image
-  local tileset = love.graphics.newImage("resources/tiles.png")
-  tileset:setFilter("nearest", "linear")
+  self.tileImage = love.graphics.newImage("resources/tiles.png")
+  self.tileImage:setFilter("nearest", "linear")
 
-  self:setQuads(tileset, tileset:getWidth(), tileset:getHeight())
+  self:setQuads(self.tileImage:getWidth(), self.tileImage:getHeight())
 
   -- Create the tilemap and the background
-  self.tilemap = love.graphics.newSpriteBatch(tileset, rows * cols)
-  self.background = love.graphics.newSpriteBatch(tileset, rows * cols * 4)
+  self.tilemap = love.graphics.newSpriteBatch(self.tileImage, rows * cols)
+  self.background = love.graphics.newSpriteBatch(self.tileImage, rows * cols * 4)
   self:setTilemaps()
   self.currentTile = -1
 end
 
 -- This function sets the quads for create the tilemap
-function editor:setQuads(tileset, tilesWidth, tilesHeight)
+function editor:setQuads(tilesWidth, tilesHeight)
   local quads = self.quads_info.quads
+
+  -- Quad for tile selector
+  quads[SELECTOR_CELL] = love.graphics.newQuad(330, 480, 30, 30, tilesWidth, tilesHeight)
 
   -- Quad for water
   quads[WATER_UP_LEFT] = love.graphics.newQuad(240, 210, 15, 15, tilesWidth, tilesHeight)
@@ -121,7 +125,7 @@ function editor:mousepressed(x, y, button, istouch)
   local col = math.ceil(posY/self.cell_size)
 
   -- Changes the rows
-
+  self.map
 end
 
 -- Checks where the mouse is moved
@@ -141,15 +145,16 @@ end
 
 -- Draw the map
 function editor:draw()
-  love.graphics.draw(self.tilemap, 0, 0)
-  love.graphics.draw(self.background, 0, 0)
+  -- Draw tilemap
+  love.graphics.draw(self.tilemap, self.offset.x, self.offset.y)
+  -- Draw background
+  love.graphics.draw(self.background, self.offset.x, self.offset.y)
 
+  -- If the mouse is in a tile, remarks this tile
   if self.currentTile ~= -1 then
     local x = self.offset.x + self.currentTile.row * self.quads_info.size
     local y = self.offset.y + self.currentTile.col * self.quads_info.size
-    love.graphics.setColor(1, 1, 1, 0.5)
-    love.graphics.rectangle("fill", x, y, self.quads_info.size, self.quads_info.size)
-    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(self.tileImage, self.quads_info.quads[SELECTOR_CELL], x, y)
   end
 end
 

@@ -1,0 +1,13 @@
+-- Rafael Alcalde Azpiazu - 21 Apr 2018
+-- Facultade de Informática da Coruña - Universidade da Coruña
+--
+-- Busted configuration
+
+return {
+  _all = {
+    verbose = true,
+    shuffle = true,
+    coverage = true,
+    ROOT = {"specs"}
+  }
+}
