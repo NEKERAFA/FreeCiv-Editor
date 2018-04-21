@@ -22,6 +22,9 @@ install:
 script:
   - busted
 
+after_success:
+  - luacov-coveralls -e $TRAVIS_BUILD_DIR/lua_install
+
 branches:
   except:
     - gh-pages
