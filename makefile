@@ -3,6 +3,15 @@
 #
 # Makefile for create the proyect
 
+all: install run
+
+install:
+	sudo apt-get install luarocks
+	sudo luarocks install busted loverocks
+
+run:
+	love src
+
 test:
 	busted
 

@@ -1,80 +1,93 @@
-local class = require 'libs.middleclass.middleclass'
+-- Rafael Alcalde Azpiazu - 19 Apr 2018
+-- Facultade de Informática da Coruña - Universidade da Coruña
+--
+-- This file define functions to validate parameters
+
+local class = require "libs.middleclass.middleclass"
+local constants = require "main.utilities.constants"
+local validator = require "main.utilities.validator"
 
 local map = class('map')
 
--- Constants
-map.WATER_CELL = 0
-map.LAND_CELL = 1
-map.VOID_CELL = 2
-
--- This function validates if a number is a natural number
-function validate_nat_number(n, pos, max)
-  assert(n > 0, "bad argument #" .. pos .. ", must be greater than zero")
-  if max then
-    assert(n < max, "bad argument #" .. pos .. ", must be less that " .. max)
-  end
-end
-
--- This function validates if a variable is a valid cell value
-function validate_cell_value(val, pos)
-  assert(n == map.WATER_CELL or n == map.LAND_CELL or n == map.VOID_CELL, "bad argument #" .. pos .. ", must be a cell value (WATER_CELL, LAND_CELL, VOID_CELL)")
-end
-
 -- Creates a new map
 function map:initialize(rows, cols)
-  validate_nat_number(rows, 1)
-  validate_nat_number(cols, 2)
+  -- Check parameters
+  validator.isNaturalNumber(rows, 1)
+  validator.isNaturalNumber(cols, 2)
 
   -- Creates a map
   self.rows = rows
   self.cols = cols
-  self.data = {}
+  self._data = {}
 
   -- Initialices with 0 all cells in the map
   for i = 1, rows do
     row = {}
     for j = 1, cols do
-      table.insert(row, map.WATER_CELL)
+      table.insert(row, constants.WATER_CELL)
     end
-    table.insert(self.data, row)
+    table.insert(self._data, row)
   end
 end
 
 -- Get a table with the map
 function map:getMap()
-  return self.data
+  return self._data
+end
+
+-- Set a new map
+function map:setMap(map_table)
+  validator.is2dArray(map_table, 1)
+
+  -- Gets the new dimensions
+  self.rows = #map_table
+  self.cols = #map_table[1]
+  self._data = {}
+
+  -- Save table
+  for i = 1, self.rows do
+    table.insert(self._data, {})
+    for j = 1, self.cols do
+      map:setCell(i, j, map_table[i][j])
+    end
+  end
 end
 
 -- Changes the value of a cell in the map
 function map:changeCell(row, col)
-  validate_nat_number(row, 1, self.data.rows)
-  validate_nat_number(col, 2, self.data.cols)
+  -- Check parameters
+  validator.isNaturalNumber(row, 1, self.rows)
+  validator.isNaturalNumber(col, 2, self.cols)
 
   -- Switch water to land
-  if self.data[row][col] == map.WATER_CELL then
-    self.data[row][col] = map.LAND_CELL
+  if self._data[row][col] == constants.WATER_CELL then
+    self._data[row][col] = constants.LAND_CELL
   -- Switch land to void value
-  elseif self.data[row][col] == map.LAND_CELL then
-    self.data[row][col] = map.VOID_CELL
+  elseif self._data[row][col] == constants.LAND_CELL then
+    self._data[row][col] = constants.VOID_CELL
   -- Switch void value to water
-  elseif self.data[row][col] == map.VOID_CELL then
-    self.data[row][col] = map.WATER_CELL
+  elseif self._data[row][col] == constants.VOID_CELL then
+    self._data[row][col] = constants.WATER_CELL
   end
 end
 
+-- Gets the value in the cell
 function map:getCell(row, col)
-  validate_nat_number(row, 1, self.data.rows)
-  validate_nat_number(col, 2, self.data.cols)
+  -- Check parameters
+  validator.isNaturalNumber(row, 1, self.rows)
+  validator.isNaturalNumber(col, 2, self.cols)
 
-  return self.data[row][col]
+  return self._data[row][col]
 end
 
+-- Sets a new value in the cell
 function map:setCell(row, col, value)
-  validate_nat_number(row, 1, self.data.rows)
-  validate_nat_number(col, 2, self.data.cols)
-  validate_cell_value(value, 3)
+  -- Check parameters
+  validator.isNaturalNumber(row, 1, self.rows)
+  validator.isNaturalNumber(col, 2, self.cols)
+  validator.isCellValue(value, 3)
 
-  self.data[row][col] = value
+  self._data[row][col] = value
 end
 
 return map
