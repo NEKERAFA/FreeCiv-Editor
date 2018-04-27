@@ -7,7 +7,7 @@ local editor = require "main.client.editor"
 
 -- Loads and sets elements
 function love.load()
-  editor_gui = editor:new({x = 10, y = 10}, 10, 10)
+  editor_gui = editor:new({rows = 10, cols = 10, tiles_size = 30})
   local width_map = editor_gui:getWidth()
   local height_map = editor_gui:getHeight()
   love.window.setMode(width_map + 20, height_map + 20, {resizable = true, minwidth = width_map, minheight = height_map})

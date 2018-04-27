@@ -5,16 +5,15 @@
 % quadrants in the map.
 %
 
-%%%% CONSTANTS
-% Number of rows and columns in the file
-#const rows = 2.
-#const cols = 3.
-% Number of islands
-#const islands = 2.
-
 %%%% TYPES
+% Number of rows and columns of quadrants in the map
+quadrants(2, 3).
+
+% Number of islands
+islands(2).
+
 % The position of the quadrant in the map
-position(0..cols*rows-1).
+quadrant_position(0..N) :- quadrants(R, C), N = R*C-1.
 
 % The identifier of the island in the map
-island(0..islands-1).
+island(0..N) :- islands(N+1).

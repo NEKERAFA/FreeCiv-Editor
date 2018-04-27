@@ -7,6 +7,19 @@ local constants = require "main.utilities.constants"
 
 local validator = {}
 
+--
+function validator.getFlag(flags, name, pos, default)
+  if flags then
+    if flags[name] then
+      return flags[name]
+    elseif default then
+      return default
+    else
+      error("bad argument #" .. pos .. " (flag " .. name .." must exist)")
+    end
+  end
+end
+
 -- Checks if the number is natural
 function validator.isNaturalNumber(n, pos, max)
   assert(n > 0, "bad argument #" .. pos .. " (must be greater than zero)")

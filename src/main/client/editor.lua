@@ -6,6 +6,7 @@
 local class = require 'libs.middleclass.middleclass'
 local map = require "main.model.map"
 local constants = require "main.utilities.constants"
+local validator = require "main.utilities.validator"
 
 -- Constants
 local _SELECTOR_CELL = "selector"
@@ -39,19 +40,21 @@ local _WATER_LAND_BOTTOM_RIGHT_CELL = "water_land_bottom_right"
 local editor = class('editor')
 
 -- Creates a new editor
-function editor:initialize(offset, tile_size, ...)
-  self.offset = offset
+function editor:initialize(flags)
+  self.offset = validator.getFlag(flags, "offset", 1, {x = 10, y = 10})
 
   -- Create or save a new map
-  local args = {...}
-  if #args == 1 then
-    self._map = args[1]
+  rows = validator.getFlag(flags, "rows", 1, -1)
+  cols = validator.getFlag(flags, "cols", 1, -1)
+
+  if rows == -1 or cols == -1 then
+    self._map = validator.getFlag(flags, "map", 1)
   else
-    self._map = map:new(args[1], args[2])
+    self._map = map:new(rows, cols)
   end
 
   -- Creates all the quads of tiles
-  self._quads_info = {size = tile_size, quads = {}}
+  self._quads_info = {size = validator.getFlag(flags, "tiles_size", 1), quads = {}}
 
   -- Loads the tileset image
   self._tile_image = love.graphics.newImage("resources/tiles.png")
@@ -63,7 +66,7 @@ function editor:initialize(offset, tile_size, ...)
   self._tilemap = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols)
   self._background = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols * 4)
   self:_updateTilemap()
-  self._currentTile = -1
+  self._current_tile = -1
 end
 
 -- Gets tile size
@@ -78,7 +81,7 @@ end
 
 -- Gets height of map board
 function editor:getHeight()
-  return self._map.cols * self.quads_info.size
+  return self._map.cols * self._quads_info.size
 end
 
 -- Gets columns count
@@ -88,7 +91,7 @@ end
 
 -- Gets width of map board
 function editor:getWidth()
-  return self._map.cols * self.quads_info.size
+  return self._map.cols * self._quads_info.size
 end
 
 -- This function sets the quads for create the tilemap
@@ -308,6 +311,7 @@ function editor:_addLandCell(row, col, land, neighbours)
 end
 
 -- This function update all tiles in the map
+--[[
 function editor:_updateTilemap()
   self._tilemap:clear()
   self._background:clear()
@@ -315,12 +319,44 @@ function editor:_updateTilemap()
   local map_data = self._map:getMap()
   local water_size = self._quads_info.size/2
 
-  for i, row in ipairs(map) do
+  for i, row in ipairs(map_data) do
     for j, col in ipairs(row) do
       -- Gets neighbours
       local neighbours = self:_getNeighbours(i, j)
       -- Add water cell
       self:_addWaterCell(row, col, map_data[i][j] == constants.LAND_CELL, water_size, map_data, neighbours)
+    end
+  end
+end
+]]
+
+function editor:_updateTilemap()
+  self._tilemap:clear()
+  self._background:clear()
+
+  local map_data = self._map:getMap()
+  local water_size = self._quads_info.size/2
+
+  for i, row in ipairs(map_data) do
+    for j, col in ipairs(row) do
+      -- Calculates position tile
+      local x = self._quads_info.size * (i-1)
+      local y = self._quads_info.size * (j-1)
+
+      -- Add terrain
+      if map_data[i][j] == constants.WATER_CELL then
+        self._tilemap:add(self._quads_info.quads[_EMPTY_LAND_CELL], x, y)
+      elseif map_data[i][j] == constants.LAND_CELL then
+        self._tilemap:add(self._quads_info.quads[_LAND_CELL], x, y)
+      else
+        self._tilemap:add(self._quads_info.quads[_VOID_CELL], x, y)
+      end
+
+      -- Add water cell
+      self._background:add(self._quads_info.quads[_WATER_UPPER_LEFT_CELL], x, y)
+      self._background:add(self._quads_info.quads[_WATER_UPPER_RIGHT_CELL], x+water_size, y)
+      self._background:add(self._quads_info.quads[_WATER_BOTTOM_LEFT_CELL], x, y+water_size)
+      self._background:add(self._quads_info.quads[_WATER_BOTTOM_LEFT_CELL], x+water_size, y+water_size)
     end
   end
 end
@@ -335,7 +371,7 @@ function editor:mousepressed(x, y, button, istouch)
     local col = math.ceil(posY/self._quads_info.size)
 
     -- Changes the rows
-    self.map:changeCell(row, col)
+    self._map:changeCell(row, col)
     self:_updateTilemap()
   end
 end
@@ -349,24 +385,24 @@ function editor:mousemoved(x, y, dx, dy, istouch)
   local col = math.floor(posY/self._quads_info.size)
 
   if row >= 0 and col >= 0 and row < self._map.rows and col < self._map.cols then
-    self._currentTile = {row = row, col = col}
+    self._current_tile = {row = row, col = col}
   else
-    self._currentTile = -1
+    self._current_tile = -1
   end
 end
 
 -- Draw the map
 function editor:draw()
   -- Draw background
-  love.graphics.draw(self.background, self.offset.x, self.offset.y)
+  love.graphics.draw(self._background, self.offset.x, self.offset.y)
   -- Draw tilemap
-  love.graphics.draw(self.tilemap, self.offset.x, self.offset.y)
+  love.graphics.draw(self._tilemap, self.offset.x, self.offset.y)
 
   -- If the mouse is in a tile, remarks this tile
-  if self.currentTile ~= -1 then
-    local x = self.offset.x + self.currentTile.row * self.quads_info.size
-    local y = self.offset.y + self.currentTile.col * self.quads_info.size
-    love.graphics.draw(self.tileImage, self.quads_info.quads[_SELECTOR_CELL], x, y)
+  if self._current_tile ~= -1 then
+    local x = self.offset.x + self._current_tile.row * self._quads_info.size
+    local y = self.offset.y + self._current_tile.col * self._quads_info.size
+    love.graphics.draw(self._tile_image, self._quads_info.quads[_SELECTOR_CELL], x, y)
   end
 end
 

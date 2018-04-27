@@ -22,6 +22,5 @@ Specs
 This project uses [busted](http://olivinelabs.com/busted/) for its specs. If you want to run the specs, you will have to install it first. Then just execute the following:
 
 ```bash
-cd /folder/where/the/spec/folder/is
 busted
 ```
