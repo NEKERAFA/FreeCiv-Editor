@@ -47,8 +47,9 @@ local Map = Class {
     -- Save table
     for i = 1, self.rows do
       table.insert(self._data, {})
+      local row = self._data[i]
       for j = 1, self.cols do
-        map:setCell(i, j, map_table[i][j])
+        table.insert(row, map_table[i][j])
       end
     end
   end,

@@ -97,4 +97,14 @@ describe("Map model tests.", function()
 
     assert.has.error(test_error, "bad argument #1 (rows must be the same size)")
   end)
+
+  it("Checks if setMap works", function()
+    local expected = {{constants.LAND_CELL, constants.WATER_CELL, constants.WATER_CELL},
+                      {constants.WATER_CELL, constants.LAND_CELL, constants.WATER_CELL},
+                      {constants.WATER_CELL, constants.WATER_CELL, constants.LAND_CELL}}
+
+    local obj = Map(3, 3)
+    obj:setMap(expected)
+    assert.are.same(obj:getMap(), expected)
+  end)
 end)
