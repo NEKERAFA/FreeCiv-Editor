@@ -7,3 +7,6 @@
 [submodule "src/libs/middleclass"]
 	path = src/libs/middleclass
 	url = https://github.com/kikito/middleclass.git
+[submodule "src/libs/hump"]
+	path = src/libs/hump
+	url = https://github.com/vrld/hump

@@ -3,11 +3,14 @@
 #
 # Makefile for create the proyect
 
-all: install run
+all: run
 
 install:
-	sudo apt-get install luarocks
-	sudo luarocks install busted loverocks
+	sudo apt install luarocks
+	sudo luarocks install busted
+	sudo add-apt-repository ppa:bartbes/love-stable
+	sudo apt update
+	sudo apt install love
 
 run:
 	love src
