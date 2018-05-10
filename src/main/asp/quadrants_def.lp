@@ -5,15 +5,21 @@
 % quadrants in the map.
 %
 
-%%%% TYPES
-% Number of rows and columns of quadrants in the map
-quadrants(2, 3).
+%%%% CONSTANTS
+#const q_rows = 2.
+#const q_cols = 3.
+#const regions = 2.
 
-% Number of islands
-islands(2).
+%%%% TYPES
+% Type of row and columns
+q_row(0..q_rows).
+q_col(0..q_cols).
 
 % The position of the quadrant in the map
-quadrant_position(0..N) :- quadrants(R, C), N = R*C-1.
+q_pos(0..q_rows*q_cols-1).
 
-% The identifier of the island in the map
-island(0..N) :- islands(N+1).
+% The identifier of the region in the map
+region(0..regions-1).
+
+% To translate a quadrant array position to 2-d position
+xypos(P, X, Y) :- q_pos(P), q_row(X), q_col(Y), X = P \ q_cols, Y = P / q_cols.

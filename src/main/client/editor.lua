@@ -1,7 +1,6 @@
 -- Rafael Alcalde Azpiazu - 19 Apr 2018
 -- Facultade de Informática da Coruña - Universidade da Coruña
 
-local Class = require "libs.hump.class"
 local Map = require "main.model.map"
 local Constants = require "main.utilities.constants"
 local Validator = require "main.utilities.validator"
@@ -36,9 +35,9 @@ local _WATER_LAND_BOTTOM_LEFT_CELL = "water_land_bottom_left"
 local _WATER_LAND_BOTTOM_RIGHT_CELL = "water_land_bottom_right"
 
 -- This class represents a UI Map Editor for FreeCiv
-local Editor = Class {
+local Editor = {
   -- Creates a new editor
-  init = function(self, flags)
+  enter = function(self, previous, flags)
     self.offset = Validator.getFlag(flags, "offset", 1, {x = 10, y = 10})
 
     -- Create or save a new map
@@ -64,7 +63,8 @@ local Editor = Class {
     self._tilemap = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols)
     self._background = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols * 4)
     self:_updateTilemap()
-    self._current_tile = -1
+    self._current_tile = nil
+    self._pressed = nil
   end,
 
   -- Gets tile size
@@ -160,14 +160,14 @@ local Editor = Class {
     return list
   end,
 
-  _isUpperLeftLand= function(self, neighbours)
+  _isUpperLeftLand = function(self, neighbours)
     local corner = neighbours[1]
     local upper = neighbours[2]
     local left = neighbours[4]
 
-    return corner and (self._map:getCell(corner.x, corner.y) == Constants.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.LAND_CELL))
+    return corner and (self._map:getCell(corner.x, corner.y) == Constants.CellType.LAND_CELL) and
+           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isUpperRightLand = function(self, neighbours)
@@ -175,9 +175,9 @@ local Editor = Class {
     local upper = neighbours[8]
     local right = neighbours[6]
 
-    return corner and (self._map:getCell(corner.x, corner.y) == Constants.LAND_CELL) and
-           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.LAND_CELL))
+    return corner and (self._map:getCell(corner.x, corner.y) == Constants.CellType.LAND_CELL) and
+           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isBottomLeftLand = function(self, neighbours)
@@ -185,9 +185,9 @@ local Editor = Class {
     local upper = neighbours[2]
     local left = neighbours[4]
 
-    return corner and (self._map:getCell(corner.x, corner.y) == Constants.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.LAND_CELL))
+    return corner and (self._map:getCell(corner.x, corner.y) == Constants.CellType.LAND_CELL) and
+           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isBottomRightLand = function(self, neighbours)
@@ -195,9 +195,9 @@ local Editor = Class {
     local bottom = neighbours[8]
     local right = neighbours[6]
 
-    return corner and (self._map:getCell(corner.x, corner.y) == Constants.LAND_CELL) and
-           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.LAND_CELL))
+    return corner and (self._map:getCell(corner.x, corner.y) == Constants.CellType.LAND_CELL) and
+           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   -- This function adds a water cell to the tilemap
@@ -213,7 +213,7 @@ local Editor = Class {
     local quad_bottom_right = self._quads_info.quads[_WATER_BOTTOM_RIGHT_CELL]
 
     -- Checks if one of the corners has land
-    if self._map:getCell(row, col) ~= Constants.LAND_CELL then
+    if self._map:getCell(row, col) ~= Constants.CellType.LAND_CELL then
       if self:_isUpperLeftLand(neighbours) then
         quad_upper_left = self._quads_info.quads[_WATER_LAND_UPPER_LEFT_CELL]
       end
@@ -244,10 +244,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return upper and (self._map:getCell(upper.x, upper.y) == Constants.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.LAND_CELL)) and
-           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.LAND_CELL))
+    return upper and (self._map:getCell(upper.x, upper.y) == Constants.CellType.LAND_CELL) and
+           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterLeftLand = function(self, neighbours)
@@ -256,10 +256,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return left and (self._map:getCell(left.x, left.y) == Constants.LAND_CELL) and
-           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.LAND_CELL)) and
-           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.LAND_CELL))
+    return left and (self._map:getCell(left.x, left.y) == Constants.CellType.LAND_CELL) and
+           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterRightLand = function(self, neighbours)
@@ -268,10 +268,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return right and (self._map:getCell(right.x, right.y) == Constants.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.LAND_CELL))
+    return right and (self._map:getCell(right.x, right.y) == Constants.CellType.LAND_CELL) and
+           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterBottomLand = function(self, neighbours)
@@ -280,10 +280,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.LAND_CELL)) and
-           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.LAND_CELL))
+    return bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.CellType.LAND_CELL) and
+           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterUpperLeftLand = function(self, neighbours)
@@ -292,10 +292,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return upper and (self._map:getCell(upper.x, upper.y) == Constants.LAND_CELL) and
-           left and (self._map:getCell(left.x, left.y) == Constants.LAND_CELL) and
-           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.LAND_CELL))
+    return upper and (self._map:getCell(upper.x, upper.y) == Constants.CellType.LAND_CELL) and
+           left and (self._map:getCell(left.x, left.y) == Constants.CellType.LAND_CELL) and
+           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterUpperRightLand = function(self, neighbours)
@@ -304,10 +304,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return upper and (self._map:getCell(upper.x, upper.y) == Constants.LAND_CELL) and
-           right and (self._map:getCell(right.x, right.y) == Constants.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.LAND_CELL))
+    return upper and (self._map:getCell(upper.x, upper.y) == Constants.CellType.LAND_CELL) and
+           right and (self._map:getCell(right.x, right.y) == Constants.CellType.LAND_CELL) and
+           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterUpperBottomLand = function(self, neighbours)
@@ -316,10 +316,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return upper and (self._map:getCell(upper.x, upper.y) == Constants.LAND_CELL) and
-           bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.LAND_CELL)) and
-           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.LAND_CELL))
+    return upper and (self._map:getCell(upper.x, upper.y) == Constants.CellType.LAND_CELL) and
+           bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.CellType.LAND_CELL) and
+           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterBottomLeftLand = function(self, neighbours)
@@ -328,10 +328,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.LAND_CELL) and
-           left and (self._map:getCell(left.x, left.y) == Constants.LAND_CELL) and
-           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.LAND_CELL))
+    return bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.CellType.LAND_CELL) and
+           left and (self._map:getCell(left.x, left.y) == Constants.CellType.LAND_CELL) and
+           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterBottomRightLand = function(self, neighbours)
@@ -340,10 +340,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return right and (self._map:getCell(right.x, right.y) == Constants.LAND_CELL) and
-           bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.LAND_CELL) and
-           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.LAND_CELL)) and
-           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.LAND_CELL))
+    return right and (self._map:getCell(right.x, right.y) == Constants.CellType.LAND_CELL) and
+           bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.CellType.LAND_CELL) and
+           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterLeftRightLand = function(self, neighbours)
@@ -352,10 +352,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return left and (self._map:getCell(left.x, left.y) == Constants.LAND_CELL) and
-           right and (self._map:getCell(right.x, right.y) == Constants.LAND_CELL) and
-           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.LAND_CELL))
+    return left and (self._map:getCell(left.x, left.y) == Constants.CellType.LAND_CELL) and
+           right and (self._map:getCell(right.x, right.y) == Constants.CellType.LAND_CELL) and
+           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.CellType.LAND_CELL)) and
+           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterUpperLeftRightLand = function(self, neighbours)
@@ -364,10 +364,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return upper and (self._map:getCell(upper.x, upper.y) == Constants.LAND_CELL) and
-           left and (self._map:getCell(left.x, left.y) == Constants.LAND_CELL) and
-           right and (self._map:getCell(right.x, right.y) == Constants.LAND_CELL) and
-           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.LAND_CELL))
+    return upper and (self._map:getCell(upper.x, upper.y) == Constants.CellType.LAND_CELL) and
+           left and (self._map:getCell(left.x, left.y) == Constants.CellType.LAND_CELL) and
+           right and (self._map:getCell(right.x, right.y) == Constants.CellType.LAND_CELL) and
+           ((not bottom) or (self._map:getCell(bottom.x, bottom.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterUpperLeftBottomLand = function(self, neighbours)
@@ -376,10 +376,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return upper and (self._map:getCell(upper.x, upper.y) == Constants.LAND_CELL) and
-           left and (self._map:getCell(left.x, left.y) == Constants.LAND_CELL) and
-           bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.LAND_CELL) and
-           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.LAND_CELL))
+    return upper and (self._map:getCell(upper.x, upper.y) == Constants.CellType.LAND_CELL) and
+           left and (self._map:getCell(left.x, left.y) == Constants.CellType.LAND_CELL) and
+           bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.CellType.LAND_CELL) and
+           ((not right) or (self._map:getCell(right.x, right.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterUpperRightBottomLand = function(self, neighbours)
@@ -388,10 +388,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return upper and (self._map:getCell(upper.x, upper.y) == Constants.LAND_CELL) and
-           right and (self._map:getCell(right.x, right.y) == Constants.LAND_CELL) and
-           bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.LAND_CELL))
+    return upper and (self._map:getCell(upper.x, upper.y) == Constants.CellType.LAND_CELL) and
+           right and (self._map:getCell(right.x, right.y) == Constants.CellType.LAND_CELL) and
+           bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.CellType.LAND_CELL) and
+           ((not left) or (self._map:getCell(left.x, left.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterBottomLeftRightLand = function(self, neighbours)
@@ -400,10 +400,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.LAND_CELL) and
-           left and (self._map:getCell(left.x, left.y) == Constants.LAND_CELL) and
-           right and (self._map:getCell(right.x, right.y) == Constants.LAND_CELL) and
-           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.LAND_CELL))
+    return bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.CellType.LAND_CELL) and
+           left and (self._map:getCell(left.x, left.y) == Constants.CellType.LAND_CELL) and
+           right and (self._map:getCell(right.x, right.y) == Constants.CellType.LAND_CELL) and
+           ((not upper) or (self._map:getCell(upper.x, upper.y) ~= Constants.CellType.LAND_CELL))
   end,
 
   _isWaterSurroundedLand = function(self, neighbours)
@@ -412,10 +412,10 @@ local Editor = Class {
     local bottom = neighbours[6]
     local right = neighbours[8]
 
-    return upper and (self._map:getCell(upper.x, upper.y) == Constants.LAND_CELL) and
-           left and (self._map:getCell(left.x, left.y) == Constants.LAND_CELL) and
-           right and (self._map:getCell(right.x, right.y) == Constants.LAND_CELL) and
-           bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.LAND_CELL)
+    return upper and (self._map:getCell(upper.x, upper.y) == Constants.CellType.LAND_CELL) and
+           left and (self._map:getCell(left.x, left.y) == Constants.CellType.LAND_CELL) and
+           right and (self._map:getCell(right.x, right.y) == Constants.CellType.LAND_CELL) and
+           bottom and (self._map:getCell(bottom.x, bottom.y) == Constants.CellType.LAND_CELL)
   end,
 
   -- This function add a land cell to the tilemap
@@ -426,10 +426,10 @@ local Editor = Class {
     local quad = ""
 
     -- Draws land cell
-    if self._map:getCell(row, col) == Constants.LAND_CELL then
+    if self._map:getCell(row, col) == Constants.CellType.LAND_CELL then
       quad = self._quads_info.quads[_LAND_CELL]
     -- Draws void cell
-    elseif self._map:getCell(row, col) == Constants.VOID_CELL then
+    elseif self._map:getCell(row, col) == Constants.CellType.VOID_CELL then
       quad = self._quads_info.quads[_VOID_CELL]
     else
       if self:_isWaterUpperLand(neighbours) then
@@ -501,9 +501,37 @@ local Editor = Class {
       local row = math.ceil(posX/self._quads_info.size)
       local col = math.ceil(posY/self._quads_info.size)
 
-      -- Changes the rows
-      self._map:changeCell(row, col)
-      self:_updateTilemap()
+      self._pressed = {x = row, y = col}
+    end
+  end,
+
+  resize = function(self, width, height)
+    -- Gets the size of the map
+    local width_map = self:getWidth()
+    local height_map = self:getHeight()
+    -- Calculates offset
+    local x_offset = math.floor((width - width_map) / 2)
+    local y_offset = math.floor((height - height_map) / 2)
+    -- Sets offset in the editor
+    self.offset = {x = x_offset, y = y_offset}
+  end,
+
+  -- Where de mouse is release
+  mousereleased = function(self, x, y, button, istouch)
+    if button == 1 then
+      -- Sets the variables
+      local posX, posY = x-self.offset.x, y-self.offset.y
+      -- Gets the cell pressed
+      local row = math.ceil(posX/self._quads_info.size)
+      local col = math.ceil(posY/self._quads_info.size)
+
+      if self._pressed and self._pressed.x == row and self._pressed.y == col then
+        -- Set pressed to nil
+        self._pressed = nil
+        -- Changes the rows
+        self._map:changeCell(row, col)
+        self:_updateTilemap()
+      end
     end
   end,
 
@@ -518,21 +546,35 @@ local Editor = Class {
     if row >= 0 and col >= 0 and row < self._map.rows and col < self._map.cols then
       self._current_tile = {row = row, col = col}
     else
-      self._current_tile = -1
+      self._current_tile = nil
     end
   end,
 
-  -- Draw the map
+  -- Draws the map
   draw = function(self)
-    -- Draw background
+    love.graphics.clear(0.8, 0.8, 0.8)
+
+    local width = self._quads_info.size * self._map.cols
+    local height = self._quads_info.size * self._map.rows
+
+    -- Draws background
     love.graphics.draw(self._background, self.offset.x, self.offset.y)
-    -- Draw tilemap
+    -- Draws tilemap
     love.graphics.draw(self._tilemap, self.offset.x, self.offset.y)
+    -- Draws the rectangle
+    love.graphics.setColor(0.5, 0.5, 0.5)
+    love.graphics.rectangle("line", self.offset.x, self.offset.y, width, height)
+    love.graphics.setColor(1, 1, 1)
 
     -- If the mouse is in a tile, remarks this tile
-    if self._current_tile ~= -1 then
+    if self._current_tile then
       local x = self.offset.x + self._current_tile.row * self._quads_info.size
       local y = self.offset.y + self._current_tile.col * self._quads_info.size
+      -- Background
+      love.graphics.setColor(1, 1, 1, 0.25)
+      love.graphics.rectangle("fill", x, y, self._quads_info.size, self._quads_info.size)
+      -- Tile
+      love.graphics.setColor(1, 1, 1, 1)
       love.graphics.draw(self._tile_image, self._quads_info.quads[_SELECTOR_CELL], x, y)
     end
   end

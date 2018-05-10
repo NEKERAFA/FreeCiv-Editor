@@ -1,7 +1,5 @@
 -- Rafael Alcalde Azpiazu - 19 Apr 2018
 -- Facultade de Informática da Coruña - Universidade da Coruña
---
--- This file define functions to validate parameters
 
 local Class = require "libs.hump.class"
 local Constants = require "main.utilities.constants"
@@ -24,7 +22,7 @@ local Map = Class {
     for i = 1, rows do
       row = {}
       for j = 1, cols do
-        table.insert(row, Constants.WATER_CELL)
+        table.insert(row, Constants.CellType.WATER_CELL)
       end
       table.insert(self._data, row)
     end
@@ -61,15 +59,17 @@ local Map = Class {
     Validator.isNaturalNumber(col, 2, self.cols)
 
     -- Switch water to land
-    if self._data[row][col] == Constants.WATER_CELL then
-      self._data[row][col] = Constants.LAND_CELL
+    if self._data[row][col] == Constants.CellType.WATER_CELL then
+      self._data[row][col] = Constants.CellType.LAND_CELL
     -- Switch land to void value
-    elseif self._data[row][col] == Constants.LAND_CELL then
-      self._data[row][col] = Constants.VOID_CELL
+    elseif self._data[row][col] == Constants.CellType.LAND_CELL then
+      self._data[row][col] = Constants.CellType.VOID_CELL
     -- Switch void value to water
-    elseif self._data[row][col] == Constants.VOID_CELL then
-      self._data[row][col] = Constants.WATER_CELL
+    elseif self._data[row][col] == Constants.CellType.VOID_CELL then
+      self._data[row][col] = Constants.CellType.WATER_CELL
     end
+
+    print(self._data[row][col])
   end,
 
   -- Gets the value in the cell

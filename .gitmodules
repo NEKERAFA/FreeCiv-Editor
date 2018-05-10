@@ -10,3 +10,6 @@
 [submodule "src/libs/hump"]
 	path = src/libs/hump
 	url = https://github.com/vrld/hump
+[submodule "src/libs/json"]
+	path = src/libs/json
+	url = https://github.com/rxi/json.lua.git

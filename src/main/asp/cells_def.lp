@@ -5,12 +5,21 @@
 % cells in the map.
 %
 
-%%%% TYPES
-% Number of rows and columns of cells in a quadrant
-cells(3, 3).
+%%%% CONSTANTS
+#const c_rows = 3.
+#const c_cols = 3.
 
-% The position of the quadrant in the map
-cell_position(0..N) :- cells(R, C), N = R*C-1.
+#const rows = q_rows*c_rows.
+#const cols = q_cols*c_cols.
+
+%%%% TYPES
+% Type of row and columns
+c_row(0..rows-1).
+c_col(0..cols-1).
+c_index(0..rows*cols-1).
 
 % The type of terrain of the cell on the map
-terrain(o; l).
+land(o; l).
+
+% To translate cell 2-d postion to array position
+ipos(P, R, C) :- P = R*cols+C, c_index(P), c_row(R), c_col(C).

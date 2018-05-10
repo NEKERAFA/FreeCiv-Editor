@@ -26,9 +26,17 @@ local Validator = {
     end
   end,
 
+  -- Checks if the number is natural
+  isPositiveInteger = function(n, pos, max)
+    assert(n >= 0, "bad argument #" .. pos .. " (must be greater than zero)")
+    if max then
+      assert(n <= max, "bad argument #" .. pos .. " (must be less or equals that " .. max .. ")")
+    end
+  end,
+
   -- Checks if the value is a valid cell contain
   isCellValue = function(value, pos)
-    result = value == Constants.WATER_CELL or value == Constants.LAND_CELL or value == Constants.VOID_CELL
+    result = value == Constants.CellType.WATER_CELL or value == Constants.LAND_CELL or value == Constants.VOID_CELL
     assert(result, "bad argument #" .. pos .. " (must be a cell value like WATER_CELL, LAND_CELL or VOID_CELL)")
   end,
 

@@ -6,20 +6,20 @@
 %
 
 % Generates the root of the quadrant
-1 { quadrant_root(C, I): quadrant_position(C) } 1 :- island(I).
-:- quadrant_root(C, I), quadrant_root(C, J), I!=J.
+1 { q_root(C, I): q_pos(C) } 1 :- region(I).
+:- q_root(C, I), q_root(C, J), I!=J.
 
 % A cell is reached if is the rootcell of the island or if the cell
 % can reach the rootcell
-quadrant(C, I) :- quadrant_root(C, I).
-0 {quadrant(C, I)} 1 :- quadrant(D, I), not existsanother(J, I, C), island(J), adjacent(D, C).
-existsanother(J, I, C) :- quadrant(C, J), island(I), J!=I.
+q_reached(C, I) :- q_root(C, I).
+0 {q_reached(C, I)} 1 :- q_reached(D, I), region(I), not existsanother(J, I, C), region(J), q_adj(D, C).
+existsanother(J, I, C) :- q_reached(C, J), region(I), J!=I.
 
-% Definition of adjacent
-adjacent(C, C-1) :- quadrant_position(C), quadrants(ROWS, COLS), C \ COLS > 0.
-adjacent(C, C+1) :- quadrant_position(C), quadrants(ROWS, COLS), C \ COLS < COLS-1.
-adjacent(C, C+COLS) :- quadrant_position(C), quadrants(ROWS, COLS), C < COLS*(ROWS-1).
-adjacent(C, C-COLS) :- quadrant_position(C), quadrants(ROWS, COLS), C >= COLS.
+% Definition of array adjacent cell
+q_adj(C, C-1) :- q_pos(C), C \ q_cols > 0.
+q_adj(C, C+1) :- q_pos(C), C \ q_cols < q_cols-1.
+q_adj(C, C+q_cols) :- q_pos(C), C < q_cols*(q_rows-1).
+q_adj(C, C-q_cols) :- q_pos(C), C >= q_cols.
 
-% cell(C, I) :- reached(C, I).
-% :- not 20 { reached(C, I) }.
+quadrant(C, I) :- q_reached(C, I).
+% :- not 2 { q_reached(C, 1) }.

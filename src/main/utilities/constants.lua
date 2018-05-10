@@ -3,9 +3,11 @@
 
 -- This table defines common constants to create MAPS
 local Constants = {
-  WATER_CELL = "water",
-  LAND_CELL = "land",
-  VOID_CELL = "void"
+  CellType = {
+    WATER_CELL = "water",
+    LAND_CELL = "land",
+    VOID_CELL = "void"
+  }
 }
 
 return Constants

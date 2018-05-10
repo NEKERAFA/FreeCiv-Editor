@@ -5,40 +5,22 @@
 % restrictions, in order to create regions in the map.
 %
 
-% Defines if the regionof the current quadrant continues in a neightbour quadrant
-region_continues(upper; left).
+% This program generates a cell
+#program generate(i).
+  % Generates all the positions in the region i
+  c_pos(p(X, Y)) :- quadrant(P, i), xypos(P, R, C), c_row(X), X >= R*c_rows, X < (R+1)*c_rows, c_col(Y), Y >= C*c_cols, Y < (C+1)*c_cols.
 
-% Generate the terrain in the map
-1 { cell(C, T) : terrain(T) } 1 :- cell_position(C).
+  % Generates a rootcell
+  1 {rootcell(P) : c_pos(P)} 1.
 
-% Checks where the terrain must continue
-:- cell(C, o), region_continues(upper), upper_cell(C).
-:- cell(C, o), region_continues(bottom), bottom_cell(C).
-:- cell(C, o), region_continues(left), left_cell(C).
-:- cell(C, o), region_continues(right), right_cell(C).
-:- cell(0, o), region_upperleft.
-:- cell(COLS-1, o), region_upperright, cells(ROWS, COLS).
-:- cell((ROWS-1)*COLS, o), region_bottomleft, cells(ROWS, COLS).
-:- cell(ROWS*COLS-1, o), region_bottomright, cells(ROWS, COLS).
+  % Gets the cells reached for create the island
+  reached(P) :- rootcell(P).
+  reached(P) :- reached(Q), adj(Q, P).
 
-% Checks where the terrain must not continue
-:- cell(C, l), not region_continues(upper), upper_cell(C).
-:- cell(C, l), not region_continues(bottom), bottom_cell(C).
-:- cell(C, l), not region_continues(left), left_cell(C).
-:- cell(C, l), not region_continues(right), right_cell(C).
-:- cell(0, l), not region_upperleft.
-:- cell(COLS-1, l), not region_upperright, cells(ROWS, COLS).
-:- cell((ROWS-1)*COLS, l), not region_bottomleft, cells(ROWS, COLS).
-:- cell(ROWS*COLS-1, l), not region_bottomright, cells(ROWS, COLS).
+  % Definition of matrix adjacent cell
+  adj(p(X, Y), p(X, Y+1)) :- c_pos(p(X, Y)), c_pos(p(X, Y+1)).
+  adj(p(X, Y), p(X+1, Y)) :- c_pos(p(X, Y)), c_pos(p(X+1, Y)).
+  adj(P, Q) :- adj(Q, P).
 
-% Definitions of corners
-region_upperleft :- region_continues(upper), region_continues(left).
-region_upperright :- region_continues(upper), region_continues(right).
-region_bottomleft :- region_continues(bottom), region_continues(left).
-region_bottomright :- region_continues(bottom), region_continues(right).
-
-% Definitions of cell that touches the border of the quadrant
-upper_cell(C) :- cell_position(C), cells(ROWS, COLS), C < COLS, C \ COLS > 0, C \ COLS < COLS-1.
-bottom_cell(C) :- cell_position(C), cells(ROWS, COLS), C >= (ROWS-1)*COLS, C \ COLS > 0, C \ COLS < COLS-1.
-left_cell(C) :- cell_position(C), cells(ROWS, COLS), C \ COLS == 0, C >= COLS, C < (ROWS-1)*COLS.
-right_cell(C) :- cell_position(C), cells(ROWS, COLS), C \ COLS == COLS - 1, C >= COLS, C < (ROWS-1) * COLS.
+  % Sets land and ocean
+  cell(P, l) :- ipos(P, X, Y), reached(p(X, Y)).
