@@ -13,4 +13,5 @@ return {
     "lua_install$",
     "src/libs$"
     "src/resources$"
-  },
+  }
+}
