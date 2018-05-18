@@ -11,7 +11,7 @@ return {
   -- the .lua extension, path separator is always '/')
   ["exclude"] = {
     "lua_install$",
-    "src/libs$"
+    "src/libs$",
     "src/resources$"
   }
 }
