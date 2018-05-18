@@ -1,7 +1,7 @@
 Generación de Escenarios de un Videojuego 2D mediante Programación Lógica
 ===========
 
-[![Powered by Lua](docs/lua.png)](https://www.lua.org/) [![Build Status](https://travis-ci.org/NEKERAFA/TFG-UDC.svg?branch=master)](https://travis-ci.org/NEKERAFA/TFG-UDC) [![Coverage Status](https://coveralls.io/repos/github/NEKERAFA/TFG-UDC/badge.svg?branch=master)](https://coveralls.io/github/NEKERAFA/TFG-UDC?branch=master)
+[![Powered by Lua](https://img.shields.io/badge/lua-5.3-00007e.svg)](https://www.lua.org/) [![Made by Löve](https://img.shields.io/badge/love2d-11.0-e64998.svg)](https://love2d.org/) [![Clingo Solver](https://img.shields.io/badge/Clingo-5.2.2-green.svg)](https://potassco.org/clingo/) [![ASP-Core 2 language](https://img.shields.io/badge/ASP--Core--2-2.01c-blue.svg)](https://www.mat.unical.it/aspcomp2013/ASPStandardization) [![Build Status](https://travis-ci.org/NEKERAFA/TFG-UDC.svg?branch=master)](https://travis-ci.org/NEKERAFA/TFG-UDC) [![Coverage Status](https://coveralls.io/repos/github/NEKERAFA/TFG-UDC/badge.svg?branch=master)](https://coveralls.io/github/NEKERAFA/TFG-UDC?branch=master) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 
 The goal of this project is building a declarative tool for the creation and manipulation of scenarios and maps in the videogame *FreeCiv*, a turn-based strategy game between multiple players that it is played on a two-dimensional grid map.
 
