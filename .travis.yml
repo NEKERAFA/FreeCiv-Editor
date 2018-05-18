@@ -22,7 +22,7 @@ script:
   - busted
 
 after_success:
-  - luacov-coveralls -e $TRAVIS_BUILD_DIR/lua_install src/libs
+  - luacov-coveralls -e $PWD/lua_install $PWD/src/libs
 
 branches:
   except:

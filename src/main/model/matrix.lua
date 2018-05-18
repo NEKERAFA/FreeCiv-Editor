@@ -119,6 +119,9 @@ local Matrix = Class {
         end
       end
       str = str .. "}"
+      if i < self.rows then
+        str = str .. ", "
+      end
     end
 
     return str .. "}"

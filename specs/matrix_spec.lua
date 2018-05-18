@@ -61,7 +61,6 @@ describe("Matrix model tests.", function()
                       {f, f, f},
                       {f, f, f}}
 
-
     assert.are.same(instance:getTable(), expected)
   end)
 
@@ -116,9 +115,39 @@ describe("Matrix model tests.", function()
     assert.are.equals(instance:getCell(2, 2), 10)
   end)
 
-  it("Checks if setCell works", function()
+  it("Invalid greater position on getPos", function()
+    local test_error = function()
+      local instance = Matrix(3, 3)
+      instance:getPos(12)
+    end
+
+    assert.has.error(test_error, "bad argument #1 (must be less or equals that 9)")
+  end)
+
+  it("Invalid negative position on getPos", function()
+    local test_error = function()
+      local instance = Matrix(3, 3)
+      instance:getPos(-4)
+    end
+
+    assert.has.error(test_error, "bad argument #1 (must be greater than zero)")
+  end)
+
+  it("Checks if getPos works", function()
     local instance = Matrix(3, 3)
     instance:setCell(2, 2, 10)
-    assert.are.equals(instance:getCell(2, 2), 10)
+    assert.are.equals(instance:getPos(4), 10)
+  end)
+
+  it("Checks if setPos works", function()
+    local instance = Matrix(3, 3)
+    instance:setPos(5, 10)
+    assert.are.equals(instance:getPos(5), 10)
+  end)
+
+  it("Checks if tostring works", function()
+    local instance = Matrix(3, 3)
+    local result = "{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}"
+    assert.are.equals(tostring(instance), result)
   end)
 end)

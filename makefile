@@ -6,14 +6,15 @@
 all: run
 
 install:
-	sudo apt install luarocks
-	sudo luarocks install busted
 	sudo add-apt-repository ppa:bartbes/love-stable
-	sudo apt update
-	sudo apt install love
+	sudo apt-get update
+	sudo apt-get install gringo clasp lua5.3 love luarocks
+	sudo luarocks install busted
+	sudo luarocks install luacov
+	sudo luarocks install luacov-coveralls
 
 run:
-	love src
+	love ./src/
 
 test:
 	busted
