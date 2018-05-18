@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Generación de Escenarios de un Videojuego 2D mediante Programación Lógica</title>
+    <link rel="stylesheet" href="../ldoc_pale.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>FreeCiv Editor</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+<li><a href="#Metamethods">Metamethods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><strong>Matrix</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Validator.html">Validator</a></li>
+  <li><a href="../modules/utilities.constants.html">utilities.constants</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>Matrix</code></h1>
+<p>This class represents a matrix object.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Matrix:getCell">Matrix:getCell (self, row, col)</a></td>
+	<td class="summary">Gets a value in the matrix.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Matrix:getPos">Matrix:getPos (self, position)</a></td>
+	<td class="summary">Access to the matrix like 1d array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Matrix:init">Matrix:init (self, rows, cols[, type_val[, initial_value]])</a></td>
+	<td class="summary">Initializes a new matrix object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Matrix:setCell">Matrix:setCell (self, row, col, value)</a></td>
+	<td class="summary">Sets a value in the matrix.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Matrix:setPos">Matrix:setPos (self, position, value)</a></td>
+	<td class="summary">Access to the matrix like 1d array and set a value.</td>
+	</tr>
+</table>
+<h2><a href="#Metamethods">Metamethods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Matrix:__tostring">Matrix:__tostring (self)</a></td>
+	<td class="summary">Return a string representation of the matrix</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Matrix:getCell"></a>
+    <strong>Matrix:getCell (self, row, col)</strong>
+    </dt>
+    <dd>
+    Gets a value in the matrix.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         The matrix object.
+        </li>
+        <li><span class="parameter">row</span>
+         The row position in the matrix.
+        </li>
+        <li><span class="parameter">col</span>
+         The column position in the matrix.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Matrix:getPos"></a>
+    <strong>Matrix:getPos (self, position)</strong>
+    </dt>
+    <dd>
+    Access to the matrix like 1d array.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         The matrix object.
+        </li>
+        <li><span class="parameter">position</span>
+         The array position in the matrix. Starts in 0.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Matrix:init"></a>
+    <strong>Matrix:init (self, rows, cols[, type_val[, initial_value]])</strong>
+    </dt>
+    <dd>
+    Initializes a new matrix object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         The new matrix object.
+        </li>
+        <li><span class="parameter">rows</span>
+         The number of rows in the matrix.
+        </li>
+        <li><span class="parameter">cols</span>
+         The number of columns in the matrix.
+        </li>
+        <li><span class="parameter">type_val</span>
+         The type of the values in the cell. By default accept all Lua type.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">initial_value</span>
+         The initial value of the cells in the matrix.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Matrix:setCell"></a>
+    <strong>Matrix:setCell (self, row, col, value)</strong>
+    </dt>
+    <dd>
+    Sets a value in the matrix.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         The matrix object.
+        </li>
+        <li><span class="parameter">row</span>
+         The row position in the matrix.
+        </li>
+        <li><span class="parameter">col</span>
+         The column position in the matrix.
+        </li>
+        <li><span class="parameter">value</span>
+         The new value of the cell.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Matrix:setPos"></a>
+    <strong>Matrix:setPos (self, position, value)</strong>
+    </dt>
+    <dd>
+    Access to the matrix like 1d array and set a value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         The matrix object.
+        </li>
+        <li><span class="parameter">position</span>
+         The array position in the matrix. Starts in 0.
+        </li>
+        <li><span class="parameter">value</span>
+         The new value of the cell.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Metamethods"></a>Metamethods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Matrix:__tostring"></a>
+    <strong>Matrix:__tostring (self)</strong>
+    </dt>
+    <dd>
+    Return a string representation of the matrix
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         The matrix object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-05-18 12:50:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

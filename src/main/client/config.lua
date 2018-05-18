@@ -14,8 +14,8 @@ local Config = {
     -- Texto que sale en los inputs
     self._q_rows_text = {text = "3"}
     self._q_cols_text = {text = "3"}
-    self._c_rows_text = {text = "2"}
-    self._c_cols_text = {text = "2"}
+    self._c_rows_text = {text = "4"}
+    self._c_cols_text = {text = "4"}
   end,
 
   -- Actualiza la interfaz

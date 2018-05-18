@@ -1,9 +1,0 @@
-Semana 30 enero - 2 febrero
-· Crear un mapa pequeño que muestre islas de hierba.
-· Crear un parser básico de ASP a mapa de Freeciv.
-
-Se necesita:
-· Clingo
-· Lua
-· Moonscript
-· Editor de textos

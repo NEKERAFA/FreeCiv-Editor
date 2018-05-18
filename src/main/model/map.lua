@@ -68,8 +68,6 @@ local Map = Class {
     elseif self._data[row][col] == Constants.CellType.VOID_CELL then
       self._data[row][col] = Constants.CellType.WATER_CELL
     end
-
-    print(self._data[row][col])
   end,
 
   -- Gets the value in the cell
@@ -86,7 +84,7 @@ local Map = Class {
     -- Check parameters
     Validator.isNaturalNumber(row, 1, self.rows)
     Validator.isNaturalNumber(col, 2, self.cols)
-    Validator.isCellValue(value, 3)
+    Validator.isMapCellValue(value, 3)
 
     self._data[row][col] = value
   end

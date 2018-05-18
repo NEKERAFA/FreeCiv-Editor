@@ -5,21 +5,38 @@
 % restrictions, in order to create regions in the map.
 %
 
-% Generates the root of the quadrant
-1 { q_root(C, I): q_pos(C) } 1 :- region(I).
-:- q_root(C, I), q_root(C, J), I!=J.
+% This program generates a cell
+#program generate(i).
+  % Generates all the positions in the region i
+  c_pos(p(X, Y)) :- quadrant(P, i), xypos(P, R, C), c_row(X), X >= R*c_rows, X < (R+1)*c_rows, c_col(Y), Y >= C*c_cols, Y < (C+1)*c_cols.
 
-% A cell is reached if is the rootcell of the island or if the cell
-% can reach the rootcell
-q_reached(C, I) :- q_root(C, I).
-0 {q_reached(C, I)} 1 :- q_reached(D, I), region(I), not existsanother(J, I, C), region(J), q_adj(D, C).
-existsanother(J, I, C) :- q_reached(C, J), region(I), J!=I.
+  % Number of cells in the region
+  n_cells(Z) :- #count{P: c_pos(P)}=Z.
 
-% Definition of array adjacent cell
-q_adj(C, C-1) :- q_pos(C), C \ q_cols > 0.
-q_adj(C, C+1) :- q_pos(C), C \ q_cols < q_cols-1.
-q_adj(C, C+q_cols) :- q_pos(C), C < q_cols*(q_rows-1).
-q_adj(C, C-q_cols) :- q_pos(C), C >= q_cols.
+  % The maximun and minimun number of cells in the region
+  max_cells(N*c_max/100) :- n_cells(N).
+  min_cells(N*c_min/100) :- n_cells(N).
 
-quadrant(C, I) :- q_reached(C, I).
-% :- not 2 { q_reached(C, 1) }.
+  % Generates a rootcell
+  1 {rootcell(P) : c_pos(P)} 1.
+
+  % Gets the cells reached for create the island
+  reached(P) :- rootcell(P).
+  {reached(P)} :- reached(Q), adj(Q, P).
+
+  % Definition of matrix adjacent cell
+  adj(p(X, Y), p(X, Y+1)) :- c_pos(p(X, Y)), c_pos(p(X, Y+1)).
+  adj(p(X, Y), p(X+1, Y)) :- c_pos(p(X, Y)), c_pos(p(X+1, Y)).
+  adj(P, Q) :- adj(Q, P).
+
+  % Preference in the size of islands in relation to the size of the region
+  cells_reached(Z) :- #count{P: q_reached(P, i)}=Z.
+  :~ cells_reached(Z), max_cells(MAX), Z > MAX. [1]
+  :~ cells_reached(Z), min_cells(MIN), Z < MIN. [1]
+
+  % tam(Z) :- #count{X:cell(X,l)}=Z.
+  % :- tam(Z),Z>8.
+  % :- tam(Z),Z<4.
+
+  % Sets land and ocean
+  cell(P, l) :- ipos(P, X, Y), reached(p(X, Y)).

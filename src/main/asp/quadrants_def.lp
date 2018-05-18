@@ -1,25 +1,27 @@
-% Rafael Alcalde Azpiazu - 2 Apr 2018
+% Rafael Alcalde Azpiazu - 26 Apr 2018
 % Facultade de Informática da Coruña - Universidade da Coruña
 %
 % This file defines the types which are used to generates the
-% quadrants in the map.
+% cells in the map.
 %
 
 %%%% CONSTANTS
-#const q_rows = 2.
-#const q_cols = 3.
-#const regions = 2.
+#const c_rows = 4.
+#const c_cols = 4.
+#const rows = q_rows*c_rows.
+#const cols = q_cols*c_cols.
+
+#const c_min = 25.
+#const c_max = 100.
 
 %%%% TYPES
 % Type of row and columns
-q_row(0..q_rows).
-q_col(0..q_cols).
+c_row(0..rows-1).
+c_col(0..cols-1).
+c_index(0..rows*cols-1).
 
-% The position of the quadrant in the map
-q_pos(0..q_rows*q_cols-1).
+% The type of terrain of the cell on the map
+land(o; l).
 
-% The identifier of the region in the map
-region(0..regions-1).
-
-% To translate a quadrant array position to 2-d position
-xypos(P, X, Y) :- q_pos(P), q_row(X), q_col(Y), X = P \ q_cols, Y = P / q_cols.
+% To translate cell 2-d postion to array position
+ipos(P, R, C) :- P = R*cols+C, c_index(P), c_row(R), c_col(C).

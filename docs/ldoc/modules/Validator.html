@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Generación de Escenarios de un Videojuego 2D mediante Programación Lógica</title>
+    <link rel="stylesheet" href="../ldoc_pale.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>FreeCiv Editor</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>Validator</strong></li>
+  <li><a href="../modules/utilities.constants.html">utilities.constants</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Matrix.html">Matrix</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>Validator</code></h1>
+<p>This module defines functions to validate parameters.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#getFlag">getFlag (flags, name, pos[, default])</a></td>
+	<td class="summary">Checks if a flag parameter exists or is valid.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#is2dArray">is2dArray (value, pos)</a></td>
+	<td class="summary">Checks if the value is a 2D array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isMapCellValue">isMapCellValue (value, pos)</a></td>
+	<td class="summary">Checks if the value is a valid map cell value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isNaturalNumber">isNaturalNumber (n, pos[, max])</a></td>
+	<td class="summary">Checks if the number is natural.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isPositiveInteger">isPositiveInteger (n, pos[, max])</a></td>
+	<td class="summary">Checks if the number is positive integer.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "getFlag"></a>
+    <strong>getFlag (flags, name, pos[, default])</strong>
+    </dt>
+    <dd>
+    Checks if a flag parameter exists or is valid.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">flags</span>
+         Table that represents a hashmap with all flags values.
+        </li>
+        <li><span class="parameter">name</span>
+         Key of the flag to check.
+        </li>
+        <li><span class="parameter">pos</span>
+         The position of the parameter in the function.
+        </li>
+        <li><span class="parameter">default</span>
+         If default is not nil, if the flag do not exist, with return this value.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "is2dArray"></a>
+    <strong>is2dArray (value, pos)</strong>
+    </dt>
+    <dd>
+    Checks if the value is a 2D array.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         The value to checks.
+        </li>
+        <li><span class="parameter">pos</span>
+         The position of the parameter in the function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isMapCellValue"></a>
+    <strong>isMapCellValue (value, pos)</strong>
+    </dt>
+    <dd>
+    Checks if the value is a valid map cell value.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         The value to checks.
+        </li>
+        <li><span class="parameter">pos</span>
+         The position of the parameter in the function.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isNaturalNumber"></a>
+    <strong>isNaturalNumber (n, pos[, max])</strong>
+    </dt>
+    <dd>
+    Checks if the number is natural.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">n</span>
+         The number to check.
+        </li>
+        <li><span class="parameter">pos</span>
+         The position of the parameter in the function.
+        </li>
+        <li><span class="parameter">max</span>
+         If max is not nil, checks if the number is less or equals that it.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "isPositiveInteger"></a>
+    <strong>isPositiveInteger (n, pos[, max])</strong>
+    </dt>
+    <dd>
+    Checks if the number is positive integer.  Is like isNaturalNumber method, but includes the zero number.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">n</span>
+         The number to check.
+        </li>
+        <li><span class="parameter">pos</span>
+         The position of the parameter in the function.
+        </li>
+        <li><span class="parameter">max</span>
+         If max is not nil, checks if the number is less or equals that it.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-05-18 12:50:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

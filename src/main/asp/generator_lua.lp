@@ -10,10 +10,10 @@ function main(prog)
   local rows, cols, mat
 
   -- Carga los programas lógicos
+  prog:load("main/asp/regions_def.lp")
+  prog:load("main/asp/regions_rules.lp")
   prog:load("main/asp/quadrants_def.lp")
   prog:load("main/asp/quadrants_rules.lp")
-  prog:load("main/asp/cells_def.lp")
-  prog:load("main/asp/cells_rules.lp")
 
   -- Obtiene el ancho y el alto de los cuadrantes
   q_rows = prog:get_const("q_rows").number
