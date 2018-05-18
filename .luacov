@@ -10,7 +10,7 @@ return {
   -- (exclude overrules include, do not include
   -- the .lua extension, path separator is always '/')
   ["exclude"] = {
-    "lua_install$",
+    "/home/travis/build/NEKERAFA/TFG-UDC/lua_install$",
     "src/libs$",
     "src/resources$"
   }
