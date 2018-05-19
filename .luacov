@@ -4,14 +4,9 @@
 -- will be used.
 -- @class module
 -- @name luacov.defaults
+
 return {
-  -- Patterns for files to exclude when reporting
-  -- all will be included if nothing is listed
-  -- (exclude overrules include, do not include
-  -- the .lua extension, path separator is always '/')
-  ["exclude"] = {
-    "/home/travis/build/NEKERAFA/TFG-UDC/lua_install$",
-    "src/libs$",
-    "src/resources$"
+  modules = {
+     ["main.*"] = "src/main"
   }
 }
