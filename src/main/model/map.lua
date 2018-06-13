@@ -8,23 +8,34 @@ local Validator = require "main.utilities.validator"
 -- This class represents a FreeCiv Map
 local Map = Class {
   -- Creates new map
-  init = function(self, rows, cols)
-    -- Check parameters
-    Validator.isNaturalNumber(rows, 1)
-    Validator.isNaturalNumber(cols, 2)
+  init = function(self, ...)
+    args = {...}
 
-    -- Creates a map
-    self.rows = rows
-    self.cols = cols
-    self._data = {}
+    if #args < 1 then
+      error("too few arguments")
+    elseif #args == 1 then
+      -- Add a table like a map
+      self:setMap(args[1])
+    elseif #args == 2 then
+      -- Check parameters
+      Validator.isNaturalNumber(args[1], 1)
+      Validator.isNaturalNumber(args[2], 2)
 
-    -- Initialices with 0 all cells in the map
-    for i = 1, rows do
-      row = {}
-      for j = 1, cols do
-        table.insert(row, Constants.CellType.WATER_CELL)
+      -- Creates a map
+      self.rows = args[1]
+      self.cols = args[2]
+      self._data = {}
+
+      -- Initialices with 0 all cells in the map
+      for i = 1, args[1] do
+        row = {}
+        for j = 1, args[2] do
+          table.insert(row, Constants.CellType.VOID_CELL)
+        end
+        table.insert(self._data, row)
       end
-      table.insert(self._data, row)
+    elseif #args > 2 then
+      error("too many arguments")
     end
   end,
 

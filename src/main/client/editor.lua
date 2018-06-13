@@ -1,9 +1,11 @@
 -- Rafael Alcalde Azpiazu - 19 Apr 2018
 -- Facultade de Informática da Coruña - Universidade da Coruña
 
+local Class = require "libs.hump.class"
 local Map = require "main.model.map"
 local Constants = require "main.utilities.constants"
 local Validator = require "main.utilities.validator"
+local Resources = require "main.utilities.resources"
 
 -- Constants
 local _SELECTOR_CELL = "selector"
@@ -34,62 +36,78 @@ local _WATER_LAND_UPPER_RIGHT_CELL = "water_land_upper_right"
 local _WATER_LAND_BOTTOM_LEFT_CELL = "water_land_bottom_left"
 local _WATER_LAND_BOTTOM_RIGHT_CELL = "water_land_bottom_right"
 
--- This class represents a UI Map Editor for FreeCiv
-local Editor = {
+--- This class represents a UI Map Editor for FreeCiv
+local Editor = Class {
   -- Creates a new editor
-  enter = function(self, previous, flags)
-    self.offset = Validator.getFlag(flags, "offset", 1, {x = 10, y = 10})
-
-    -- Create or save a new map
-    rows = Validator.getFlag(flags, "rows", 1, -1)
-    cols = Validator.getFlag(flags, "cols", 1, -1)
-
-    if rows == -1 or cols == -1 then
-      self._map = Validator.getFlag(flags, "map", 1)
-    else
-      self._map = Map(rows, cols)
-    end
-
-    -- Creates all the quads of tiles
-    self._quads_info = {size = Validator.getFlag(flags, "tiles_size", 1), quads = {}}
+  init = function(self)
+    -- Offset of the map UI
+    self.offset = {x = 10, y = 34}
 
     -- Loads the tileset image
-    self._tile_image = love.graphics.newImage("resources/tiles.png")
-    self._tile_image:setFilter("nearest", "linear")
+    self._tile_image = Resources.loadResource("image", "tiles")
 
+    -- Creates all the quads of tiles
+    self._quads_info = {size = 30, quads = {}}
     self:_setQuads(self._tile_image:getWidth(), self._tile_image:getHeight())
 
-    -- Create the tilemap and the background
-    self._tilemap = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols)
-    self._background = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols * 4)
-    self:_updateTilemap()
+    -- Checks if editor has a configuration
+    if Resources.existConfiguration("editor") then
+      -- Loads last map opened
+      local conf = Resources.loadConfiguration("editor")
+      local map = Resources.loadResource("map", conf.lastOpened)
+
+      self._map = Map(map)
+
+      -- Creates the tilemap and the background
+      self._tilemap = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols)
+      self._background = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols * 4)
+
+      -- Sets all the tilemaps in the spritesbatches
+      self:_updateTilemap()
+    else
+      self._map = nil
+    end
+
     self._current_tile = nil
     self._pressed = nil
   end,
 
-  -- Gets tile size
-  getTileSize = function(self)
-    return self._quads_info.size
-  end,
-
-  -- Gets rows count
-  getRows = function(self)
-    return self._map.rows
-  end,
-
-  -- Gets height of map board
-  getHeight = function(self)
-    return self._map.cols * self._quads_info.size
-  end,
-
-  -- Gets columns count
-  getColumns = function(self)
-    return self._map.cols
-  end,
-
-  -- Gets width of map board
   getWidth = function(self)
+    if self._map == nil then
+      return 0
+    end
+
     return self._map.cols * self._quads_info.size
+  end,
+
+  getHeight = function(self)
+    if self._map == nil then
+      return 0
+    end
+
+    return self._map.rows * self._quads_info.size
+  end,
+
+  newMap = function(self, rows, cols)
+    self._map = Map(rows, cols)
+
+    -- Creates the tilemap and the background
+    self._tilemap = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols)
+    self._background = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols * 4)
+
+    -- Sets all the tilemaps in the spritesbatches
+    self:_updateTilemap()
+  end,
+
+  setMap = function(self, map)
+    self._map = Map(map)
+
+    -- Creates the tilemap and the background
+    self._tilemap = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols)
+    self._background = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols * 4)
+
+    -- Sets all the tilemaps in the spritesbatches
+    self:_updateTilemap()
   end,
 
   -- This function sets the quads for create the tilemap
@@ -497,19 +515,21 @@ local Editor = {
   end,
 
   resize = function(self, width, height)
-    -- Gets the size of the map
-    local width_map = self:getWidth()
-    local height_map = self:getHeight()
-    -- Calculates offset
-    local x_offset = math.floor((width - width_map) / 2)
-    local y_offset = math.floor((height - height_map) / 2)
-    -- Sets offset in the editor
-    self.offset = {x = x_offset, y = y_offset}
+    if self._map ~= nil then
+      -- Gets the size of the map
+      local width_map = self._map.cols * self._quads_info.size
+      local height_map = self._map.rows * self._quads_info.size
+      -- Calculates offset
+      local x_offset = math.floor((width - width_map) / 2)
+      local y_offset = math.floor((height - height_map) / 2)
+      -- Sets offset in the editor
+      self.offset = {x = x_offset, y = y_offset}
+    end
   end,
 
   -- Checks where the mouse is pressed
   mousepressed = function(self, x, y, button, istouch)
-    if button == 1 then
+    if self._map ~= nil and button == 1 then
       -- Sets the variables
       local posX, posY = x-self.offset.x, y-self.offset.y
       -- Gets the cell pressed
@@ -520,9 +540,9 @@ local Editor = {
     end
   end,
 
-  -- Where de mouse is release
+  -- Checks where the mouse is release
   mousereleased = function(self, x, y, button, istouch)
-    if button == 1 then
+    if self._map ~= nil and button == 1 then
       -- Sets the variables
       local posX, posY = x-self.offset.x, y-self.offset.y
       -- Gets the cell pressed
@@ -541,45 +561,51 @@ local Editor = {
 
   -- Checks where the mouse is moved
   mousemoved = function(self, x, y, dx, dy, istouch)
-    -- Sets the variables
-    local posX, posY = x-self.offset.x, y-self.offset.y
-    -- Gets the cell selected
-    local row = math.floor(posY/self._quads_info.size)
-    local col = math.floor(posX/self._quads_info.size)
+    if self._map ~= nil then
+      -- Sets the variables
+      local posX, posY = x-self.offset.x, y-self.offset.y
+      -- Gets the cell selected
+      local row = math.floor(posY/self._quads_info.size)
+      local col = math.floor(posX/self._quads_info.size)
 
-    if row >= 0 and col >= 0 and row < self._map.rows and col < self._map.cols then
-      self._current_tile = {row = row, col = col}
-    else
-      self._current_tile = nil
+      if row >= 0 and col >= 0 and row < self._map.rows and col < self._map.cols then
+        self._current_tile = {row = row, col = col}
+      else
+        self._current_tile = nil
+      end
     end
   end,
 
-  -- Draws the map
+  -- Draws the editor
   draw = function(self)
-    love.graphics.clear(0.8, 0.8, 0.8)
+    -- Clears the window
+    --love.graphics.clear(0.8, 0.8, 0.8)
 
-    local width = self._quads_info.size * self._map.cols
-    local height = self._quads_info.size * self._map.rows
+    -- Draws the map
+    if self._map ~= nil then
+      local width = self._quads_info.size * self._map.cols
+      local height = self._quads_info.size * self._map.rows
 
-    -- Draws background
-    love.graphics.draw(self._background, self.offset.x, self.offset.y)
-    -- Draws tilemap
-    love.graphics.draw(self._tilemap, self.offset.x, self.offset.y)
-    -- Draws the rectangle
-    love.graphics.setColor(0.5, 0.5, 0.5)
-    love.graphics.rectangle("line", self.offset.x, self.offset.y, width, height)
-    love.graphics.setColor(1, 1, 1)
+      -- Draws background
+      love.graphics.draw(self._background, self.offset.x, self.offset.y)
+      -- Draws tilemap
+      love.graphics.draw(self._tilemap, self.offset.x, self.offset.y)
+      -- Draws the rectangle
+      love.graphics.setColor(0.5, 0.5, 0.5)
+      love.graphics.rectangle("line", self.offset.x, self.offset.y, width, height)
+      love.graphics.setColor(1, 1, 1)
 
-    -- If the mouse is in a tile, remarks this tile
-    if self._current_tile then
-      local x = self.offset.x + self._current_tile.col * self._quads_info.size
-      local y = self.offset.y + self._current_tile.row * self._quads_info.size
-      -- Background
-      love.graphics.setColor(1, 1, 1, 0.25)
-      love.graphics.rectangle("fill", x, y, self._quads_info.size, self._quads_info.size)
-      -- Tile
-      love.graphics.setColor(1, 1, 1, 1)
-      love.graphics.draw(self._tile_image, self._quads_info.quads[_SELECTOR_CELL], x, y)
+      -- If the mouse is in a tile, remarks this tile
+      if self._current_tile then
+        local x = self.offset.x + self._current_tile.col * self._quads_info.size
+        local y = self.offset.y + self._current_tile.row * self._quads_info.size
+        -- Background
+        love.graphics.setColor(1, 1, 1, 0.25)
+        love.graphics.rectangle("fill", x, y, self._quads_info.size, self._quads_info.size)
+        -- Tile
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.draw(self._tile_image, self._quads_info.quads[_SELECTOR_CELL], x, y)
+      end
     end
   end
 }

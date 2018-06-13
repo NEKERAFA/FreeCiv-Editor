@@ -64,6 +64,15 @@ describe("Matrix model tests.", function()
     assert.are.same(instance:getTable(), expected)
   end)
 
+  it("Creates new matrix with diferent initial value", function()
+    local expected = {{2, 2, 2},
+                      {2, 2, 2},
+                      {2, 2, 2}}
+
+    local instance = Matrix(3, 3, Constants.MatrixType.NUMBER, 2)
+    assert.are.same(instance:getTable(), expected)
+  end)
+
   it("Checks invalid value in a number matrix", function()
     local test_error = function()
       local instance = Matrix(3, 3, Constants.MatrixType.NUMBER)

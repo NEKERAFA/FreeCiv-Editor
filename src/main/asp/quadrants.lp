@@ -1,10 +1,3 @@
-% Rafael Alcalde Azpiazu - 2 Apr 2018
-% Facultade de Informática da Coruña - Universidade da Coruña
-%
-% This file defines how the quadrants are created, with rules and
-% restrictions, in order to create regions in the map.
-%
-
 % This program generates a cell
 #program generate(i).
   % Generates all the positions in the region i

@@ -13,9 +13,9 @@ Installation
 First of all, install these dependencies on your machine:
 - Clingo 5.2.5
 - Lua 5.3
-- Love2D
+- Love2D 11.0
 
-If you have a Ubuntu distribution installed on your machine, execute this in a terminal:
+If you have a Ubuntu distribution installed on your machine, execute this in a terminal in order to install all dependencies:
 ```bash
 sudo add-apt-repository ppa:bartbes/love-stable
 sudo apt-get update && sudo apt-get install gringo clasp lua5.3 love
@@ -30,7 +30,7 @@ make run
 Specs
 =====
 
-This project uses [busted](http://olivinelabs.com/busted/) for its specs. If you want to run the specs, you will have to install it first. Then just execute the following:
+This project uses [busted](http://olivinelabs.com/busted/) for its tests. If you want to run all the tests, you will have to install busted first. Then just execute the following:
 
 ```bash
 make test

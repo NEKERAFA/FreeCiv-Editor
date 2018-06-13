@@ -2,44 +2,52 @@
 -- Facultade de Informática da Coruña - Universidade da Coruña
 
 local Gamestate = require "libs.hump.gamestate"
-local Config = require "main.client.config"
-
-function love.load()
-  Gamestate.registerEvents()
-  Gamestate.switch(Config)
-end
-
---[[
 local Editor = require "main.client.editor"
+local Menubar = require "main.client.widgets.menubar"
+local FileChooser = require "main.client.widgets.filechooser"
 
 -- This variable represents a UI map editor
 local map_editor
-local gui
+local bar_editor
+local dialog_editor
 
 -- Loads and sets elements
 function love.load()
   -- Creamos la interfaz del editor
-  map_editor = Editor({rows = 10, cols = 10, tiles_size = 30})
-  -- Obtenemos el alto y ancho
-  local width_map = map_editor:getWidth()
-  local height_map = map_editor:getHeight()
-  -- Cambiamos el tamaño de ventana
-  love.window.setMode(width_map + 20, height_map + 20, {resizable = true, minwidth = width_map, minheight = height_map})
+  map_editor = Editor()
+  bar_editor = Menubar()
   love.graphics.setBackgroundColor(0.9, 0.9, 0.9)
 end
 
 -- Function for resize window
 function love.resize(width, height)
-  -- Gets the size of the map
-  local width_map = map_editor:getWidth()
-  local height_map = map_editor:getHeight()
+  map_editor:resize(width, height)
+end
 
-  -- Calculates offset
-  local x_offset = math.floor((width - width_map) / 2)
-  local y_offset = math.floor((height - height_map) / 2)
+function love.update(dt)
+  local option = bar_editor:update(dt)
 
-  -- Sets offset in the editor
-  map_editor.offset = {x = x_offset, y = y_offset}
+  if dialog_editor then
+    dialog_editor:update(dt)
+  end
+
+  if option == 2 then
+    dialog_editor = FileChooser()
+  elseif option == 3 then
+    dialog_editor = FileChooser("save")
+  end
+end
+
+function love.textinput(t)
+  if dialog_editor then dialog_editor:textInput(t) end
+end
+
+function love.wheelmoved(x, y)
+  if dialog_editor then dialog:wheelMoved(x, y) end
+end
+
+function love.keypressed(key)
+  if dialog_editor then dialog:keyPressed(key) end
 end
 
 -- Triggered when the mouse is moved
@@ -60,5 +68,9 @@ end
 -- Draw all elements in window
 function love.draw()
   map_editor:draw()
+  bar_editor:draw()
+
+  if dialog_editor then
+    dialog_editor:draw()
+  end
 end
-]]

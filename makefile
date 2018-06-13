@@ -10,8 +10,6 @@ install:
 	sudo apt-get update
 	sudo apt-get install gringo clasp lua5.3 love luarocks
 	sudo luarocks install busted
-	sudo luarocks install luacov
-	sudo luarocks install luacov-coveralls
 
 run:
 	love ./src/
