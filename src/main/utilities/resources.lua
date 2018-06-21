@@ -1,11 +1,32 @@
 -- Rafael Alcalde Azpiazu - 7 Jun 2018
 -- Facultade de Informática da Coruña - Universidade da Coruña
 
+local Lfs = require "lfs"
 local Json = require "libs.json.json"
+
+local function _append (...)
+  local args = {...}
+  local nargs = #args
+  local path = ""
+
+  for i, folder in ipairs(args) do
+    path = path .. folder
+
+    if i < nargs then
+      if love.system.getOS() == "Windows" then
+        path = path .. "\\"
+      else
+        path = path .. "/"
+      end
+    end
+  end
+
+  return path
+end
 
 local imagePath = "resources"
 local configPath = love.filesystem.getSaveDirectory()
-local scenarioPath = "resources/scenario.txt"
+local scenarioPath = _append("resources", "scenario.txt")
 
 -- List for save the loaded resources
 local loaded = {}
@@ -53,36 +74,38 @@ local Resources = {
     loaded[key] = false
   end,
 
-  --- Loads a configuration.
-  -- @param name The name of the configuration.
-  -- @return A table with the values saved.
-  loadConfiguration = function(name)
-    local fullPath = configPath .. "/" .. name .. ".json"
-    local content = love.filesystem.read(fullPath)
-    return Json.decode(content)
-  end,
-
   --- Saves a configuration.
   -- @param name The name of the configuration.
   -- @param conf The table with the values to save.
   saveConfiguration = function(name, conf)
-    local fullPath = configPath .. "/" .. name .. ".json"
-    local content = Json.encode(conf)
-    love.filesystem.write(fullPath, content)
+    local fullPath = _append(configPath, name .. ".json")
+    local df = io.open(fullPath, "w+")
+    df:write(Json.encode(conf))
+    df:flush()
+    df:close()
   end,
 
   --- Checks if a configuration exists
   -- @param name The name of the configuration.
   -- @return True if configuration exists, false otherwise.
   existConfiguration = function(name)
-    local fullPath = configPath .. "/" .. name .. ".json"
-    return love.filesystem.getInfo(fullPath) ~= nil
+    local fullPath = _append(configPath, name .. ".json")
+    return lfs.attributes(fullPath) ~= nil
   end
 }
 
+-- Adds a configuration loader
+Resources.addLoader("conf", function(name)
+  local fullPath = _append(configPath, name .. ".json")
+  local df = io.open(fullPath, "r+")
+  local content = df:read("a")
+  df:close()
+  return Json.decode(content)
+end)
+
 -- Add a image loader
 Resources.addLoader("image", function(name)
-  local fullPath = imagePath .. "/" .. name .. ".png"
+  local fullPath = _append(imagePath, name .. ".png")
   return love.graphics.newImage(fullPath)
 end)
 

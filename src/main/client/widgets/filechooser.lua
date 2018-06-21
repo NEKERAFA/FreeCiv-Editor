@@ -70,7 +70,7 @@ function FileChooser:_updateFiles ()
   self._items = {}
 
   for name in lfs.dir(self._path) do
-    if name ~= "." and name ~= ".." then
+    if not string.match(name, "^%..*") then
       fullpath = FileChooser._append(self._path, name)
       file = Lfs.attributes(fullpath)
       file.name = name
@@ -112,7 +112,6 @@ function FileChooser:_openFolder (file)
         render = love.graphics.newText(systemFont, file.name)
       }
 
-  print(self._folders.width + folder.render:getWidth() + 30)
   if self._folders.width + folder.render:getWidth() + 30 >= 400 then
     local max = self._folders.width + folder.render:getWidth()
     local i = 1
@@ -132,7 +131,7 @@ end
 FileChooser.fileIcon = Resources.loadResource("image", "icons/file")
 FileChooser.folderIcon = Resources.loadResource("image", "icons/folder")
 
-function FileChooser.drawButton(text, opt, x, y, w, h)
+function FileChooser._drawButton(text, opt, x, y, w, h)
 	local c = Suit.theme.getColorForState(opt)
   local hfont = opt.font:getHeight()
   local icon
@@ -155,6 +154,8 @@ end
 -------------------------------------------------------------------------------
 
 function FileChooser:new (mode, ...)
+  assert(mode == "open" or mode == "save", "bad argument #1 (mode must be 'open' or 'save' literal)")
+
   local obj = setmetatable({}, self)
   local args = {...}
 
@@ -168,11 +169,6 @@ function FileChooser:new (mode, ...)
   end
 
   obj._gui = Suit.new()
-  obj._gui.theme.color = {
-      normal  = {bg = {.25, .25, .25}, fg = {.75, .75, .75}},
-      hovered = {bg = {.20, .6 , .73}, fg = {1,   1,   1}},
-      active  = {bg = {1  , .6, 0},    fg = {1,   1,   1}}
-  }
   obj._path = love.filesystem.getUserDirectory()
   obj._folders = obj:_getFolders()
   obj._mode = mode or "open"
@@ -193,8 +189,9 @@ end
 
 function FileChooser:isMouseFocused ()
   local width, height = love.window.getMode()
+  local posX, posY = love.mouse.getPosition()
   local x, y = width/2-250, height/2-175
-  return Suit.mouseInRect(x, y, 500, 350)
+  return posX >= x and posX <= x + width and posY >= y and posY <= y + height
 end
 
 function FileChooser:textInput (t)
@@ -211,7 +208,7 @@ end
 
 function FileChooser:wheelMoved (x, y, button)
   if self._numItems > 11 then
-    local gap = (270 - self._scroll.height)/(self._numItems-11)
+    local gap = (270-self._scroll.height)/(self._numItems-12)
     local max_y = 270-self._scroll.height
 
     self._topItem = math.min(math.max(1, self._topItem-y), self._numItems-11)
@@ -241,7 +238,7 @@ function FileChooser:update (dt)
         local options = {
           dir = self._items[i].mode == "directory",
           align = "left",
-          draw = FileChooser.drawButton,
+          draw = FileChooser._drawButton,
           color = {
             normal  = {bg = {0, 0, 0, 0},   fg = {1, 1, 1}},
             hovered = {bg = {1, 1, 1, .25}, fg = {1, 1, 1}},
@@ -252,14 +249,19 @@ function FileChooser:update (dt)
           if self._items[i].mode == "directory" then
             self:_openFolder(self._items[i])
             return
-          elseif self._onSuccess then
-            self._onSuccess(FileChooser.append(self._path, self._items[i].name))
-            self._closed = true
+          else
+            if self._mode == "open" then
+              if self._onSuccess then
+                self._onSuccess(FileChooser._append(self._path, self._items[i].name))
+              end
+              self._closed = true
+            end
           end
         end
+
       end
     else
-      self._gui:Label("The folder is empty", self._gui.layout:row(470, 20))
+      self._gui:Label("The folder is empty", self._gui.layout:row(480, 20))
     end
 
     local red = {
@@ -293,7 +295,9 @@ function FileChooser:update (dt)
       self._filename.id = self._gui:Input(self._filename, white, self._gui.layout:col(380, 24)).id
 
       if self._gui:Button("Save", green, self._gui.layout:col(50, 24)).hit then
-        if self._onSuccess then self._onSuccess(self._path) end
+        if self._onSuccess then
+          self._onSuccess(FileChooser._append(self._path, self._filename.text))
+        end
         self._closed = true
       end
     end

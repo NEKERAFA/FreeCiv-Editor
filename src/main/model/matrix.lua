@@ -111,7 +111,7 @@ local Matrix = Class {
   __tostring = function(self)
     str = "{"
     for i = 1, self.rows do
-      str = str .. "{"
+      str = str .. " {"
       for j = 1, self.cols do
         str = str .. tostring(self._data[i][j])
         if j < self.cols then
@@ -121,6 +121,8 @@ local Matrix = Class {
       str = str .. "}"
       if i < self.rows then
         str = str .. ", "
+      else
+        str = str .. " "
       end
     end
 

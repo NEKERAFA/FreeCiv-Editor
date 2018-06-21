@@ -11,42 +11,63 @@ MenuBar._build = Resources.loadResource("image", "icons/wrench")
 
 --------------------------------------------------------------------------------
 
-function MenuBar:new ()
+function MenuBar:new (fileopened)
   local obj = setmetatable({}, self)
   obj._gui = Suit.new()
+  obj._gui.theme = setmetatable({}, {__index = Suit.theme})
+  obj._gui.theme.Button = MenuBar.drawButton
+  obj.openfile = fileopened
+
   return obj
 end
 
 function MenuBar.drawButton (text, opt, x, y, w, h)
-  local c = Suit.theme.getColorForState(opt)
-	Suit.theme.drawBox(x, y, w, h, c, opt.cornerRadius)
+  local c
+  if opt.state == "normal" then
+    c = {bg = {0, 0, 0, 0}}
+  elseif opt.state == "hovered" then
+    c = {bg = {.8, .8, .8}}
+  else
+    c = Suit.theme.color.active
+  end
+
+  Suit.theme.drawBox(x, y, w, h, c, opt.cornerRadius)
+  love.graphics.setColor(.2, .2, .2)
   love.graphics.draw(opt.icon, x+w/2, y+h/2, 0, 1, 1, opt.icon:getWidth()/2, opt.icon:getHeight()/2)
 end
 
-function MenuBar:update (dt)
-  option = 0
+function MenuBar:update (dt, isHover)
+  local option = 0
+  local status
 
   self._gui.layout:reset(5, 5)
   self._gui.layout:padding(5, 5)
 
-  if self._gui:Button("File", {icon = MenuBar._add, draw = MenuBar.drawButton}, self._gui.layout:col(30, 30)).hit then
+  status = self._gui:Button("File", {icon = MenuBar._add, draw = MenuBar.drawButton}, self._gui.layout:col(30, 30))
+  if status.hit and not isHover then
     option = 1
   end
 
-  if self._gui:Button("Open", {icon = MenuBar._open, draw = MenuBar.drawButton}, self._gui.layout:col(30, 30)).hit then
-    if option == 0 then option = 2 end
+  status = self._gui:Button("Open", {icon = MenuBar._open, draw = MenuBar.drawButton}, self._gui.layout:col(30, 30))
+  if status.hit and not isHover then
+    option = 2
   end
 
-  if self._gui:Button("Save", {icon = MenuBar._save, draw = MenuBar.drawButton}, self._gui.layout:col(30, 30)).hit then
-    if option == 0 then option = 3 end
-  end
+  if self.openfile then
+    status = self._gui:Button("Save", {icon = MenuBar._save, draw = MenuBar.drawButton}, self._gui.layout:col(30, 30))
+    if status.hit and not isHover then
+      option = 3
+    end
 
-  if self._gui:Button("Export", {icon = MenuBar._export, draw = MenuBar.drawButton}, self._gui.layout:col(30, 30)).hot then
-    if option == 0 then option = 4 end
-  end
+    status = self._gui:Button("Export", {icon = MenuBar._export, draw = MenuBar.drawButton}, self._gui.layout:col(30, 30))
+    if status.hit and not isHover then
+      option = 4
+    end
 
-  if self._gui:Button("Build", {icon = MenuBar._build, draw = MenuBar.drawButton}, self._gui.layout:col(30, 30)).hit then
-    if option == 0 then option = 5 end
+    status = self._gui:Button("Build", {icon = MenuBar._build, draw = MenuBar.drawButton}, self._gui.layout:col(30, 30))
+    if status.hit and not isHover then
+      option = 5
+    end
   end
 
   return option
