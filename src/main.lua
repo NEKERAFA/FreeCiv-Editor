@@ -3,10 +3,14 @@
 
 local Json = require "libs.json.json"
 local Gamestate = require "libs.hump.gamestate"
+
 local Editor = require "main.client.editor"
+
 local Menubar = require "main.client.widgets.menubar"
 local FileChooser = require "main.client.widgets.filechooser"
 local Newmap = require "main.client.widgets.newmap"
+local WaitMessage = require "main.client.widgets.waitmessage"
+
 local Resources = require "main.utilities.resources"
 
 -- Variables of the UI
@@ -56,7 +60,7 @@ local function savemap(path)
 end
 
 local function openmap(path)
-  local map_file = Resources.loadResource("map", path)
+  local map_file = Resources.loadResource("json", path)
   map_conf.regions = map_file.regions
   map_conf.q_rows = map_file.q_rows
   map_conf.q_cols = map_file.q_cols
@@ -67,6 +71,32 @@ local function openmap(path)
   Resources.saveConfiguration("editor", {lastOpened = path})
   reset()
   closepop()
+end
+
+local function loadclingoresult()
+  local path = Resources.appendFiles("resources", "result.json")
+  local map = Resources.loadResource("json", path)
+  map_editor:setMap(map)
+  Resources.removeResource("json", path)
+  closepop()
+end
+
+local function generatemap()
+  local thread = love.thread.newThread(Resources.appendFiles("main", "client", "clingo_thread.lua"))
+  local to = love.thread.getChannel("toClingo")
+  local from = love.thread.getChannel("fromThread")
+  to:push(map_conf.regions)
+  to:push(map_conf.q_rows)
+  to:push(map_conf.q_cols)
+  to:push(map_conf.c_rows)
+  to:push(map_conf.c_cols)
+  thread:start()
+
+  local value = from:demand()
+  if value == "ok" then
+    to:release()
+    dialog_editor = WaitMessage(from, loadclingoresult)
+  end
 end
 
 -- Loads and sets elements
@@ -101,6 +131,8 @@ function love.update(dt)
     dialog_editor = FileChooser("open", openmap, closepop)
   elseif option == 3 then
     dialog_editor = FileChooser("save", "new map", savemap, closepop)
+  elseif option == 5 then
+    generatemap()
   end
 end
 

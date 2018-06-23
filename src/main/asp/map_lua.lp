@@ -63,60 +63,30 @@ function main(prog)
     -- Le digo que al resolver quiero iterar los modelos
     local handle = prog1:solve({yield=true})
 
-    -- Itero los modelos imprimiendo el resultado
+    -- Itero los modelos realizando una captura de los átomos "cell"
     for m in handle:iter() do
       print(m)
+      for pos, contain in string.gmatch(tostring(m), "cell%((%d+),(%l+)%)") do
+        pos = tonumber(pos)
+        assert(mat:getPos(pos) == Constants.CellType.WATER_CELL, "duplicate cell (position " .. pos ..", got " .. contain .. ", set " .. mat:getPos(pos) .. ")")
+
+        if contain == "l" then
+          mat:setPos(pos, Constants.CellType.LAND_CELL)
+        end
+      end
     end
 
     -- Cierro la solución
     handle:close()
   end
+
+  -- Serializo la matriz
+  serialize = Json.encode(mat:getTable())
+  -- Escribo la matriz
+  tmp = io.open("resources/result.json", "w+")
+  tmp:write(serialize)
+  tmp:flush()
+  tmp:close()
 end
 
 #end.
-
-% -- Carga los programas lógicos
-% prog:load("main/asp/regions.lp")
-% prog:load("main/asp/quadrants.lp")
-%
-% -- Obtiene el ancho y el alto de los cuadrantes
-% q_rows = prog:get_const("q_rows").number
-% q_cols = prog:get_const("q_cols").number
-% -- Obtiene el ancho y el alto de las celdas
-% c_rows = prog:get_const("c_rows").number
-% c_cols = prog:get_const("c_cols").number
-% -- Obtiene el número de regiones
-% regions = prog:get_const("regions").number
-%
-% -- Inicializa una matriz
-% mat = Matrix(q_rows*c_rows, q_cols*c_cols, Constants.MatrixType.STRING, Constants.CellType.WATER_CELL)
-%
-% -- Recorremos las regiones
-% for i = 0, regions do
-%   io.write("____ Iteration " .. tostring(i) .. " ____\n")
-%   local parts = {}
-%
-%   if i > 0 then
-%     table.insert(parts, {"generate", {i}})
-%     prog:cleanup()
-%   else
-%     table.insert(parts, {"base", {}})
-%   end
-%
-%   -- Hace ground de la generación de regiones
-%   prog:ground(parts)
-%   -- Obtiene una solución para el programa lógico
-%   local solve = prog:solve({yield=true})
-%   -- Parsea la solución
-%   Parser.parseCells(solve, mat)
-%   -- Cierra la solución
-%   solve:close()
-% end
-%
-% -- Serializamos la matriz
-% serialize = Json.encode(mat:getTable())
-% -- Escribimos la matriz
-% tmp = io.open("resources/map.json", "w+")
-% tmp:write(serialize)
-% tmp:flush()
-% tmp:close()

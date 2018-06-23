@@ -28,8 +28,8 @@ max_quadrants(q_rows*q_cols).
 % A cell is reached if is the rootcell of the island or if the cell
 % can reach the rootcell
 q_reached(C, I) :- q_root(C, I).
-{q_reached(C, I)} :- q_reached(D, I), region(I), not existsanother(I, J, C), region(J), q_adj(D, C).
-existsanother(J, I, C) :- q_reached(C, J), region(I), J!=I.
+{q_reached(C, I)} :- q_reached(D, I), region(I), not existsanother(I, C), q_adj(D, C).
+existsanother(I, C) :- q_reached(C, J), region(J), region(I), J!=I.
 
 % Definition of array adjacent cell
 q_adj(C, C-1) :- q_pos(C), C \ q_cols > 0.
