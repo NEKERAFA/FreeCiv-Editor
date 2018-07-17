@@ -29,10 +29,17 @@ function main(prog)
   -- Variable para guardar los atomos de la solución
   local atoms = ""
 
+  -- Inicializa una matriz
+  quadrants = Matrix(q_rows, q_cols)
+
   -- Recorre los modelos de la solución
   for model in handle:iter() do
     -- Convierto el modelo a string
     atoms = string.gsub(tostring(model), "%s", ". ")
+    for pos, quadrant in string.gmatch(atoms, "quadrant%((%d+),(%d+)%)") do
+      pos, quadrant = tonumber(pos), tonumber(quadrant)
+      quadrants:setPos(pos, quadrant)
+    end
   end
 
   -- Cierro la solución
@@ -45,7 +52,7 @@ function main(prog)
     tostring(c_cols) .. ")."
 
   -- Inicializa una matriz
-  mat = Matrix(q_rows*c_rows, q_cols*c_cols, Constants.MatrixType.STRING, Constants.CellType.WATER_CELL)
+  cells = Matrix(q_rows*c_rows, q_cols*c_cols, Constants.MatrixType.STRING, Constants.CellType.WATER_CELL)
 
   -- Genero las regiones
   for i = 1, regions do
@@ -63,17 +70,29 @@ function main(prog)
     -- Le digo que al resolver quiero iterar los modelos
     local handle = prog1:solve({yield=true})
 
+    -- Guardo las celdas creadas de tierras
+    local lands = ""
+
     -- Itero los modelos realizando una captura de los átomos "cell"
     for m in handle:iter() do
-      print(m)
-      for pos, contain in string.gmatch(tostring(m), "cell%((%d+),(%l+)%)") do
+      model = tostring(m)
+      print(model)
+      for pos, contain in string.gmatch(model, "cell%((%d+),(%l+)%)") do
         pos = tonumber(pos)
-        assert(mat:getPos(pos) == Constants.CellType.WATER_CELL, "duplicate cell (position " .. pos ..", got " .. contain .. ", set " .. mat:getPos(pos) .. ")")
+        assert(cells:getPos(pos) == Constants.CellType.WATER_CELL,
+          "duplicate cell (position " .. pos ..", got " .. contain .. ", set " .. cells:getPos(pos) .. ")")
 
         if contain == "l" then
-          mat:setPos(pos, Constants.CellType.LAND_CELL)
+          cells:setPos(pos, Constants.CellType.LAND_CELL)
+
+          local row = math.floor(pos / (q_cols*c_cols)) + 1
+          local col = (pos % (q_cols*c_cols)) + 1
+
+          lands = lands .. "land(" .. row .. ", " .. col .. "). "
         end
       end
+
+      --atoms = atoms .. lands
     end
 
     -- Cierro la solución
@@ -81,7 +100,11 @@ function main(prog)
   end
 
   -- Serializo la matriz
-  serialize = Json.encode(mat:getTable())
+  local result = {
+    regions = quadrants:getTable(),
+    cells = cells:getTable()
+  }
+  serialize = Json.encode(result)
   -- Escribo la matriz
   tmp = io.open("resources/result.json", "w+")
   tmp:write(serialize)

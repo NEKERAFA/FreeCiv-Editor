@@ -82,8 +82,8 @@ local Matrix = Class {
   getPos = function(self, position)
     Validator.isPositiveInteger(position, 1, self.rows*self.cols)
 
-    row = math.floor(position / self.cols) + 1
-    col = (position % self.cols) + 1
+    local row = math.floor(position / self.cols) + 1
+    local col = (position % self.cols) + 1
 
     return self._data[row][col]
   end,
@@ -96,8 +96,8 @@ local Matrix = Class {
     Validator.isPositiveInteger(position, 1, self.rows*self.cols)
     Validator.isMatrixCellValue(value, self.type, 3)
 
-    row = math.floor(position / self.cols) + 1
-    col = (position % self.cols) + 1
+    local row = math.floor(position / self.cols) + 1
+    local col = (position % self.cols) + 1
 
     self._data[row][col] = value
   end,
@@ -111,7 +111,7 @@ local Matrix = Class {
   __tostring = function(self)
     str = "{"
     for i = 1, self.rows do
-      str = str .. " {"
+      str = str .. "{"
       for j = 1, self.cols do
         str = str .. tostring(self._data[i][j])
         if j < self.cols then
@@ -121,8 +121,6 @@ local Matrix = Class {
       str = str .. "}"
       if i < self.rows then
         str = str .. ", "
-      else
-        str = str .. " "
       end
     end
 

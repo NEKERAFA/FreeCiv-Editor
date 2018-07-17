@@ -4,8 +4,8 @@
 -- This table defines all common constants.
 local Constants = {
   CellType = {
-    WATER_CELL = "water",
-    LAND_CELL = "land",
+    WATER_CELL = "ocean",
+    LAND_CELL = "plains",
     VOID_CELL = "void"
   },
 

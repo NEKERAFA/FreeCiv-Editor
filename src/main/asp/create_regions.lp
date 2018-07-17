@@ -38,8 +38,8 @@ q_adj(C, C+q_cols) :- q_pos(C), C < q_cols*(q_rows-1).
 q_adj(C, C-q_cols) :- q_pos(C), C >= q_cols.
 
 % Preference in the size of regions
-n_quadrants(Z) :- #count{C, I: q_reached(C,I)}=Z.
-:~ n_quadrants(Z), max_quadrants(MAX), Z!=MAX. [1]
+n_quadrants(Z) :- #count{C, I: q_reached(C,I)} = Z.
+:- n_quadrants(Z), max_quadrants(MAX), Z!=MAX.
 
 % Translate quadrant reached in a quadrant
 quadrant(C, I) :- q_reached(C, I).

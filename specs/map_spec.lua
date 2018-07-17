@@ -19,9 +19,9 @@ describe("Map model tests.", function()
   end)
 
   it("Creates new map", function()
-    local expected = {{Constants.CellType.WATER_CELL, Constants.CellType.WATER_CELL, Constants.CellType.WATER_CELL},
-                      {Constants.CellType.WATER_CELL, Constants.CellType.WATER_CELL, Constants.CellType.WATER_CELL},
-                      {Constants.CellType.WATER_CELL, Constants.CellType.WATER_CELL, Constants.CellType.WATER_CELL}}
+    local expected = {{Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL},
+                      {Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL},
+                      {Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL}}
 
     local instance = Map(3, 3)
     assert.are.same(instance:getMap(), expected)
@@ -47,13 +47,13 @@ describe("Map model tests.", function()
 
   it("Checks if changeCell works", function()
     local instance = Map(3, 3)
+    assert.are.equals(instance:getCell(2, 2), Constants.CellType.VOID_CELL)
+    instance:changeCell(2, 2)
     assert.are.equals(instance:getCell(2, 2), Constants.CellType.WATER_CELL)
     instance:changeCell(2, 2)
     assert.are.equals(instance:getCell(2, 2), Constants.CellType.LAND_CELL)
     instance:changeCell(2, 2)
     assert.are.equals(instance:getCell(2, 2), Constants.CellType.VOID_CELL)
-    instance:changeCell(2, 2)
-    assert.are.equals(instance:getCell(2, 2), Constants.CellType.WATER_CELL)
   end)
 
   it("Checks invalid type setCell", function()

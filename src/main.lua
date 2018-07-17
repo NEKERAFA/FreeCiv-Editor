@@ -5,13 +5,13 @@ local Json = require "libs.json.json"
 local Gamestate = require "libs.hump.gamestate"
 
 local Editor = require "main.client.editor"
-
 local Menubar = require "main.client.widgets.menubar"
 local FileChooser = require "main.client.widgets.filechooser"
 local Newmap = require "main.client.widgets.newmap"
 local WaitMessage = require "main.client.widgets.waitmessage"
 
 local Resources = require "main.utilities.resources"
+local Exporter = require "main.utilities.exporter"
 
 -- Variables of the UI
 local map_editor,bar_editor,dialog_editor
@@ -33,29 +33,10 @@ local function newmap(r, q_r, q_c, c_r, c_c)
   map_conf.q_rows, map_conf.q_cols = q_r, q_c
   map_conf.c_rows, map_conf.c_cols = c_r, c_c
   map_editor:newMap(q_r*c_r, q_c*c_c)
+  map_editor._regions = nil
   bar_editor.openfile = true
   dialog_editor = nil
   reset()
-  closepop()
-end
-
-local function savemap(path)
-  local map = {
-    regions = map_conf.regions,
-    q_rows = map_conf.q_rows,
-    q_cols = map_conf.q_cols,
-    c_rows = map_conf.c_rows,
-    c_cols = map_conf.c_cols,
-    map = map_editor._map:getMap()
-  }
-
-  local fullpath = path .. ".json"
-
-  df = io.open(fullpath, "w+")
-  df:write(Json.encode(map))
-  df:flush()
-  df:close()
-  Resources.saveConfiguration("editor", {lastOpened = fullpath})
   closepop()
 end
 
@@ -73,10 +54,41 @@ local function openmap(path)
   closepop()
 end
 
+local function savemap(path, name)
+  local map = {
+    regions = map_conf.regions,
+    q_rows = map_conf.q_rows,
+    q_cols = map_conf.q_cols,
+    c_rows = map_conf.c_rows,
+    c_cols = map_conf.c_cols,
+    map = map_editor._map:getMap()
+  }
+
+  local fullpath = Resources.appendFiles(path, name) .. ".json"
+
+  df = io.open(fullpath, "w+")
+  df:write(Json.encode(map))
+  df:flush()
+  df:close()
+  Resources.saveConfiguration("editor", {lastOpened = fullpath})
+  closepop()
+end
+
+local function exportmap(path, name)
+  local rows = map_editor._map.rows
+  local columns = map_editor._map.cols
+  local terrain = map_editor._map:getMap()
+  local startpos = {}
+  local file = Resources.appendFiles(path, name) .. ".txt"
+  Exporter.export(file, name, rows, columns, terrain, startpos)
+  closepop()
+end
+
 local function loadclingoresult()
   local path = Resources.appendFiles("resources", "result.json")
   local map = Resources.loadResource("json", path)
-  map_editor:setMap(map)
+  map_editor:setMap(map.cells)
+  map_editor:setRegions(map.regions, map_conf.c_rows, map_conf.c_cols)
   Resources.removeResource("json", path)
   closepop()
 end
@@ -131,6 +143,8 @@ function love.update(dt)
     dialog_editor = FileChooser("open", openmap, closepop)
   elseif option == 3 then
     dialog_editor = FileChooser("save", "new map", savemap, closepop)
+  elseif option == 4 then
+    dialog_editor = FileChooser("save", "exported", exportmap, closepop)
   elseif option == 5 then
     generatemap()
   end

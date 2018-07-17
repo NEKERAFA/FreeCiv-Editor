@@ -53,6 +53,7 @@ local Editor = Class {
     self:_setQuads(self._tile_image:getWidth(), self._tile_image:getHeight())
 
     self._map = nil
+    self._regions = nil
     self._current_tile = nil
     self._pressed = nil
   end,
@@ -93,6 +94,12 @@ local Editor = Class {
 
     -- Sets all the tilemaps in the spritesbatches
     self:_updateTilemap()
+  end,
+
+  setRegions = function(self, regions, c_rows, c_cols)
+    self._regions = Map(regions)
+    self._regions.width = c_rows
+    self._regions.height = c_cols
   end,
 
   -- This function sets the quads for create the tilemap
@@ -589,6 +596,26 @@ local Editor = Class {
       love.graphics.setColor(0.5, 0.5, 0.5)
       love.graphics.rectangle("line", x, y, width, height)
       love.graphics.setColor(1, 1, 1)
+
+      if self._regions ~= nil then
+        for i = 1, self._regions.rows do
+          for j = 1, self._regions.cols do
+            local width = self._quads_info.size*self._regions.width
+            local height = self._quads_info.size*self._regions.height
+            local x = (i-1)*width + self.offset.x + self.pos.x
+            local y = (j-1)*height + self.offset.y + self.pos.y
+            local region = self._regions:getCell(i, j)
+            local font = love.graphics.getFont()
+            local text = love.graphics.newText(font, region)
+            local xtext = x+width/2-text:getWidth()/2
+            local ytext = y+height/2-text:getHeight()/2
+            love.graphics.setColor(0, 0, 0)
+            love.graphics.rectangle("line", x, y, width, height)
+            love.graphics.setColor(255, 255, 255)
+            love.graphics.draw(text, xtext, ytext, 0, 2, 2)
+          end
+        end
+      end
 
       -- If the mouse is in a tile, remarks this tile
       if self._current_tile then

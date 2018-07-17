@@ -296,7 +296,7 @@ function FileChooser:update (dt)
 
       if self._gui:Button("Save", green, self._gui.layout:col(50, 24)).hit then
         if self._onSuccess then
-          self._onSuccess(FileChooser._append(self._path, self._filename.text))
+          self._onSuccess(self._path, self._filename.text)
         end
         self._closed = true
       end
