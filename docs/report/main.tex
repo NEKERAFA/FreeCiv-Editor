@@ -1,0 +1,118 @@
+\documentclass[12pt, a4paper, titlepage, twoside, openright]{report}
+
+% ---- Packages ----
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage[dvips]{graphicx}
+\usepackage{epsfig}
+\usepackage{eurosym}
+\usepackage{geometry}
+\usepackage{graphics}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{pdfpages}
+\usepackage{geometry}
+\usepackage[hidelinks,pdftex,
+		pdfauthor={Rafael Alcalde Azpiazu},
+		pdftitle={Generación de Escenarios de un Videojuego 2D mediante Programación Lógica},
+		pdfsubject={Trabajo de Fin de Grado},
+		pdfkeywords={},
+		pdfproducer={LaTeX},
+		pdfcreator={pdflatex}]{hyperref}
+
+% ---- Configuration ----
+
+\selectlanguage{spanish}
+\pagestyle{headings}
+\geometry{a4paper, top=3cm, bottom=3cm, left=3cm, right=3.5cm}
+
+% ---- Variables ----
+
+\def \subject   {Trabajo fin de grado \\ Grado en Ingeniería Informática}
+\def \mention   {Mención en Computación}
+\def \title     {Generación de Escenarios de un Videojuego 2D mediante Programación Lógica}
+\def \authors   {Rafael Alcalde Azpiazu}
+\def \directors {José Pedro Cabalar Fernández}
+\def \keywords  {Keyword one, keyword two, etc.}
+\def \abstractContent {Abstract}
+
+% ---- Document ----
+
+\begin{document}
+	% ---- Title ----
+	\input{tex/titlepage}
+	\cleardoublepage
+	
+	% ---- Information ----
+	%\input{tex/info}
+	\cleardoublepage
+	
+	% ---- Certified ----
+	%\input{tex/certify}
+	\cleardoublepage
+	
+	% ---- Dedication ----
+	%\input{tex/dedication}
+	\cleardoublepage
+	
+	% ---- Sumary ----
+	%\input{tex/sumary}
+	\cleardoublepage
+	
+	% ---- Keywords ----
+	%\input{tex/keywords}
+	\cleardoublepage
+	
+	% ---- TOC ----
+	\pagenumbering{roman}
+	\tableofcontents
+	\cleardoublepage
+	
+	% ------- Content -------
+	\pagenumbering{arabic}
+	\chapter{Introducción}
+	\label{introduction}
+	%\input{tex/introduction}
+	\cleardoublepage
+	
+	\chapter{Contexto}
+	\label{background}
+	\input{tex/background}
+	\cleardoublepage
+
+	\chapter{Trabajo desarrollado}
+	\label{mainwork}
+	%\input{tex/mainwork}
+	\cleardoublepage
+	
+	\chapter{Evaluación}
+	\label{evaluation}
+	%\input{tex/evaluation}
+	\cleardoublepage
+	
+	\chapter{Conclusiones}
+	\label{conclusions}
+	%\input{tex/conclusions}
+	\cleardoublepage
+	
+	\listoftables
+	\cleardoublepage
+	
+	\listoffigures
+	\cleardoublepage
+	
+	% ------- Appendices -------
+	\appendix
+	\addcontentsline{toc}{chapter}{Apéndices}
+	\label{appendices}
+	
+	\chapter{Glosario}
+	%\input{text/glosary}
+	\cleardoublepage
+	\cleardoublepage
+	
+	% ------- Biliography -------
+	\bibliographystyle{ieeetran}
+	%\bibliography{bib/references.bib}
+\end{document}
