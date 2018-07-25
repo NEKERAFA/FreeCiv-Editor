@@ -9,10 +9,12 @@
 \usepackage{eurosym}
 \usepackage{geometry}
 \usepackage{graphics}
+\usepackage{svg}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{pdfpages}
 \usepackage{geometry}
+\usepackage{fancyhdr}
 \usepackage[hidelinks,pdftex,
 		pdfauthor={Rafael Alcalde Azpiazu},
 		pdftitle={Generación de Escenarios de un Videojuego 2D mediante Programación Lógica},
@@ -24,8 +26,13 @@
 % ---- Configuration ----
 
 \selectlanguage{spanish}
-\pagestyle{headings}
-\geometry{a4paper, top=3cm, bottom=3cm, left=3cm, right=3.5cm}
+\geometry{a4paper, top=3cm, bottom=3cm, left=3.5cm, right=3.5cm}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[LE,RO]{\rightmark}
+\fancyfoot[RE,LO]{\thepage}
 
 % ---- Variables ----
 
@@ -41,10 +48,12 @@
 
 \begin{document}
 	% ---- Title ----
+	\pagenumbering{gobble}
 	\input{tex/titlepage}
 	\cleardoublepage
 	
 	% ---- Information ----
+	\pagenumbering{roman}
 	%\input{tex/info}
 	\cleardoublepage
 	
@@ -56,21 +65,25 @@
 	%\input{tex/dedication}
 	\cleardoublepage
 	
+	% ---- Gratitudes ----
+	%\input{tex/gratitudes}
+	\cleardoublepage
+	
 	% ---- Sumary ----
-	%\input{tex/sumary}
+	\input{tex/sumary}
 	\cleardoublepage
 	
 	% ---- Keywords ----
-	%\input{tex/keywords}
+	\input{tex/keywords}
 	\cleardoublepage
 	
 	% ---- TOC ----
-	\pagenumbering{roman}
 	\tableofcontents
 	\cleardoublepage
 	
 	% ------- Content -------
 	\pagenumbering{arabic}
+	\pagestyle{fancy}
 	\chapter{Introducción}
 	\label{introduction}
 	%\input{tex/introduction}
@@ -107,12 +120,7 @@
 	\addcontentsline{toc}{chapter}{Apéndices}
 	\label{appendices}
 	
-	\chapter{Glosario}
-	%\input{text/glosary}
-	\cleardoublepage
-	\cleardoublepage
-	
 	% ------- Biliography -------
-	\bibliographystyle{ieeetran}
-	%\bibliography{bib/references.bib}
+	\bibliographystyle{IEEEtran}
+	\bibliography{bib/references}
 \end{document}
