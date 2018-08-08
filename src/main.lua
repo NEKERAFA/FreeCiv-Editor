@@ -90,6 +90,7 @@ local function loadclingoresult()
   map_editor:setMap(map.cells)
   map_editor:setRegions(map.regions, map_conf.c_rows, map_conf.c_cols)
   Resources.removeResource("json", path)
+  os.remove(path)
   closepop()
 end
 

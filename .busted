@@ -2,7 +2,6 @@ return {
   _all = {
     verbose = true,
     shuffle = true,
-    coverage = true,
-    ROOT = {"specs"}
+    coverage = true
   }
 }

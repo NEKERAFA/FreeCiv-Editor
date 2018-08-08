@@ -1,0 +1,68 @@
+\documentclass{beamer}
+
+% ---- Packages ----
+
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage{epsfig}
+\usepackage{graphics}
+\usepackage{tabularx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{xcolor}
+
+% ---- Configuration ----
+
+\usetheme{Madrid}
+\useinnertheme{circles}
+
+\definecolor{UDCpink}{RGB}{177,0,114}
+\definecolor{UDCgray}{RGB}{100,100,100}
+
+\setbeamercolor{palette primary}{bg=UDCpink,fg=white}
+\setbeamercolor{palette secondary}{bg=UDCpink,fg=white}
+\setbeamercolor{palette tertiary}{bg=UDCpink,fg=white}
+\setbeamercolor{palette quaternary}{bg=UDCpink,fg=white}
+\setbeamercolor{structure}{fg=UDCpink} % itemize, enumerate, etc
+\setbeamercolor{section in toc}{fg=UDCpink} % TOC sections
+
+% Override palette coloring with secondary
+\setbeamercolor{subsection in head/foot}{bg=UDCgray,fg=white}
+
+% ---- Document ----
+
+\title[CLPSM - Workshop 2018]{Scenario Generation for a 2D Videogame using Logic Programming}
+\date{A Coruña, \today}
+\author[Rafael Alcalde Azpiazu]{Rafael Alcalde Azpiazu \newline \newline Adviser: Pedro Cabalar Fernández}
+\institute[UDC]{\includegraphics[height=2em]{images/logo.png} \newline \textcolor{UDCgray}{FACULTADE DE INFORMÁTICA \\ \textit{Department of Computer Science}} \newline \newline Final degree project}
+
+\begin{document}
+	
+	\begin{frame}
+		\titlepage
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Table of Contents}
+		\tableofcontents
+	\end{frame}
+
+	\AtBeginSection[]
+	{
+	\begin{frame}
+		\frametitle{Table of Contents}
+		\tableofcontents[currentsection]
+	\end{frame}
+	}
+
+	\section{Motivation}
+	\input{tex/games}
+	
+	\section{Project}
+	\input{tex/project}
+
+	\begin{frame}
+		\titlepage
+	\end{frame}
+
+\end{document}

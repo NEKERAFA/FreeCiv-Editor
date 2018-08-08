@@ -17,18 +17,10 @@ xypos(P, X, Y) :- q_pos(P), q_row(X), q_col(Y), X = P \ Q_COLS, Y = P / Q_COLS,
     X < (R+1)*C_ROWS, c_col(Y), Y >= C*C_COLS, Y < (C+1)*C_COLS,
     c_dims(C_ROWS, C_COLS).
 
-  % Generates all the borders and positions in the region i
-  pos(p(X, Y)) :- quadrant(P, i), xypos(P, R, C), c_row(X), X >= R*C_ROWS-1,
-    X <= (R+1)*C_ROWS, c_col(Y), Y >= C*C_COLS-1, Y <= (C+1)*C_COLS,
-    c_dims(C_ROWS, C_COLS).
-
   % Definition of matrix adjacent cell
-  adj(p(X, Y), p(X, Y+1)) :- pos(p(X, Y)), pos(p(X, Y+1)).
-  adj(p(X, Y), p(X+1, Y)) :- pos(p(X, Y)), pos(p(X+1, Y)).
+  adj(p(X, Y), p(X, Y+1)) :- c_pos(p(X, Y)), c_pos(p(X, Y+1)).
+  adj(p(X, Y), p(X+1, Y)) :- c_pos(p(X, Y)), c_pos(p(X+1, Y)).
   adj(P, Q) :- adj(Q, P).
-
-  % Get de borders
-  border(P) :- pos(P), not c_pos(P), adj(P, Q), pos(Q), c_pos(Q), land(Q).
 
   % Number of cells in the region
   n_cells(Z) :- #count{P: c_pos(P)}=Z.
@@ -37,11 +29,10 @@ xypos(P, X, Y) :- q_pos(P), q_row(X), q_col(Y), X = P \ Q_COLS, Y = P / Q_COLS,
 
   % Generates a rootcell
   1 {rootcell(P) : c_pos(P)} 1.
-  :- rootcell(P), border(Q).
 
   % Gets the cells reached for create the island
   reached(P) :- rootcell(P).
-  {reached(P)} :- reached(Q), adj(Q, P), c_pos(P), not border(P).
+  {reached(P)} :- reached(Q), adj(Q, P).
 
   % Preference in the size of islands in relation to the size of the region
   cells_reached(Z) :- #count{P: reached(P)}=Z.

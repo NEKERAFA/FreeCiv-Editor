@@ -30,23 +30,21 @@ Debido al éxito de las entregas de Civilization y las diputas legales sobre el 
 
 \subsection{Proyecto Freeciv}\label{subsec:freeciv}
 
-Freeciv\footnote{http://www.freeciv.org}\footnote{https://github.com/freeciv} es un videojuego open source basado en la serie de Sid Meier's Civilization, sobre todo en Civilization II. Fue creado por tres estudiantes del departamento de computación de la universidad de Aarhus debido al bajo rendimiento de Openciv. Basándose en la arquitectura de X11, escribieron un sencillo cliente en donde se ejecutaría una prueba de concepto, la cual tuvo una enorme acogida y rápidamente se creó una comunidad open source, la cual pasó a gestionar el proyecto para continuar expandiendo el juego al incluir elementos online, mejoras en la interfaz gráfica, mejor rendimiento y nuevos elementos al juego.
+Freeciv\footnote{http://www.freeciv.org} \footnote{https://github.com/freeciv} es un videojuego de código abierto basado en la serie de Sid Meier's Civilization, sobre todo en Civilization II. Fue creado por tres estudiantes del departamento de computación de la universidad de Aarhus debido al bajo rendimiento de Openciv. Basándose en la arquitectura de X11, escribieron un sencillo cliente en donde se ejecutaría una prueba de concepto, la cual tuvo una enorme acogida y rápidamente se creó una comunidad, la cual pasó a gestionar el proyecto debido a que sus autores desecharon la idea de continuar. Debido a esto expandiendo el juego al incluir elementos online, mejoras en la interfaz gráfica, mejor rendimiento, traducción para 30 idiomas distintos (entre ellos el castellano) y nuevos elementos al juego. \\
 
-El juego está escrito en C y tiene compatibilidad con el estandar POSIX para ser lo más portable posible. Contiene un intérprete de Lua [ver seccion \ref{subsec:lua}] que permite cargar scripts para expandir el juego y desde el 2006 IANA asignó el puerto TCP/UDP 5556 a Freeciv \cite{iana_2006}.
+El juego está escrito en C y tiene compatibilidad con el estandar POSIX para ser lo más portable posible. Contiene un intérprete de Lua [ver seccion \ref{subsec:lua}] que permite cargar scripts con el que dar un componente dinámico a las partidas (lo usa sobre todo para tutoriales) y desde el 2006 IANA asignó el puerto TCP/UDP 5556 a Freeciv \cite{iana_2006}. \\
+
+Como el proyecto es de código abierto (tiene una licencia GPL \cite{gplv3}), cualquiera puede descargar el código fuente y modificarlo. Es por eso que se ha conseguido que el juego tenga diferentes tecnologías de interfaz gráfica, pasando por bibliotecas específicas como GTK\footnote{https://www.gtk.org} y Qt\footnote{https://www.qt.io}, bibliotecas gráficas generales como SDL\footnote{https://www.libsdl.org} o OpenGL\footnote{https://www.opengl.org}, e incluso bibliotecas del estándar web como WebGL\footnote{https://www.khronos.org/webgl}.
 
 \section{Tecnologías}
 
 Debido a las exigencias a la hora de desarrollar el proyecto, se ha optado por elegir un lenguaje de programación lógico sobre el que realizar la base declarativa del proyecto, ya que nos permitirá expresar las reglas de generación del mapa de forma matemática. También se ha escogido un segundo lenguaje multipropósito que nos servirá como soporte para crear un entorno gráfico con el que poder editar, guardar y cargar los mapas creados.
 
-\subsection{Answer Set Programming}
+\subsection{Answer Set Programming}\label{asp}
 
 \textit{Answer Set Programming} (ASP) es un paradigma enfocado a la resolución declarativa de problemas difíciles, combinando un lenguaje simple con el que modelar los problemas lógicos y herramientas de alto rendimiento para la resolución de estos. ASP está basado en modelos estables \cite{stablemodels}, que usa para definir la semántica declarativa en los programas lógicos, y lógica no monótono \cite{nonmonotonic}, que añade razonamiento por defecto. Con esto, ASP permite resolver problemas \textit{NP-hard} de forma uniforme. \\
 
-Mediante estos mecanismos, los problemas lógicos se reducen al cómputo de los modelos estables de un programa lógico dado, lo cual se hace mediante herramientas llamadas \textit{solvers}, que se encargan de utilizar diferentes técnicas para la expansión de lo que se llama Forma Normal Conjuntiva (FNC), que es una conjunción de clausulas:
-
-\begin{equation}
-	(p \lor v) \land (\lnot p \lor v) \land q
-\end{equation}
+Mediante estos mecanismos, los problemas lógicos se reducen al cómputo de los modelos estables de un programa lógico dado, lo cual se hace mediante herramientas llamadas \textit{solvers}, que se encargan de utilizar diferentes técnicas para la expansión de lo que se llama Forma Normal Conjuntiva (FNC), que es una conjunción de clausulas.
 
 Para ello, se necesita que los programas lógicos estén expresados con variables libres. Como la forma de expresar un programa lógico en ASP es mediante un lenguaje de alto nivel con ciudadanos de primer orden, muchas de las variables están ligadas. Es por eso que, antes de resolver el programa, se usa unas herramientas llamadas \textit{grounders}, que permiten transformar el programa a su equivalente con variables libres. \\
 
@@ -57,7 +55,9 @@ Para ello, se necesita que los programas lógicos estén expresados con variable
 	\caption{Ejemplo de ejecución de ASP}
 \end{figure}
 
-Unas de las herramientas más importantes de ASP son la de Potassco\footnote{http://potassco.org}, la cual son un conjunto de herramientas para ASP desarrolladas en la Universidad de Postdam. Contienen las herramientas fundamentales como un grounder llamado \textit{gringo}; un solver que es \textit{clasp}; y una herramienta que aguntina todo el sistema ASP, \textit{clingo}. Así mismo, añade más funcionalidades al lenguaje ASP, como puede ser al resolución iterativa, debido a que soporta otros lenguajes como Lua [ver sección \ref{subsec:lua}] o Python, que pueden interactuar con el programa escrito en ASP mediante la API de clingo.
+Unas de las herramientas más importantes de ASP son la de Potassco\footnote{http://potassco.org}, la cual son un conjunto de herramientas para ASP desarrolladas en la Universidad de Postdam. Contienen las herramientas fundamentales como un grounder llamado \textit{gringo}; un solver que es \textit{clasp}; y una herramienta que aguntina todo el sistema ASP, \textit{clingo}. Así mismo, añade más funcionalidades al lenguaje ASP, como puede ser al resolución iterativa, debido a que permite embeber otros lenguajes como Lua [ver sección \ref{subsec:lua}] o Python, que pueden interactuar con el programa escrito en ASP mediante la interfaz o \textit{API} de clingo. \\
+
+Estas herramientas serán claves a la hora de realizar este proyecto, ya que, como veremos más adelante, debido a la naturaleza de ASP, serán la base sobre la que se construirá todo el proyecto.
 
 \subsection{Lua}\label{subsec:lua}
 
@@ -67,14 +67,33 @@ Uno de los puntos fuertes de Lua es que permite construir nuevos tipos en base a
 
 A parte de esto, existen otras implementaciones y dialectos basados en Lua, como LuaJIT\footnote{http://luajit.org/luajit.html}, que es una implementación de la máquina virtual de Lua que compilar en tiempo de ejecución y no antes de ejecutarse; y MoonScript\footnote{https://moonscript.org}, un lenguaje de scripting basado en Python que extiende el lenguaje de Lua al añadir orientación a objetos basados en clases, una forma más eficiente de lenguaje funcional y nuevas estructuras y elementos que no contenía Lua. \\
 
-Exiten otras implementaciones que lo único en lo que se diferencian de la implementación estándar es que expanden las funciones básicas o implementan bibliotecas por defecto. A estas implementaciones se llaman \textit{Lua Players} o \textit{Lua Engines}, que principalmente son destinadas para la creación de videojuegos, ya que añaden la implementación de las bibliotecas gráficas para una plataforma concreta, como pueden ser SDL\footnote{https://www.libsdl.org} o OpenGL\footnote{https://www.opengl.org}. Los más destacados son los intérpretes para consolas de Sony y Nintendo, y los intérpretes para ordenador y móviles como Corona, Cocos-2D, Moai y LÖVE [ver sección \ref{subsec:love2d}]. \\
+Exiten otras implementaciones que lo único en lo que se diferencian de la implementación estándar es que expanden las funciones básicas o implementan bibliotecas por defecto. A estas implementaciones se llaman \textit{Lua Players} o \textit{Lua Engines}, que principalmente son destinadas para la creación de videojuegos, ya que añaden la implementación de las bibliotecas gráficas para una plataforma concreta, como pueden ser SDL o OpenGL. Los más destacados son los intérpretes no oficiales para consolas de Sony y Nintendo, y los intérpretes para ordenador y móviles como Corona, Cocos-2D, Moai y LÖVE [ver sección \ref{subsec:love2d}]. \\
+
+Como ya expliqué en el apartado anterior [sección \ref{asp}], las herramientas ASP que se usarán permiten usar este como un lenguaje embebido, lo que nos permitirá controlar la ejecución de la base. Así mismo, tomaremos el \textit{engine} LÖVE para crear una interfaz gráfica para que los usuarios puedan trabajar mejor con la edición de los mapas.
 
 \section{Herramientas}
 
+Aparte de las tecnologías usadas para la construcción del proyecto, se ha usado distintas herramientas que nos han servido a la hora de elaborar y desarrollar el sistema planteado.
+
 \subsection{Atom}
+
+Atom\footnote{https://atom.io} es un editor de texto gratuito y de código abierto basado en Electron, que es un \textit{Framework} para crear aplicaciones nativas con tecnología Web. Está desarrollado por GitHub Inc. e integra dentro de su interfaz la herramienta Git para el control de versiones. Se puede extender las funcionalidades de Atom mediante \textit{plugins} escritos con Node.js, los cuales permiten desde resaltar la sintaxis de un determinado lenguaje de programación, cambiar el tema del editor, hasta añadir terminales, autocompletado de texto o nuevas herramientas para desarrollar/depurar código fuente. Entre estos plugins cabe destacar que para este proyecto podemos encontrar algunos que nos permiten resaltar la sintaxis de Lua y de ASP, así como iniciar LÖVE y ASP desde el propio editor. Debido a estas características, se usará este editor como una de las herramientas principales.
 
 \subsection{Git}
 
+Git\footnote{https://git-scm.com} es un sistema de control de versiones distribuido y de código abierto creado para la gestión de código fuente y desarrollo de software. Fue creado por Linus Trovalds como una alternativa libre y gratuita a BitKeeper para el desarrollo del kernel Linux por la comunidad. Está enfocado en la rapidez y eficiencia al procesar proyectos grandes, la integridad de datos, la seguridad mediante autentificación criptográfica y el fuerte soporte de un flujo de trabajo no lineal y distribuido. \\
+
+Debido a estas características, Git es uno de los sistemas de control de versiones más importantes hoy en día, por lo que ha permitido que existan servicios de alojamiento en linea que incluyen esta herramienta:
+
+\begin{itemize}
+	\item GitLab\footnote{https://gitlab.com}, creado por dos programadores ucranianos y que hoy en día es gestionado por GitLab Inc. Es usado por organizaciones como Sony, IBM, NASA, CERN o GNOME Foundation. Permite realizar gratuitamente repositorios privados, gestionar grupos y realizar rastreo de \textit{issues} y funcionalidades de CI/CD.
+	\item Phabricator\footnote{https://www.phacility.com}, creado por Facebook como herramienta interna que integra también Mercurial y Subversion. Actualmente es de código abierto y lo usan empresas como Blender, Cisco Systems, Dropbox o KDE.
+	\item Bitbucket\footnote{https://bitbucket.org}, creado por Atlassian. Este sistema integra Mercurial desde sus inicios y Git desde 2011, y está pensado para ser integrado con el resto de productos como Atlassian como Jira, Confluence y Bamboo.
+	\item GitHub\footnote{text}, creado por tres estudiantes estadounidenses, hoy en día es gestionado por GitHub Inc. empresa que fue adquirida por Microsoft en 2018. Permite realizar rastreo de \textit{bugs}, wikis, gestión de tareas y petición de funcionalidades. Es usado por empresas como Microsoft, Google, Travis CI, Bitnami, DigitalOcean y Unreal Engine. Con la popularidad de GitHub nacieron varios servicios, como el Education Program, que permite a estudiantes el acceso gratuito a herramientas de GitHub y de partners; Gist, que permite usar GitHub como un hosting de \textit{snippets} y GitHub Marketplace, que permite comprar servicios con los que aumentar las funcionalidades en los proyectos y que muchos de ellos son gestionados por partners.
+\end{itemize}
+
 \subsection{LÖVE}\label{subsec:love2d}
 
-LÖVE\footnote{https://love2d.org} (o también conocido como Love2D)
+LÖVE\footnote{https://love2d.org} (o también conocido como Love2D) es un motor de código libre multiplataforma para la creación de juegos en 2D mediante el lenguaje Lua. Está hecho en C++ y añade una API al lenguaje Lua para que el programador pueda usar las bibliotecas OpenGL ES y SDL de una forma muy simplificada mediante funciones y tipos creados en Lua. Con el paso del tiempo también fue incluyendo un motor de físicas 2D o biliotecas para el manejo de fuentes FreeType, manejo de strings en UTF-8, funciones para usar sockets y una biblioteca especializada en conexión a videojuegos llamada ENet. Así mismo, debido al crecimiento de la comunidad, esta fue creando bibliotecas no oficiales que expanden el funcionamiento del motor, como bibliotecas para añadir interfaces inmediatas, soporte para técnicas usadas en videojuegos, orientación a objetos basada en clases o incluso portar el motor a otras plataformas o lenguajes. \\
+
+Debido a la sencillez para poder dibujar en pantalla, así como poder integrar las bibliotecas gráficas creadas para LÖVE, este motor va a ser una de las herramientas principales que se usarán para la construcción de la interfaz de usuario en este proyecto.
