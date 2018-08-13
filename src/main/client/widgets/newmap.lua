@@ -75,7 +75,12 @@ function NewMap:isMouseFocused ()
   local width, height = love.window.getMode()
   local posX, posY = love.mouse.getPosition()
   local x, y = width/2-105, height/2-53
-  return posX >= x and posX <= x + width and posY >= y and posY <= y + height
+  local h = 105
+  if self._nan_input then
+    h = h+25
+  end
+
+  return posX >= x and posX <= x + width and posY >= y and posY <= y + h
 end
 
 function NewMap:textInput (t)

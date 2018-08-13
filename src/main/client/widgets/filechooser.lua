@@ -191,7 +191,8 @@ function FileChooser:isMouseFocused ()
   local width, height = love.window.getMode()
   local posX, posY = love.mouse.getPosition()
   local x, y = width/2-250, height/2-175
-  return posX >= x and posX <= x + width and posY >= y and posY <= y + height
+
+  return posX >= x and posX <= x + 500 and posY >= y and posY <= y + 350
 end
 
 function FileChooser:textInput (t)

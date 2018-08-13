@@ -19,41 +19,12 @@ describe("Map model tests.", function()
   end)
 
   it("Creates new map", function()
-    local expected = {{Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL},
-                      {Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL},
-                      {Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL, Constants.CellType.VOID_CELL}}
+    local expected = {{Constants.CellType.VOID, Constants.CellType.VOID, Constants.CellType.VOID},
+                      {Constants.CellType.VOID, Constants.CellType.VOID, Constants.CellType.VOID},
+                      {Constants.CellType.VOID, Constants.CellType.VOID, Constants.CellType.VOID}}
 
     local instance = Map(3, 3)
     assert.are.same(instance:getMap(), expected)
-  end)
-
-  it("Checks invalid row number on changeCell", function()
-    local test_error = function()
-      local instance = Map(3, 4)
-      instance:changeCell(4, 1)
-    end
-
-    assert.has.error(test_error, "bad argument #1 (must be less or equals that 3)")
-  end)
-
-  it("Checks invalid column number on changeCell", function()
-    local test_error = function()
-      local instance = Map(4, 3)
-      instance:changeCell(1, 4)
-    end
-
-    assert.has.error(test_error, "bad argument #2 (must be less or equals that 3)")
-  end)
-
-  it("Checks if changeCell works", function()
-    local instance = Map(3, 3)
-    assert.are.equals(instance:getCell(2, 2), Constants.CellType.VOID_CELL)
-    instance:changeCell(2, 2)
-    assert.are.equals(instance:getCell(2, 2), Constants.CellType.WATER_CELL)
-    instance:changeCell(2, 2)
-    assert.are.equals(instance:getCell(2, 2), Constants.CellType.LAND_CELL)
-    instance:changeCell(2, 2)
-    assert.are.equals(instance:getCell(2, 2), Constants.CellType.VOID_CELL)
   end)
 
   it("Checks invalid type setCell", function()
@@ -62,13 +33,13 @@ describe("Map model tests.", function()
       instance:setCell(2, 2, {})
     end
 
-    assert.has.error(test_error, "bad argument #3 (must be a cell value like WATER_CELL, LAND_CELL or VOID_CELL)")
+    assert.has.error(test_error, "bad argument #3 (must be a cell value like OCEAN, PLAIN, VOID, JUNGLE, SEA, MOUNTAIN, LAKE, SWAMP, GRASS, TRUNDA or FOREST)")
   end)
 
   it("Checks if setCell works", function()
     local instance = Map(3, 3)
-    instance:setCell(2, 2, Constants.CellType.LAND_CELL)
-    assert.are.equals(instance:getCell(2, 2), Constants.CellType.LAND_CELL)
+    instance:setCell(2, 2, Constants.CellType.PLAIN)
+    assert.are.equals(instance:getCell(2, 2), Constants.CellType.PLAIN)
   end)
 
   it("Checks invalid value in setMap", function()
@@ -99,9 +70,9 @@ describe("Map model tests.", function()
   end)
 
   it("Checks if setMap works", function()
-    local expected = {{Constants.CellType.LAND_CELL, Constants.CellType.WATER_CELL, Constants.CellType.WATER_CELL},
-                      {Constants.CellType.WATER_CELL, Constants.CellType.LAND_CELL, Constants.CellType.WATER_CELL},
-                      {Constants.CellType.WATER_CELL, Constants.CellType.WATER_CELL, Constants.CellType.LAND_CELL}}
+    local expected = {{Constants.CellType.PLAIN, Constants.CellType.SEA, Constants.CellType.SEA},
+                      {Constants.CellType.SEA, Constants.CellType.PLAIN, Constants.CellType.SEA},
+                      {Constants.CellType.SEA, Constants.CellType.SEA, Constants.CellType.PLAIN}}
 
     local instance = Map(3, 3)
     instance:setMap(expected)

@@ -1,6 +1,9 @@
 -- Rafael Alcalde Azpiazu - 7 Jun 2018
 -- Facultade de Informática da Coruña - Universidade da Coruña
 
+--- This module controls all the resources.
+-- @module Resources
+
 local Lfs = require "lfs"
 local Json = require "libs.json.json"
 
@@ -122,8 +125,6 @@ addLoader("json", function(fullPath)
   return Json.decode(content)
 end)
 
---- This module controls all the resources.
--- @module Resources
 local Resources = {
   appendFiles = appendFiles,
   addLoader = addLoader,

@@ -14,7 +14,7 @@ local Resources = require "main.utilities.resources"
 local Exporter = require "main.utilities.exporter"
 
 -- Variables of the UI
-local map_editor,bar_editor,dialog_editor
+local map_editor, bar_editor, dialog_editor
 local map_conf = {}
 
 local function reset()
@@ -148,6 +148,10 @@ function love.update(dt)
     dialog_editor = FileChooser("save", "exported", exportmap, closepop)
   elseif option == 5 then
     generatemap()
+  end
+
+  if not (dialog_editor and dialog_editor.isMouseFocused and dialog_editor:isMouseFocused()) then
+    map_editor:update()
   end
 end
 

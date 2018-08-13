@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Generación de Escenarios de un Videojuego 2D mediante Programación Lógica</title>
+    <link rel="stylesheet" href="../ldoc_pale.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>FreeCiv Editor</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><strong>Editor</strong></li>
+  <li><a href="../classes/Map.html">Map</a></li>
+  <li><a href="../classes/MapAdapter.html">MapAdapter</a></li>
+  <li><a href="../classes/Matrix.html">Matrix</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Resources.html">Resources</a></li>
+  <li><a href="../modules/Validator.html">Validator</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>Editor</code></h1>
+<p>This class represents the controller of the interface of the map editor.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Editor:_setQuads">Editor:_setQuads (self, tilesWidth, tilesHeight)</a></td>
+	<td class="summary">This function loads the quads for create the tilemap</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Editor:getHeight">Editor:getHeight (self)</a></td>
+	<td class="summary">Gets the height of the map drawn.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Editor:getWidth">Editor:getWidth (self)</a></td>
+	<td class="summary">Gets the width of the map drawn.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Editor:init">Editor:init (self)</a></td>
+	<td class="summary">Creates a new map editor controller.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Editor:newMap">Editor:newMap (self, rows, cols)</a></td>
+	<td class="summary">Clears the current map and loads a empty fresh map.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Editor:resize">Editor:resize (self, width, height)</a></td>
+	<td class="summary">This function is called when the window is resized.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Editor:setMap">Editor:setMap (self, map)</a></td>
+	<td class="summary">Clears the current map and add a loaded map.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Editor:setRegions">Editor:setRegions (self, regions, c_rows, c_cols)</a></td>
+	<td class="summary">Set the mapping of regions.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Editor:_setQuads"></a>
+    <strong>Editor:_setQuads (self, tilesWidth, tilesHeight)</strong>
+    </dt>
+    <dd>
+    This function loads the quads for create the tilemap
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+
+
+
+        </li>
+        <li><span class="parameter">tilesWidth</span>
+
+
+
+        </li>
+        <li><span class="parameter">tilesHeight</span>
+        Load all the sprites on the tilemap
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Editor:getHeight"></a>
+    <strong>Editor:getHeight (self)</strong>
+    </dt>
+    <dd>
+    Gets the height of the map drawn.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         A controller object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Editor:getWidth"></a>
+    <strong>Editor:getWidth (self)</strong>
+    </dt>
+    <dd>
+    Gets the width of the map drawn.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         A controller object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Editor:init"></a>
+    <strong>Editor:init (self)</strong>
+    </dt>
+    <dd>
+    Creates a new map editor controller.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         The new controller object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Editor:newMap"></a>
+    <strong>Editor:newMap (self, rows, cols)</strong>
+    </dt>
+    <dd>
+    Clears the current map and loads a empty fresh map.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         A controller object.
+        </li>
+        <li><span class="parameter">rows</span>
+         Number of rows of the new map.
+        </li>
+        <li><span class="parameter">cols</span>
+         Number of columns of the new map.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Editor:resize"></a>
+    <strong>Editor:resize (self, width, height)</strong>
+    </dt>
+    <dd>
+    This function is called when the window is resized.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Editor:setMap"></a>
+    <strong>Editor:setMap (self, map)</strong>
+    </dt>
+    <dd>
+    Clears the current map and add a loaded map.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         A controller object.
+        </li>
+        <li><span class="parameter">map</span>
+         The new map object to set to the editor.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Editor:setRegions"></a>
+    <strong>Editor:setRegions (self, regions, c_rows, c_cols)</strong>
+    </dt>
+    <dd>
+    Set the mapping of regions.  This function is for debugging purpose.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">self</span>
+         A controller object.
+        </li>
+        <li><span class="parameter">regions</span>
+         A 2d array with the regions.
+        </li>
+        <li><span class="parameter">c_rows</span>
+         The number of rows.
+        </li>
+        <li><span class="parameter">c_cols</span>
+         The number of cols.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-08-14 00:17:41 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

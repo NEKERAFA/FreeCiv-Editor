@@ -5,7 +5,8 @@ local Class = require "libs.hump.class"
 local Constants = require "main.utilities.constants"
 local Validator = require "main.utilities.validator"
 
--- This class represents a FreeCiv Map
+--- This class represents a FreeCiv Map
+-- @classmod Map
 local Map = Class {
   -- Creates new map
   init = function(self, ...)
@@ -30,7 +31,7 @@ local Map = Class {
       for i = 1, args[1] do
         row = {}
         for j = 1, args[2] do
-          table.insert(row, Constants.CellType.VOID_CELL)
+          table.insert(row, Constants.CellType.VOID)
         end
         table.insert(self._data, row)
       end
@@ -60,24 +61,6 @@ local Map = Class {
       for j = 1, self.cols do
         table.insert(row, map_table[i][j])
       end
-    end
-  end,
-
-  -- Changes the value of a cell in the map
-  changeCell = function(self, row, col)
-    -- Check parameters
-    Validator.isNaturalNumber(row, 1, self.rows)
-    Validator.isNaturalNumber(col, 2, self.cols)
-
-    -- Switch water to land
-    if self._data[row][col] == Constants.CellType.WATER_CELL then
-      self._data[row][col] = Constants.CellType.LAND_CELL
-    -- Switch land to void value
-    elseif self._data[row][col] == Constants.CellType.LAND_CELL then
-      self._data[row][col] = Constants.CellType.VOID_CELL
-    -- Switch void value to water
-    elseif self._data[row][col] == Constants.CellType.VOID_CELL then
-      self._data[row][col] = Constants.CellType.WATER_CELL
     end
   end,
 

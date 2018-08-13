@@ -3,13 +3,16 @@
 
 local Class = require "libs.hump.class"
 local Map = require "main.model.map"
+local Adapter = require "main.client.map_adapter"
 local Constants = require "main.utilities.constants"
 local Validator = require "main.utilities.validator"
 local Resources = require "main.utilities.resources"
 
---- This class represents a UI Map Editor for FreeCiv
+--- This class represents the controller of the interface of the map editor.
+-- @classmod Editor
 local Editor = Class {
-  -- Creates a new editor
+  --- Creates a new map editor controller.
+  -- @param self The new controller object.
   init = function(self)
     -- Position to put the map
     self.pos = {x = 0, y = 40}
@@ -23,12 +26,16 @@ local Editor = Class {
     self._quads_info = {size = 30, quads = {}}
     self:_setQuads(self._tile_image:getWidth(), self._tile_image:getHeight())
 
+    self._adapter = nil
     self._map = nil
     self._regions = nil
     self._current_tile = nil
     self._pressed = nil
+    self._terrain = Constants.CellType.PLAIN
   end,
 
+  --- Gets the width of the map drawn.
+  -- @param self A controller object.
   getWidth = function(self)
     if self._map == nil then
       return 0
@@ -37,6 +44,8 @@ local Editor = Class {
     return self._map.cols * self._quads_info.size
   end,
 
+  --- Gets the height of the map drawn.
+  -- @param self A controller object.
   getHeight = function(self)
     if self._map == nil then
       return 0
@@ -45,6 +54,10 @@ local Editor = Class {
     return self._map.rows * self._quads_info.size
   end,
 
+  --- Clears the current map and loads a empty fresh map.
+  -- @param self A controller object.
+  -- @param rows Number of rows of the new map.
+  -- @param cols Number of columns of the new map.
   newMap = function(self, rows, cols)
     self._map = Map(rows, cols)
 
@@ -52,10 +65,15 @@ local Editor = Class {
     self._tilemap = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols)
     self._background = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols * 4)
 
+    self._adapter = Adapter(self._map, self._quads_info, self._tilemap, self._background)
+
     -- Sets all the tilemaps in the spritesbatches
-    self:_updateTilemap()
+    self._adapter:setTilemap()
   end,
 
+  --- Clears the current map and add a loaded map.
+  -- @param self A controller object.
+  -- @param map The new map object to set to the editor.
   setMap = function(self, map)
     self._map = Map(map)
 
@@ -63,396 +81,53 @@ local Editor = Class {
     self._tilemap = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols)
     self._background = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols * 4)
 
+    self._adapter = Adapter(self._map, self._quads_info, self._tilemap, self._background)
+
     -- Sets all the tilemaps in the spritesbatches
-    self:_updateTilemap()
+    self._adapter:setTilemap()
   end,
 
+  --- Set the mapping of regions. This function is for debugging purpose.
+  -- @param self A controller object.
+  -- @param regions A 2d array with the regions.
+  -- @param c_rows The number of rows.
+  -- @param c_cols The number of cols.
   setRegions = function(self, regions, c_rows, c_cols)
     self._regions = Map(regions)
     self._regions.width = c_rows
     self._regions.height = c_cols
   end,
 
-  -- This function sets the quads for create the tilemap
+  --- This function loads the quads for create the tilemap
   _setQuads = function(self, tilesWidth, tilesHeight)
-    local quads = self._quads_info.quads
+    -- Load all the sprites on the tilemap
+    df = io.open("resources/tilemap.lua", "r")
+    conf = df:read("a")
+    df:close()
+    local quads = assert(load("return " .. conf))()
 
-    -- Quad for tile selector
-    quads[_SELECTOR_CELL] = love.graphics.newQuad(330, 480, 30, 30, tilesWidth, tilesHeight)
+    -- Local function to iterate all the quads definitions
+    _iter_quads = function (tbl)
+      local quad = {}
+      for k, v in pairs(tbl) do
+        if type(v) == "table" then
+          tbl[k] = _iter_quads(v)
+        else
+          quad[k] = v
+        end
+      end
 
-    -- Quad for water
-    quads[_WATER_UPPER_LEFT_CELL] = love.graphics.newQuad(240, 210, 15, 15, tilesWidth, tilesHeight)
-    quads[_WATER_LAND_UPPER_LEFT_CELL] = love.graphics.newQuad(255, 210, 15, 15, tilesWidth, tilesHeight)
-    quads[_WATER_UPPER_RIGHT_CELL] = love.graphics.newQuad(270, 210, 15, 15, tilesWidth, tilesHeight)
-    quads[_WATER_LAND_UPPER_RIGHT_CELL] = love.graphics.newQuad(285, 210, 15, 15, tilesWidth, tilesHeight)
-    quads[_WATER_BOTTOM_LEFT_CELL] = love.graphics.newQuad(300, 210, 15, 15, tilesWidth, tilesHeight)
-    quads[_WATER_LAND_BOTTOM_LEFT_CELL] = love.graphics.newQuad(315, 210, 15, 15, tilesWidth, tilesHeight)
-    quads[_WATER_BOTTOM_RIGHT_CELL] = love.graphics.newQuad(330, 210, 15, 15, tilesWidth, tilesHeight)
-    quads[_WATER_LAND_BOTTOM_RIGHT_CELL] = love.graphics.newQuad(345, 210, 15, 15, tilesWidth, tilesHeight)
+      if #quad == 0 then
+        return tbl
+      end
 
-    -- Quads for land
-    quads[_LAND_CELL] = love.graphics.newQuad(60, 0, 30, 30, tilesWidth, tilesHeight)
-    quads[_EMPTY_LAND_CELL] = love.graphics.newQuad(0, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_UPPER_LAND_CELL] = love.graphics.newQuad(30, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_RIGHT_LAND_CELL] = love.graphics.newQuad(60, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_UPPER_RIGHT_LAND_CELL] = love.graphics.newQuad(90, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_BOTTOM_LAND_CELL] = love.graphics.newQuad(120, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_UPPER_BOTTOM_LAND_CELL] = love.graphics.newQuad(150, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_BOTTOM_RIGHT_LAND_CELL] = love.graphics.newQuad(180, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_UPPER_RIGHT_BOTTOM_LAND_CELL] = love.graphics.newQuad(210, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_LEFT_LAND_CELL] = love.graphics.newQuad(240, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_UPPER_LEFT_LAND_CELL] = love.graphics.newQuad(270, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_LEFT_RIGHT_LAND_CELL] = love.graphics.newQuad(300, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_UPPER_LEFT_RIGHT_LAND_CELL] = love.graphics.newQuad(330, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_BOTTOM_LEFT_LAND_CELL] = love.graphics.newQuad(360, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_UPPER_LEFT_BOTTOM_LAND_CELL] = love.graphics.newQuad(390, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_BOTTOM_LEFT_RIGHT_LAND_CELL] = love.graphics.newQuad(420, 300, 30, 30, tilesWidth, tilesHeight)
-    quads[_SURROUNDED_LAND_CELL] = love.graphics.newQuad(450, 300, 30, 30, tilesWidth, tilesHeight)
+      return love.graphics.newQuad(quad[1], quad[2], quad[3], quad[4], tilesWidth, tilesHeight)
+    end
+
+    self._quads_info.quads = _iter_quads(quads)
 
     -- Quad for void
-    quads[_VOID_CELL] = love.graphics.newQuad(90, 0, 30, 30, tilesWidth, tilesHeight)
-  end,
-
-  -- This function gets all the neighbours
-  _getNeighbours = function(self, row, col)
-    -- This list stores all neighbour position
-    local list = {}
-
-    -- Loops all 8-conected cell positions
-    local neighbour_i = 1
-    -- Center the neighbours if the cell is in the corner or in the upper of
-    -- the map
-    if row == 1 then
-      neighbour_i = 2
-    end
-    for i = math.max(1, row-1), math.min(row+1, self._map.rows) do
-      -- Center the neighbours if the cell is in the corner or in the left of
-      -- the map
-      local neighbour_j = 1
-      if col == 1 then
-        neighbour_j = 2
-      end
-      for j = math.max(1, col-1), math.min(col+1, self._map.cols) do
-        -- Inserts only if the current position isn't the root cell
-        if row ~= i or col ~= j then
-          list[neighbour_j+(neighbour_i-1)*3] = {row = i, col = j}
-        end
-        neighbour_j = neighbour_j+1
-      end
-      neighbour_i = neighbour_i+1
-    end
-
-    return list
-  end,
-
-  _isUpperLeftLand = function(self, neighbours)
-    local corner = neighbours[1]
-    local upper = neighbours[2]
-    local left = neighbours[4]
-
-    return corner and (self._map:getCell(corner.row, corner.col) == Constants.CellType.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.row, left.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(upper.row, upper.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isUpperRightLand = function(self, neighbours)
-    local corner = neighbours[3]
-    local upper = neighbours[2]
-    local right = neighbours[6]
-
-    return corner and (self._map:getCell(corner.row, corner.col) == Constants.CellType.LAND_CELL) and
-           ((not right) or (self._map:getCell(right.row, right.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(upper.row, upper.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isBottomLeftLand = function(self, neighbours)
-    local corner = neighbours[7]
-    local bottom = neighbours[8]
-    local left = neighbours[4]
-
-    return corner and (self._map:getCell(corner.row, corner.col) == Constants.CellType.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.row, left.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(bottom.row, bottom.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isBottomRightLand = function(self, neighbours)
-    local corner = neighbours[9]
-    local bottom = neighbours[8]
-    local right = neighbours[6]
-
-    return corner and (self._map:getCell(corner.row, corner.col) == Constants.CellType.LAND_CELL) and
-           ((not right) or (self._map:getCell(right.row, right.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.row, bottom.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  -- This function adds a water cell to the tilemap
-  _addWaterCell = function(self, row, col, water_size, neighbours)
-    -- Calculates the position of the current tile
-    local x = self._quads_info.size * (col-1)
-    local y = self._quads_info.size * (row-1)
-
-    -- Gets the water quad tiles
-    local quad_upper_left = self._quads_info.quads[_WATER_UPPER_LEFT_CELL]
-    local quad_upper_right = self._quads_info.quads[_WATER_UPPER_RIGHT_CELL]
-    local quad_bottom_left = self._quads_info.quads[_WATER_BOTTOM_LEFT_CELL]
-    local quad_bottom_right = self._quads_info.quads[_WATER_BOTTOM_RIGHT_CELL]
-
-    -- Checks if one of the corners has land
-    if self._map:getCell(row, col) ~= Constants.CellType.LAND_CELL then
-      if self:_isUpperLeftLand(neighbours) then
-        quad_upper_left = self._quads_info.quads[_WATER_LAND_UPPER_LEFT_CELL]
-      end
-
-      if self:_isUpperRightLand(neighbours) then
-        quad_upper_right = self._quads_info.quads[_WATER_LAND_UPPER_RIGHT_CELL]
-      end
-
-      if self:_isBottomLeftLand(neighbours) then
-        quad_bottom_left = self._quads_info.quads[_WATER_LAND_BOTTOM_LEFT_CELL]
-      end
-
-      if self:_isBottomRightLand(neighbours) then
-        quad_bottom_right = self._quads_info.quads[_WATER_LAND_BOTTOM_RIGHT_CELL]
-      end
-    end
-
-    -- Sets water
-    self._background:add(quad_upper_left, x, y)
-    self._background:add(quad_upper_right, x+water_size, y)
-    self._background:add(quad_bottom_left, x, y+water_size)
-    self._background:add(quad_bottom_right, x+water_size, y+water_size)
-  end,
-
-  _isWaterUpperLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return upper and (self._map:getCell(upper.row, upper.col) == Constants.CellType.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.row, left.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not right) or (self._map:getCell(right.row, right.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.row, bottom.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterLeftLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return left and (self._map:getCell(left.row, left.col) == Constants.CellType.LAND_CELL) and
-           ((not upper) or (self._map:getCell(upper.row, upper.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not right) or (self._map:getCell(right.row, right.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.row, bottom.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterRightLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return right and (self._map:getCell(right.row, right.col) == Constants.CellType.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.row, left.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(upper.row, upper.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.row, bottom.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterBottomLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return bottom and (self._map:getCell(bottom.row, bottom.col) == Constants.CellType.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.row, left.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not right) or (self._map:getCell(right.row, right.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(upper.row, upper.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterUpperLeftLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return upper and (self._map:getCell(upper.row, upper.col) == Constants.CellType.LAND_CELL) and
-           left and (self._map:getCell(left.row, left.col) == Constants.CellType.LAND_CELL) and
-           ((not right) or (self._map:getCell(right.row, right.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.row, bottom.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterUpperRightLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return upper and (self._map:getCell(upper.row, upper.col) == Constants.CellType.LAND_CELL) and
-           right and (self._map:getCell(right.row, right.col) == Constants.CellType.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.row, left.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.row, bottom.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterUpperBottomLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return upper and (self._map:getCell(upper.row, upper.col) == Constants.CellType.LAND_CELL) and
-           bottom and (self._map:getCell(bottom.row, bottom.col) == Constants.CellType.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.row, left.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not right) or (self._map:getCell(right.row, right.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterBottomLeftLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return bottom and (self._map:getCell(bottom.row, bottom.col) == Constants.CellType.LAND_CELL) and
-           left and (self._map:getCell(left.row, left.col) == Constants.CellType.LAND_CELL) and
-           ((not right) or (self._map:getCell(right.row, right.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not upper) or (self._map:getCell(upper.row, upper.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterBottomRightLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return right and (self._map:getCell(right.row, right.col) == Constants.CellType.LAND_CELL) and
-           bottom and (self._map:getCell(bottom.row, bottom.col) == Constants.CellType.LAND_CELL) and
-           ((not upper) or (self._map:getCell(upper.row, upper.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not left) or (self._map:getCell(left.row, left.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterLeftRightLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return left and (self._map:getCell(left.row, left.col) == Constants.CellType.LAND_CELL) and
-           right and (self._map:getCell(right.row, right.col) == Constants.CellType.LAND_CELL) and
-           ((not upper) or (self._map:getCell(upper.row, upper.col) ~= Constants.CellType.LAND_CELL)) and
-           ((not bottom) or (self._map:getCell(bottom.row, bottom.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterUpperLeftRightLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return upper and (self._map:getCell(upper.row, upper.col) == Constants.CellType.LAND_CELL) and
-           left and (self._map:getCell(left.row, left.col) == Constants.CellType.LAND_CELL) and
-           right and (self._map:getCell(right.row, right.col) == Constants.CellType.LAND_CELL) and
-           ((not bottom) or (self._map:getCell(bottom.row, bottom.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterUpperLeftBottomLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return upper and (self._map:getCell(upper.row, upper.col) == Constants.CellType.LAND_CELL) and
-           left and (self._map:getCell(left.row, left.col) == Constants.CellType.LAND_CELL) and
-           bottom and (self._map:getCell(bottom.row, bottom.col) == Constants.CellType.LAND_CELL) and
-           ((not right) or (self._map:getCell(right.row, right.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterUpperRightBottomLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return upper and (self._map:getCell(upper.row, upper.col) == Constants.CellType.LAND_CELL) and
-           right and (self._map:getCell(right.row, right.col) == Constants.CellType.LAND_CELL) and
-           bottom and (self._map:getCell(bottom.row, bottom.col) == Constants.CellType.LAND_CELL) and
-           ((not left) or (self._map:getCell(left.row, left.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterBottomLeftRightLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return bottom and (self._map:getCell(bottom.row, bottom.col) == Constants.CellType.LAND_CELL) and
-           left and (self._map:getCell(left.row, left.col) == Constants.CellType.LAND_CELL) and
-           right and (self._map:getCell(right.row, right.col) == Constants.CellType.LAND_CELL) and
-           ((not upper) or (self._map:getCell(upper.row, upper.col) ~= Constants.CellType.LAND_CELL))
-  end,
-
-  _isWaterSurroundedLand = function(self, neighbours)
-    local upper = neighbours[2]
-    local left = neighbours[4]
-    local right = neighbours[6]
-    local bottom = neighbours[8]
-
-    return upper and (self._map:getCell(upper.row, upper.col) == Constants.CellType.LAND_CELL) and
-           left and (self._map:getCell(left.row, left.col) == Constants.CellType.LAND_CELL) and
-           right and (self._map:getCell(right.row, right.col) == Constants.CellType.LAND_CELL) and
-           bottom and (self._map:getCell(bottom.row, bottom.col) == Constants.CellType.LAND_CELL)
-  end,
-
-  -- This function add a land cell to the tilemap
-  _addLandCell = function(self, row, col, neighbours)
-    -- Calculates position tile
-    local x = self._quads_info.size * (col-1)
-    local y = self._quads_info.size * (row-1)
-    local quad = ""
-
-    -- Draws land cell
-    if self._map:getCell(row, col) == Constants.CellType.LAND_CELL then
-      quad = self._quads_info.quads[_LAND_CELL]
-    -- Draws void cell
-    elseif self._map:getCell(row, col) == Constants.CellType.VOID_CELL then
-      quad = self._quads_info.quads[_VOID_CELL]
-    else
-      if self:_isWaterUpperLand(neighbours) then
-        quad = self._quads_info.quads[_UPPER_LAND_CELL]
-      elseif self:_isWaterLeftLand(neighbours) then
-        quad = self._quads_info.quads[_LEFT_LAND_CELL]
-      elseif self:_isWaterRightLand(neighbours) then
-        quad = self._quads_info.quads[_RIGHT_LAND_CELL]
-      elseif self:_isWaterBottomLand(neighbours) then
-        quad = self._quads_info.quads[_BOTTOM_LAND_CELL]
-      elseif self:_isWaterUpperLeftLand(neighbours) then
-        quad = self._quads_info.quads[_UPPER_LEFT_LAND_CELL]
-      elseif self:_isWaterUpperRightLand(neighbours) then
-        quad = self._quads_info.quads[_UPPER_RIGHT_LAND_CELL]
-      elseif self:_isWaterUpperBottomLand(neighbours) then
-        quad = self._quads_info.quads[_UPPER_BOTTOM_LAND_CELL]
-      elseif self:_isWaterLeftRightLand(neighbours) then
-        quad = self._quads_info.quads[_LEFT_RIGHT_LAND_CELL]
-      elseif self:_isWaterBottomLeftLand(neighbours) then
-        quad = self._quads_info.quads[_BOTTOM_LEFT_LAND_CELL]
-      elseif self:_isWaterBottomRightLand(neighbours) then
-        quad = self._quads_info.quads[_BOTTOM_RIGHT_LAND_CELL]
-      elseif self:_isWaterUpperLeftRightLand(neighbours) then
-        quad = self._quads_info.quads[_UPPER_LEFT_RIGHT_LAND_CELL]
-      elseif self:_isWaterUpperLeftBottomLand(neighbours) then
-        quad = self._quads_info.quads[_UPPER_LEFT_BOTTOM_LAND_CELL]
-      elseif self:_isWaterUpperRightBottomLand(neighbours) then
-        quad = self._quads_info.quads[_UPPER_RIGHT_BOTTOM_LAND_CELL]
-      elseif self:_isWaterBottomLeftRightLand(neighbours) then
-        quad = self._quads_info.quads[_BOTTOM_LEFT_RIGHT_LAND_CELL]
-      elseif self:_isWaterSurroundedLand(neighbours) then
-        quad = self._quads_info.quads[_SURROUNDED_LAND_CELL]
-      else
-        quad = self._quads_info.quads[_EMPTY_LAND_CELL]
-      end
-    end
-
-    self._tilemap:add(quad, x, y)
+    quads[Constants.TileType.VOID] = love.graphics.newQuad(90, 0, 30, 30, tilesWidth, tilesHeight)
   end,
 
   -- This function update all tiles in the map
@@ -477,6 +152,7 @@ local Editor = Class {
     end
   end,
 
+  --- This function is called when the window is resized.
   resize = function(self, width, height)
     if self._map ~= nil then
       -- Gets the size of the map
@@ -492,9 +168,10 @@ local Editor = Class {
     end
   end,
 
-  -- Checks where the mouse is pressed
-  mousepressed = function(self, x, y, button, istouch)
-    if self._map ~= nil and button == 1 then
+  update = function(self)
+    if self._map ~= nil and love.mouse.isDown(1) then
+      local x, y = love.mouse.getPosition()
+
       -- Sets the variables
       local posX = x-self.offset.x-self.pos.x
       local posY = y-self.offset.y-self.pos.y
@@ -503,14 +180,37 @@ local Editor = Class {
       local col = math.ceil(posX/self._quads_info.size)
 
       if row > 0 and col > 0 and row <= self._map.rows and col <= self._map.cols then
-        self._pressed = {row = row, col = col}
+        if self._map:getCell(row, col) ~= self._terrain then
+          self._adapter:setCell(row, col, self._terrain)
+        end
+      end
+    end
+  end,
+
+  -- Checks where the mouse is pressed
+  mousepressed = function(self, x, y, button, istouch)
+    if button == 2 then
+      if self._terrain == Constants.CellType.PLAIN then
+        self._terrain = Constants.CellType.JUNGLE
+      elseif self._terrain == Constants.CellType.JUNGLE then
+        self._terrain = Constants.CellType.TRUNDA
+      elseif self._terrain == Constants.CellType.TRUNDA then
+        self._terrain = Constants.CellType.SWAMP
+      elseif self._terrain == Constants.CellType.SWAMP then
+        self._terrain = Constants.CellType.DESERT
+      elseif self._terrain == Constants.CellType.DESERT then
+        self._terrain = Constants.CellType.SEA
+      elseif self._terrain == Constants.CellType.SEA then
+        self._terrain = Constants.CellType.VOID
+      elseif self._terrain == Constants.CellType.VOID then
+        self._terrain = Constants.CellType.PLAIN
       end
     end
   end,
 
   -- Checks where the mouse is release
   mousereleased = function(self, x, y, button, istouch)
-    if self._map ~= nil and button == 1 then
+    --[[if self._map ~= nil and button == 1 then
       -- Sets the variables
       local posX = x-self.offset.x-self.pos.x
       local posY = y-self.offset.y-self.pos.y
@@ -523,9 +223,9 @@ local Editor = Class {
         self._pressed = nil
         -- Changes the rows
         self._map:changeCell(row, col)
-        self:_updateTilemap()
+        --self:_updateTilemap()
       end
-    end
+    end]]
   end,
 
   -- Checks where the mouse is moved
@@ -568,6 +268,7 @@ local Editor = Class {
       love.graphics.rectangle("line", x, y, width, height)
       love.graphics.setColor(1, 1, 1)
 
+      -- Draws the regions
       if self._regions ~= nil then
         for i = 1, self._regions.rows do
           for j = 1, self._regions.cols do
@@ -597,7 +298,7 @@ local Editor = Class {
         love.graphics.rectangle("fill", tile_x, tile_y, self._quads_info.size, self._quads_info.size)
         -- Tile
         love.graphics.setColor(1, 1, 1)
-        love.graphics.draw(self._tile_image, self._quads_info.quads[_SELECTOR_CELL], tile_x, tile_y)
+        love.graphics.draw(self._tile_image, self._quads_info.quads[Constants.TileType.SELECTOR], tile_x, tile_y)
       end
     end
   end

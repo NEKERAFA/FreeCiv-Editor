@@ -49,8 +49,23 @@ local Validator = {
   -- @param value The value to checks.
   -- @param pos The position of the parameter in the function.
   isMapCellValue = function(value, pos)
-    result = value == Constants.CellType.WATER_CELL or value == Constants.CellType.LAND_CELL or value == Constants.CellType.VOID_CELL
-    assert(result, "bad argument #" .. pos .. " (must be a cell value like WATER_CELL, LAND_CELL or VOID_CELL)")
+    local result = false
+    local err_msg = ""
+    local n_value = 1
+
+    -- Iterates all the types and checks if value is a valid type
+    for _k_name, check_value in pairs(Constants.CellType) do
+      result = result or value == check_value
+      err_msg = err_msg .. _k_name
+      if n_value < 10 then
+        err_msg = err_msg .. ", "
+      elseif n_value == 10 then
+        err_msg = err_msg .. " or "
+      end
+      n_value = n_value + 1
+    end
+
+    assert(result, "bad argument #" .. pos .. " (must be a cell value like " .. err_msg ..")")
   end,
 
   --- Checks if the value is a 2D array.
