@@ -64,7 +64,7 @@ local function savemap(path, name)
     map = map_editor._map:getMap()
   }
 
-  local fullpath = Resources.appendFiles(path, name) .. ".json"
+  local fullpath = Resources.appendFolders(path, name .. ".json")
 
   df = io.open(fullpath, "w+")
   df:write(Json.encode(map))
@@ -79,13 +79,13 @@ local function exportmap(path, name)
   local columns = map_editor._map.cols
   local terrain = map_editor._map:getMap()
   local startpos = {}
-  local file = Resources.appendFiles(path, name) .. ".txt"
+  local file = Resources.appendFolders(path, name .. ".txt")
   Exporter.export(file, name, rows, columns, terrain, startpos)
   closepop()
 end
 
 local function loadclingoresult()
-  local path = Resources.appendFiles("resources", "result.json")
+  local path = Resources.appendFolders("resources", "result.json")
   local map = Resources.loadResource("json", path)
   map_editor:setMap(map.cells)
   map_editor:setRegions(map.regions, map_conf.c_rows, map_conf.c_cols)
@@ -95,7 +95,7 @@ local function loadclingoresult()
 end
 
 local function generatemap()
-  local thread = love.thread.newThread(Resources.appendFiles("main", "client", "clingo_thread.lua"))
+  local thread = love.thread.newThread(Resources.appendFolders("main", "client", "clingo_thread.lua"))
   local to = love.thread.getChannel("toClingo")
   local from = love.thread.getChannel("fromThread")
   to:push(map_conf.regions)

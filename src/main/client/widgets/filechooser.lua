@@ -1,3 +1,6 @@
+--- This class defines a popup window that have a file chooser dialog.
+-- @classmod Widget.FileChooser
+
 local Suit = require "libs.suit"
 local Lfs = require "lfs"
 local Resources = require "main.utilities.resources"
@@ -153,6 +156,13 @@ end
 
 -------------------------------------------------------------------------------
 
+--- Creates a new widget object.
+-- @param mode A string with these options: "open" for show a open file dialog,
+-- and "save" for show a save file dialog.
+-- @param ... A table with these optional parameters: If the mode is "open", the
+-- extra arguments are "onSuccess" and "onCancel" functions. If the mode if
+-- "save", the extra arguments add "filename" strig (the default name of file)
+-- in the dialog.
 function FileChooser:new (mode, ...)
   assert(mode == "open" or mode == "save", "bad argument #1 (mode must be 'open' or 'save' literal)")
 
@@ -160,12 +170,12 @@ function FileChooser:new (mode, ...)
   local args = {...}
 
   if mode == "save" then
-    obj._filename = {text = args[1] or "untitle"}
-    obj._onSuccess = args[2]
-    obj._onCancel = args[3]
+    obj._filename = {text = args[1] or args.filename or "untitle"}
+    obj._onSuccess = args[2] or args.onSuccess
+    obj._onCancel = args[3] or args.onCancel
   else
-    obj._onSuccess = args[1]
-    obj._onCancel = args[2]
+    obj._onSuccess = args[1] or args.onSuccess
+    obj._onCancel = args[2] or args.onCancel
   end
 
   obj._gui = Suit.new()
@@ -179,6 +189,8 @@ function FileChooser:new (mode, ...)
   return obj
 end
 
+--- Checks if the keyboard has the focus in this widget.
+-- @return True if keyboard has the focus and false otherwise.
 function FileChooser:isKeyboardFocused ()
   if self._filename.id then
     return Suit.hasKeyboardFocus(self._filename.id)
@@ -187,6 +199,8 @@ function FileChooser:isKeyboardFocused ()
   return false
 end
 
+--- Checks if the mouse has the focus in this widget.
+-- @return True if mouse has the focus and false otherwise.
 function FileChooser:isMouseFocused ()
   local width, height = love.window.getMode()
   local posX, posY = love.mouse.getPosition()
@@ -195,6 +209,8 @@ function FileChooser:isMouseFocused ()
   return posX >= x and posX <= x + 500 and posY >= y and posY <= y + 350
 end
 
+--- Adds text to input widgets. Use this function with love.textinput.
+-- @param t The text to add to a input widget.
 function FileChooser:textInput (t)
   if not self._closed then
     self._gui:textinput(t)
@@ -217,6 +233,8 @@ function FileChooser:wheelMoved (x, y, button)
   end
 end
 
+--- Updates the widget.
+-- @param dt The time in seconds since the last update.
 function FileChooser:update (dt)
   if not self._closed then
     local width, height = love.window.getMode()
@@ -305,6 +323,7 @@ function FileChooser:update (dt)
   end
 end
 
+--- Draws the widget.
 function FileChooser:draw ()
   if not self._closed then
     local width, height = love.window.getMode()

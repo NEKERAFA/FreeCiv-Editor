@@ -65,6 +65,19 @@ local Constants = {
     FUNCTION = "function",
     TABLE    = "table",
     ALL      = "all"
+  },
+
+  -- Some regular expressions that the exporter uses to convert the scenario template
+  -- into a valid Freeciv map
+  TemplateRegex = {
+    NAME        = "::NAME::",
+    PLAYERS     = "::PLAYERS::",
+    ROWS        = "::ROWS::",
+    COLUMNS     = "::COLUMNS::",
+    TERRAIN     = "::TERRAIN::",
+    PLAYER_LIST = "::PLAYER_LIST::",
+    LAYER_B     = "::LAYER_B::",
+    LAYER_R     = "::LAYER_R::"
   }
 }
 

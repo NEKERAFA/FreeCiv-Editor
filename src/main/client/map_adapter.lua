@@ -423,7 +423,7 @@ local MapAdapter = Class {
     return f(type)
   end,
 
-  -- This function adds a water cell to the tilemap
+  -- This function adds a water cellGuionistas y/o directores to the tilemap
   _addWaterCell = function(self, row, col, neighbours, type)
     -- Calculates the position of the current tile
     local x = self._quads_info.size * (col-1)
@@ -438,22 +438,21 @@ local MapAdapter = Class {
     local quad_bottom_right = quads[type][Constants.TilePosition.BOTTOM_RIGHT][1]
 
     -- Checks if one of the corners has land
-    if self._map:getCell(row, col) ~= Constants.CellType.LAND_CELL then
-      if self:_isUpperLeftLand(neighbours) then
-        quad_upper_left = quads[type][Constants.TilePosition.UPPER_LEFT][2]
-      end
+    if self:_isUpperLeftLand(neighbours) then
+      quad_upper_left = quads[type][Constants.TilePosition.UPPER_LEFT][2]
+      print("hello")
+    end
 
-      if self:_isUpperRightLand(neighbours) then
-        quad_upper_right = quads[type][Constants.TilePosition.UPPER_RIGHT][2]
-      end
+    if self:_isUpperRightLand(neighbours) then
+      quad_upper_right = quads[type][Constants.TilePosition.UPPER_RIGHT][2]
+    end
 
-      if self:_isBottomLeftLand(neighbours) then
-        quad_bottom_left = quads[type][Constants.TilePosition.BOTTOM_LEFT][2]
-      end
+    if self:_isBottomLeftLand(neighbours) then
+      quad_bottom_left = quads[type][Constants.TilePosition.BOTTOM_LEFT][2]
+    end
 
-      if self:_isBottomRightLand(neighbours) then
-        quad_bottom_right = quads[type][Constants.TilePosition.BOTTOM_RIGHT][2]
-      end
+    if self:_isBottomRightLand(neighbours) then
+      quad_bottom_right = quads[type][Constants.TilePosition.BOTTOM_RIGHT][2]
     end
 
     -- Checks if exists a row index of the tilemap

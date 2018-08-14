@@ -1,3 +1,6 @@
+--- This class defines a popup window to create new map.
+-- @classmod Widget.NewMap
+
 local Suit = require "libs.suit"
 local Class = require "libs.hump.class"
 
@@ -6,10 +9,13 @@ NewMap.__index = NewMap
 
 --------------------------------------------------------------------------------
 
-function NewMap:new (onSuccess, onCancel)
+--- Creates a new widget object.
+-- @param ... A table with "onSuccess" and "onCancel" functions.
+function NewMap:new (...)
+  args = {...}
   local obj = setmetatable({}, self)
-  obj._onSuccess = onSuccess
-  obj._onCancel = onCancel
+  obj._onSuccess = args[1] or args.onSuccess
+  obj._onCancel = args[2] or args.onCancel
   obj._gui = Suit.new()
   obj._gui.theme = setmetatable({}, {__index = Suit.theme})
   obj._gui.theme.Input = NewMap.drawInput
@@ -71,6 +77,8 @@ function NewMap.drawInput (input, opt, x, y, w, h)
 	love.graphics.setScissor(sx,sy,sw,sh)
 end
 
+--- Checks if the mouse has the focus in this widget.
+-- @return True if mouse has the focus and false otherwise.
 function NewMap:isMouseFocused ()
   local width, height = love.window.getMode()
   local posX, posY = love.mouse.getPosition()
@@ -83,6 +91,8 @@ function NewMap:isMouseFocused ()
   return posX >= x and posX <= x + width and posY >= y and posY <= y + h
 end
 
+--- Adds text to input widgets. Use this function with love.textinput.
+-- @param t The text to add to a input widget.
 function NewMap:textInput (t)
   if not self._closed then
     self._gui:textinput(t)
@@ -95,6 +105,8 @@ function NewMap:keyPressed (key)
   end
 end
 
+--- Updates the widget.
+-- @param dt The time in seconds since the last update.
 function NewMap:update (dt)
   if not self._closed then
     local width, height = love.window.getMode()
@@ -205,7 +217,7 @@ function NewMap:update (dt)
   end
 end
 
--- Dibuja la interfaz
+--- Draws the widget.
 function NewMap:draw ()
   if not self._closed then
     local width, height = love.window.getMode()

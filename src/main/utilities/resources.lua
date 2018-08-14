@@ -1,9 +1,6 @@
 -- Rafael Alcalde Azpiazu - 7 Jun 2018
 -- Facultade de Informática da Coruña - Universidade da Coruña
 
---- This module controls all the resources.
--- @module Resources
-
 local Lfs = require "lfs"
 local Json = require "libs.json.json"
 
@@ -12,7 +9,14 @@ local loaded = {}
 -- List for save the added loaders
 local loaders = {}
 
-local function appendFiles (...)
+--- This module controls all the resources.
+-- @module Resources
+local Resources = {}
+
+--- Gets some strings that it represents folder names and converts into a valid path.
+-- @param ... A list of folder names.
+-- @return A valid path.
+function Resources.appendFolders (...)
   local args = {...}
   local nargs = #args
   local path = ""
@@ -35,7 +39,7 @@ end
 --- Adds a loader for a specific resource.
 -- @param resource Type of the resource.
 -- @param method A function that receives a name resource and returns a resource object.
-local function addLoader (resource, method)
+function Resources.addLoader (resource, method)
   loaders[resource] = method
 end
 
@@ -43,7 +47,7 @@ end
 -- @param resource Type of the resource.
 -- @param name The name of the new resource.
 -- @return Returns a reference to the resource.
-local function loadResource (resource, name)
+function Resources.loadResource (resource, name)
   assert(loaders[resource], "not loader added for " .. resource .. " resources")
 
   local key = resource .. ":" .. name
@@ -58,7 +62,7 @@ end
 --- Remove a loaded resource.
 -- @param resource Type of the resource.
 -- @param name The name of the new resource.
-local function removeResource (resource, name)
+function Resources.removeResource (resource, name)
   local key = resource .. ":" .. name
 
   assert(loaded[key], key .. " resource is not loaded")
@@ -70,15 +74,11 @@ local function removeResource (resource, name)
   loaded[key] = false
 end
 
-local imagePath = "resources"
-local configPath = love.filesystem.getSaveDirectory()
-local scenarioPath = appendFiles("resources", "scenario.txt")
-
 --- Saves a configuration.
 -- @param name The name of the configuration.
 -- @param conf The table with the values to save.
-local function saveConfiguration (name, conf)
-  local fullPath = appendFiles(configPath, name .. ".json")
+function Resources.saveConfiguration (name, conf)
+  local fullPath = Resources.appendFolders(configPath, name .. ".json")
   local file = love.filesystem.newFile(fullPath, "w")
   local df = io.open(fullPath, "w+")
   df:write(Json.encode(conf))
@@ -92,14 +92,23 @@ end
 --- Checks if a configuration exists
 -- @param name The name of the configuration.
 -- @return True if configuration exists, false otherwise.
-local function existConfiguration (name)
-  local fullPath = appendFiles(configPath, name .. ".json")
+function Resources.existConfiguration (name)
+  local fullPath = Resources.appendFolders(configPath, name .. ".json")
   return lfs.attributes(fullPath) ~= nil
 end
 
+--------------------------------------------------------------------------------
+
+-- Path that contains the images
+local imagePath = "resources"
+-- Path that contains the configuration files
+local configPath = love.filesystem.getSaveDirectory()
+-- Path that contains the file with the scenario template
+local scenarioPath = Resources.appendFolders("resources", "scenario.txt")
+
 -- Adds a configuration loader
-addLoader("conf", function(name)
-  local fullPath = appendFiles(configPath, name .. ".json")
+Resources.addLoader("conf", function(name)
+  local fullPath = Resources.appendFolders(configPath, name .. ".json")
   local df = io.open(fullPath, "r+")
   local content = df:read("a")
   df:close()
@@ -107,31 +116,22 @@ addLoader("conf", function(name)
 end)
 
 -- Add a image loader
-addLoader("image", function(name)
-  local fullPath = appendFiles(imagePath, name .. ".png")
+Resources.addLoader("image", function(name)
+  local fullPath = Resources.appendFolders(imagePath, name .. ".png")
   return love.graphics.newImage(fullPath)
 end)
 
 -- Add a scenario loader
-addLoader("scenario", function()
+Resources.addLoader("scenario", function()
   local content = love.filesystem.read(scenarioPath)
   return content
 end)
 
 -- Add a json loader
-addLoader("json", function(fullPath)
+Resources.addLoader("json", function(fullPath)
   local df = io.open(fullPath, 'r')
   local content = df:read("a")
   return Json.decode(content)
 end)
-
-local Resources = {
-  appendFiles = appendFiles,
-  addLoader = addLoader,
-  loadResource = loadResource,
-  removeResource = removeResource,
-  saveConfiguration = saveConfiguration,
-  existConfiguration = existConfiguration
-}
 
 return Resources

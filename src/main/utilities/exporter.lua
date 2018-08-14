@@ -1,17 +1,7 @@
 -- Rafael Alcalde Azpiazu - 01 Feb 2018
 -- Facultade de Informática da Coruña - Universidade da Coruña
---
--- This file gets the result of the parser and converts it in Freeciv map file
 
--- Variables
-local NAME = "::NAME::"
-local PLAYERS = "::PLAYERS::"
-local ROWS = "::ROWS::"
-local COLUMNS = "::COLUMNS::"
-local TERRAIN = "::TERRAIN::"
-local PLAYER_LIST = "::PLAYER_LIST::"
-local LAYER_B = "::LAYER_B::"
-local LAYER_R = "::LAYER_R::"
+local Constants = require "main.utilities.constants"
 
 -- Generates the string of the map representation
 local get_map = function (rows, columns, terrain)
@@ -116,10 +106,19 @@ local get_r_layer = function (rows, columns)
   return r_layer
 end
 
-local exporter = {
-  -- Gets the parse table and translate it into a Freeciv map file
-  export = function (file, name, rows, columns, terrain, startpos)
-    local s_map = get_map(rows, columns, terrain)
+--- This module gets the result a map and converts it into a valid Freeciv map file
+-- using a scenario template.
+-- @module Exporter
+local Exporter = {
+  --- Gets the parse table and translate it into a Freeciv map file.
+  -- @param file The file where the map is saved.
+  -- @param name The name of the map.
+  -- @param rows The number of rows in the map.
+  -- @param cols The number of columns in the map.
+  -- @param terrain A table with the map terrain.
+  -- @param startpos A table with the start position of the civilizations.
+  export = function (file, name, rows, cols, terrain, startpos)
+    local s_map = get_map(rows, cols, terrain)
     local s_startpos = get_startpos(startpos)
     local s_b_layer = get_b_layer(rows, columns)
     local s_r_layer = get_r_layer(rows, columns)
@@ -130,14 +129,14 @@ local exporter = {
 
     -- Replace the parameters
     for line in template:lines() do
-      line = string.gsub(line, NAME, name)
-      line = string.gsub(line, PLAYERS, tostring(#startpos))
-      line = string.gsub(line, ROWS, rows)
-      line = string.gsub(line, COLUMNS, columns)
-      line = string.gsub(line, TERRAIN, s_map)
-      line = string.gsub(line, PLAYER_LIST, s_startpos)
-      line = string.gsub(line, LAYER_B, s_b_layer)
-      line = string.gsub(line, LAYER_R, s_r_layer)
+      line = string.gsub(line, Constants.TemplateRegex.NAME, name)
+      line = string.gsub(line, Constants.TemplateRegex.PLAYERS, tostring(#startpos))
+      line = string.gsub(line, Constants.TemplateRegex.ROWS, rows)
+      line = string.gsub(line, Constants.TemplateRegex.COLUMNS, columns)
+      line = string.gsub(line, Constants.TemplateRegex.TERRAIN, s_map)
+      line = string.gsub(line, Constants.TemplateRegex.PLAYER_LIST, s_startpos)
+      line = string.gsub(line, Constants.TemplateRegex.LAYER_B, s_b_layer)
+      line = string.gsub(line, Constants.TemplateRegex.LAYER_R, s_r_layer)
       generated:write(line .. "\n")
     end
 
@@ -148,4 +147,4 @@ local exporter = {
   end
 }
 
-return exporter
+return Exporter

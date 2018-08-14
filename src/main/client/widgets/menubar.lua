@@ -1,3 +1,6 @@
+--- This class defines the upper toolbar in the UI application.
+-- @classmod Widget.MenuBar
+
 local Suit = require "libs.suit"
 local Resources = require "main.utilities.resources"
 
@@ -11,6 +14,8 @@ MenuBar._build = Resources.loadResource("image", "icons/wrench")
 
 --------------------------------------------------------------------------------
 
+--- Creates a new widget object.
+-- @param fileopened True if a file is opened and false otherwise.
 function MenuBar:new (fileopened)
   local obj = setmetatable({}, self)
   obj._gui = Suit.new()
@@ -36,6 +41,9 @@ function MenuBar.drawButton (text, opt, x, y, w, h)
   love.graphics.draw(opt.icon, x+w/2, y+h/2, 0, 1, 1, opt.icon:getWidth()/2, opt.icon:getHeight()/2)
 end
 
+--- Updates the widget.
+-- @param dt The time in seconds since the last update.
+-- @param isHover True if another widget is hovered this widget.
 function MenuBar:update (dt, isHover)
   local option = 0
   local status
@@ -73,6 +81,7 @@ function MenuBar:update (dt, isHover)
   return option
 end
 
+--- Draws the widget.
 function MenuBar:draw ()
   self._gui:draw()
 

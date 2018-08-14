@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Generación de Escenarios de un Videojuego 2D mediante Programación Lógica</title>
+    <link rel="stylesheet" href="../ldoc_pale.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>FreeCiv Editor</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Editor.html">Editor</a></li>
+  <li><a href="../classes/Map.html">Map</a></li>
+  <li><a href="../classes/MapAdapter.html">MapAdapter</a></li>
+  <li><a href="../classes/Matrix.html">Matrix</a></li>
+  <li><strong>Widget.FileChooser</strong></li>
+  <li><a href="../classes/Widget.MenuBar.html">Widget.MenuBar</a></li>
+  <li><a href="../classes/Widget.NewMap.html">Widget.NewMap</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Exporter.html">Exporter</a></li>
+  <li><a href="../modules/Resources.html">Resources</a></li>
+  <li><a href="../modules/Validator.html">Validator</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>Widget.FileChooser</code></h1>
+<p>This class defines a popup window that have a file chooser dialog.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Widget.FileChooser:draw">Widget.FileChooser:draw ()</a></td>
+	<td class="summary">Draws the widget.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Widget.FileChooser:isKeyboardFocused">Widget.FileChooser:isKeyboardFocused ()</a></td>
+	<td class="summary">Checks if the keyboard has the focus in this widget.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Widget.FileChooser:isMouseFocused">Widget.FileChooser:isMouseFocused ()</a></td>
+	<td class="summary">Checks if the mouse has the focus in this widget.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Widget.FileChooser:new">Widget.FileChooser:new (mode, ...)</a></td>
+	<td class="summary">Creates a new widget object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Widget.FileChooser:textInput">Widget.FileChooser:textInput (t)</a></td>
+	<td class="summary">Adds text to input widgets.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Widget.FileChooser:update">Widget.FileChooser:update (dt)</a></td>
+	<td class="summary">Updates the widget.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Widget.FileChooser:draw"></a>
+    <strong>Widget.FileChooser:draw ()</strong>
+    </dt>
+    <dd>
+    Draws the widget.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Widget.FileChooser:isKeyboardFocused"></a>
+    <strong>Widget.FileChooser:isKeyboardFocused ()</strong>
+    </dt>
+    <dd>
+    Checks if the keyboard has the focus in this widget.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        True if keyboard has the focus and false otherwise.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Widget.FileChooser:isMouseFocused"></a>
+    <strong>Widget.FileChooser:isMouseFocused ()</strong>
+    </dt>
+    <dd>
+    Checks if the mouse has the focus in this widget.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        True if mouse has the focus and false otherwise.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Widget.FileChooser:new"></a>
+    <strong>Widget.FileChooser:new (mode, ...)</strong>
+    </dt>
+    <dd>
+    Creates a new widget object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">mode</span>
+         A string with these options: "open" for show a open file dialog,
+ and "save" for show a save file dialog.
+        </li>
+        <li><span class="parameter">...</span>
+         A table with these optional parameters: If the mode is "open", the
+ extra arguments are "onSuccess" and "onCancel" functions. If the mode if
+ "save", the extra arguments add "filename" strig (the default name of file)
+ in the dialog.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Widget.FileChooser:textInput"></a>
+    <strong>Widget.FileChooser:textInput (t)</strong>
+    </dt>
+    <dd>
+    Adds text to input widgets.  Use this function with love.textinput.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         The text to add to a input widget.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Widget.FileChooser:update"></a>
+    <strong>Widget.FileChooser:update (dt)</strong>
+    </dt>
+    <dd>
+    Updates the widget.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dt</span>
+         The time in seconds since the last update.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-08-14 18:35:23 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

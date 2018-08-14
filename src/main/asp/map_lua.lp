@@ -2,7 +2,6 @@
 
 local Json = require "libs.json.json"
 local Matrix = require "main.model.matrix"
-local Parser = require "main.utilities.parser"
 local Constants = require "main.utilities.constants"
 
 -- Función principal
@@ -84,7 +83,7 @@ function main(prog)
     tostring(c_cols) .. ")."
 
   -- Inicializa una matriz
-  cells = Matrix(q_rows*c_rows, q_cols*c_cols, Constants.MatrixType.STRING, Constants.CellType.WATER_CELL)
+  cells = Matrix(q_rows*c_rows, q_cols*c_cols, Constants.MatrixType.STRING, Constants.CellType.SEA)
 
   local restrictions = ""
 
@@ -117,11 +116,11 @@ function main(prog)
       print(model)
       for pos, contain in string.gmatch(model, "cell%((%d+),(%l+)%)") do
         pos = tonumber(pos)
-        assert(cells:getPos(pos) == Constants.CellType.WATER_CELL,
+        assert(cells:getPos(pos) == Constants.CellType.SEA,
           "duplicate cell (position " .. pos ..", got " .. contain .. ", set " .. cells:getPos(pos) .. ")")
 
         if contain == "l" then
-          cells:setPos(pos, Constants.CellType.LAND_CELL)
+          cells:setPos(pos, Constants.CellType.GRASS)
 
           local row = math.floor(pos / (q_cols*c_cols)) + 1
           local col = (pos % (q_cols*c_cols)) + 1
