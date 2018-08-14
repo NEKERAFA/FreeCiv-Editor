@@ -57,9 +57,9 @@ local Validator = {
     for _k_name, check_value in pairs(Constants.CellType) do
       result = result or value == check_value
       err_msg = err_msg .. _k_name
-      if n_value < 10 then
+      if n_value < 11 then
         err_msg = err_msg .. ", "
-      elseif n_value == 10 then
+      elseif n_value == 11 then
         err_msg = err_msg .. " or "
       end
       n_value = n_value + 1

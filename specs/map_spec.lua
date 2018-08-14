@@ -33,7 +33,21 @@ describe("Map model tests.", function()
       instance:setCell(2, 2, {})
     end
 
-    assert.has.error(test_error, "bad argument #3 (must be a cell value like OCEAN, PLAIN, VOID, JUNGLE, SEA, MOUNTAIN, LAKE, SWAMP, GRASS, TRUNDA or FOREST)")
+    local err_msg = ""
+    local n_value = 1
+
+    for _k_name, check_value in pairs(Constants.CellType) do
+      result = result or value == check_value
+      err_msg = err_msg .. _k_name
+      if n_value < 11 then
+        err_msg = err_msg .. ", "
+      elseif n_value == 11 then
+        err_msg = err_msg .. " or "
+      end
+      n_value = n_value + 1
+    end
+
+    assert.has.error(test_error, "bad argument #3 (must be a cell value like " .. err_msg .. ")")
   end)
 
   it("Checks if setCell works", function()
