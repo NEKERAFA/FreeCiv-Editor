@@ -24,8 +24,9 @@ xypos(P, X, Y) :- q_pos(P), q_row(X), q_col(Y), X = P \ Q_COLS, Y = P / Q_COLS,
 
   % Number of cells in the region
   n_cells(Z) :- #count{P: c_pos(P)}=Z.
-  % The minimun number of cells in the region
-  min_cells(N/2) :- n_cells(N).
+  % The minimun and maximun number of cells in the region
+  min_cells(N*MIN/100) :- n_cells(N), ratio(MIN, MAX).
+  max_cells(N*MAX/100) :- n_cells(N), ratio(MIN, MAX).
 
   % Generates a rootcell
   1 {rootcell(P) : c_pos(P)} 1.
@@ -37,6 +38,8 @@ xypos(P, X, Y) :- q_pos(P), q_row(X), q_col(Y), X = P \ Q_COLS, Y = P / Q_COLS,
   % Preference in the size of islands in relation to the size of the region
   cells_reached(Z) :- #count{P: reached(P)}=Z.
   :- cells_reached(Z), min_cells(MIN), Z < MIN.
+  :- cells_reached(Z), max_cells(MAX), Z > MAX.
 
   % Sets land and ocean
-  cell(P, l) :- ipos(P, X, Y), reached(p(X, Y)).
+  cell(P, l) :- reached(P).
+  cell(P, w) :- c_pos(P), not reached(P).

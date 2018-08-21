@@ -1,5 +1,6 @@
 local Suit = require "libs.suit"
 local Class = require "libs.hump.class"
+local Lfs = require "lfs"
 
 local WaitMessage = {}
 WaitMessage.__index = WaitMessage
@@ -30,12 +31,24 @@ end
 function WaitMessage:draw ()
   if not self._closed then
     local width, height = love.window.getMode()
-    local x, y = width/2-100, height/2-15
+    if lfs.attributes("resources/status.txt") then
+      local df = io.open("resources/status.txt", "r")
+      local status = df:read("a")
+      local x, y = width/2-100, height/2-30
 
-    love.graphics.setColor(0, 0, 0, .5)
-    love.graphics.rectangle("fill", x, y, 200, 30, 5, 5)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("Waiting...", x+5, y+10, 190, "center")
+      love.graphics.setColor(0, 0, 0, .5)
+      love.graphics.rectangle("fill", x, y, 200, 60, 5, 5)
+      love.graphics.setColor(1, 1, 1)
+      love.graphics.printf("Waiting...", x+5, y+10, 190, "center")
+      love.graphics.printf(status, x+5, y+30, 190, "center")
+    else
+      local x, y = width/2-100, height/2-15
+
+      love.graphics.setColor(0, 0, 0, .5)
+      love.graphics.rectangle("fill", x, y, 200, 30, 5, 5)
+      love.graphics.setColor(1, 1, 1)
+      love.graphics.printf("Waiting...", x+5, y+10, 190, "center")
+    end
   end
 end
 

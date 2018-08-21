@@ -2,46 +2,26 @@
   selector = {330, 480, 30, 30},
   spawn    = {270, 450, 30, 30},
 
-  grass = {60, 0, 30, 30},
-  void  = {90, 0, 30, 30},
-  lake  = {0, 390, 30, 30},
+  glacier  = {0, 60, 30, 30},
+  mountain = {360, 0, 30, 30},
+  forest   = {240, 0, 30, 30},
+  grass    = {60, 0, 30, 30},
+  void     = {90, 0, 30, 30},
+  lake     = {0, 390, 30, 30},
+  blank    = {0, 300, 30, 30},
 
   sea = {
-    upper_left = {
-      {240, 210, 15, 15},
-      {255, 210, 15, 15}
-    },
-    upper_right = {
-      {270, 210, 15, 15},
-      {285, 210, 15, 15}
-    },
-    bottom_left = {
-      {300, 210, 15, 15},
-      {315, 210, 15, 15}
-    },
-    bottom_right = {
-      {330, 210, 15, 15},
-      {345, 210, 15, 15}
-    }
+    upper_left   = {240, 210, 15, 15},
+    upper_right  = {270, 210, 15, 15},
+    bottom_left  = {300, 210, 15, 15},
+    bottom_right = {330, 210, 15, 15}
   },
 
   ocean = {
-    upper_left = {
-      {0, 210, 15, 15},
-      {15, 210, 15, 15}
-    },
-    upper_right = {
-      {30, 210, 15, 15},
-      {45, 210, 15, 15}
-    },
-    bottom_left = {
-      {60, 210, 15, 15},
-      {75, 210, 15, 15}
-    },
-    bottom_right = {
-      {90, 210, 15, 15},
-      {105, 210, 15, 15}
-    }
+    upper_left   = {0, 210, 15, 15},
+    upper_right  = {30, 210, 15, 15},
+    bottom_left  = {60, 210, 15, 15},
+    bottom_right = {90, 210, 15, 15}
   },
 
   plain = {
@@ -137,38 +117,5 @@
     upper_left_bottom  = {390, 30, 30, 30},
     bottom_left_right  = {420, 30, 30, 30},
     single             = {450, 30, 30, 30}
-  },
-
-  border = {
-    surrounded         = {0, 300, 30, 30},
-    upper              = {30, 300, 30, 30},
-    right              = {60, 300, 30, 30},
-    upper_right        = {90, 300, 30, 30},
-    bottom             = {120, 300, 30, 30},
-    upper_bottom       = {150, 300, 30, 30},
-    bottom_right       = {180, 300, 30, 30},
-    upper_right_bottom = {210, 300, 30, 30},
-    left               = {240, 300, 30, 30},
-    upper_left         = {270, 300, 30, 30},
-    left_right         = {300, 300, 30, 30},
-    upper_left_right   = {330, 300, 30, 30},
-    bottom_left        = {360, 300, 30, 30},
-    upper_left_bottom  = {390, 300, 30, 30},
-    bottom_left_right  = {420, 300, 30, 30},
-    single             = {450, 300, 30, 30}
-  },
-
-  mountain = {
-    upper_bottom = {360, 0, 30, 30},
-    left         = {390, 0, 30, 30},
-    surrounded   = {430, 0, 30, 30},
-    right        = {450, 0, 30, 30}
-  },
-
-  forest = {
-    upper_bottom = {240, 0, 30, 30},
-    left         = {270, 0, 30, 30},
-    surrounded   = {300, 0, 30, 30},
-    right        = {330, 0, 30, 30}
   }
 }

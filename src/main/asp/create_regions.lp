@@ -4,8 +4,7 @@
 #const c_rows = 4.
 #const c_cols = 4.
 #const regions = 2.
-
-#program base.
+#const m_size = 2.
 
 %%%% TYPES
 % Type of row and columns

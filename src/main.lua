@@ -17,6 +17,8 @@ local Exporter = require "main.utilities.exporter"
 local map_editor, bar_editor, dialog_editor
 local map_conf = {}
 
+DEBUG = false
+
 local function reset()
   local w_min = math.max(map_editor:getWidth() + 20, 640)
   local h_min = math.max(40 + map_editor:getHeight() + 20, 400)
@@ -87,7 +89,7 @@ end
 local function loadclingoresult()
   local path = Resources.appendFolders("resources", "result.json")
   local map = Resources.loadResource("json", path)
-  map_editor:setMap(map.cells)
+  map_editor:setMap(map.terrain)
   map_editor:setRegions(map.regions, map_conf.c_rows, map_conf.c_cols)
   Resources.removeResource("json", path)
   os.remove(path)
@@ -98,6 +100,7 @@ local function generatemap()
   local thread = love.thread.newThread(Resources.appendFolders("main", "client", "clingo_thread.lua"))
   local to = love.thread.getChannel("toClingo")
   local from = love.thread.getChannel("fromThread")
+  to:push(DEBUG)
   to:push(map_conf.regions)
   to:push(map_conf.q_rows)
   to:push(map_conf.q_cols)
@@ -113,7 +116,13 @@ local function generatemap()
 end
 
 -- Loads and sets elements
-function love.load()
+function love.load(args)
+  if #args == 1 then
+    if args[1]:find("-d") or args[1]:find("--debug") then
+      DEBUG = true
+    end
+  end
+
   -- Creamos la interfaz del editor
   map_editor = Editor()
   bar_editor = Menubar(map_editor._map ~= nil)

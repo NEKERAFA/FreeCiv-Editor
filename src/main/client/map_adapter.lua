@@ -63,46 +63,6 @@ local MapAdapter = Class {
     return list
   end,
 
-  _isUpperLeftWater = function(self, neighbours, type)
-    local corner = neighbours[1]
-    local upper = neighbours[2]
-    local left = neighbours[4]
-
-    return corner and (self._map:getCell(corner.row, corner.col) == type) and
-           ((not left) or (self._map:getCell(left.row, left.col) ~= type)) and
-           ((not upper) or (self._map:getCell(upper.row, upper.col) ~= type))
-  end,
-
-  _isUpperRightWater = function(self, neighbours, type)
-    local corner = neighbours[3]
-    local upper = neighbours[2]
-    local right = neighbours[6]
-
-    return corner and (self._map:getCell(corner.row, corner.col) == type) and
-           ((not right) or (self._map:getCell(right.row, right.col) ~= type)) and
-           ((not upper) or (self._map:getCell(upper.row, upper.col) ~= type))
-  end,
-
-  _isBottomLeftWater = function(self, neighbours, type)
-    local corner = neighbours[7]
-    local bottom = neighbours[8]
-    local left = neighbours[4]
-
-    return corner and (self._map:getCell(corner.row, corner.col) == type) and
-           ((not left) or (self._map:getCell(left.row, left.col) ~= type)) and
-           ((not upper) or (self._map:getCell(bottom.row, bottom.col) ~= type))
-  end,
-
-  _isBottomRightWater = function(self, neighbours, type)
-    local corner = neighbours[9]
-    local bottom = neighbours[8]
-    local right = neighbours[6]
-
-    return corner and (self._map:getCell(corner.row, corner.col) == type) and
-           ((not right) or (self._map:getCell(right.row, right.col) ~= type)) and
-           ((not bottom) or (self._map:getCell(bottom.row, bottom.col) ~= type))
-  end,
-
   _isSingleLand = function(self, neighbours, type)
     local upper = neighbours[2]
     local left = neighbours[4]
@@ -317,7 +277,7 @@ local MapAdapter = Class {
     end
 
     if type == Constants.CellType.SEA or type == Constants.CellType.OCEAN then
-      return f(Constants.CellType.SEA) or f(Constants.CellType.OCEAN)
+      return f(Constants.CellType.SEA) and f(Constants.CellType.OCEAN)
     end
 
     return f(type)
@@ -396,7 +356,7 @@ local MapAdapter = Class {
              ((not upper) or (self._map:getCell(upper.row, upper.col) ~= type))
     end
 
-    if type == Constants.CellType.SEA or type == Constants.CellType.OCEAN then
+    if type == Constants.CellType.SEA then
       return f(Constants.CellType.SEA) or f(Constants.CellType.OCEAN)
     end
 
@@ -431,29 +391,15 @@ local MapAdapter = Class {
     local water_size = self._quads_info.size / 2
     local quads = self._quads_info.quads
 
+    if type ~= Constants.CellType.OCEAN then
+      type = Constants.CellType.SEA
+    end
+
     -- Gets the water quad tiles
-    local quad_upper_left = quads[type][Constants.TilePosition.UPPER_LEFT][1]
-    local quad_upper_right = quads[type][Constants.TilePosition.UPPER_RIGHT][1]
-    local quad_bottom_left = quads[type][Constants.TilePosition.BOTTOM_LEFT][1]
-    local quad_bottom_right = quads[type][Constants.TilePosition.BOTTOM_RIGHT][1]
-
-    -- Checks if one of the corners has land
-    if self:_isUpperLeftLand(neighbours) then
-      quad_upper_left = quads[type][Constants.TilePosition.UPPER_LEFT][2]
-      print("hello")
-    end
-
-    if self:_isUpperRightLand(neighbours) then
-      quad_upper_right = quads[type][Constants.TilePosition.UPPER_RIGHT][2]
-    end
-
-    if self:_isBottomLeftLand(neighbours) then
-      quad_bottom_left = quads[type][Constants.TilePosition.BOTTOM_LEFT][2]
-    end
-
-    if self:_isBottomRightLand(neighbours) then
-      quad_bottom_right = quads[type][Constants.TilePosition.BOTTOM_RIGHT][2]
-    end
+    local quad_upper_left = quads[type][Constants.TilePosition.UPPER_LEFT]
+    local quad_upper_right = quads[type][Constants.TilePosition.UPPER_RIGHT]
+    local quad_bottom_left = quads[type][Constants.TilePosition.BOTTOM_LEFT]
+    local quad_bottom_right = quads[type][Constants.TilePosition.BOTTOM_RIGHT]
 
     -- Checks if exists a row index of the tilemap
     if not self._background.index[row*2] then
@@ -506,13 +452,14 @@ local MapAdapter = Class {
     local quads = self._quads_info.quads
 
     -- Draws a grass or a void cell
-    if type == Constants.CellType.GRASS or type == Constants.CellType.VOID then
+    if type == Constants.CellType.GRASS or type == Constants.CellType.VOID or
+       type == Constants.CellType.GLACIER or type == Constants.CellType.MOUNTAIN or
+       type == Constants.CellType.FOREST or type == Constants.CellType.LAKE then
       quad = quads[type]
     -- Draws a plain, jungle, trunda, swamp or desert cell
     elseif type == Constants.CellType.PLAIN or type == Constants.CellType.JUNGLE or
            type == Constants.CellType.TRUNDA or type == Constants.CellType.SWAMP or
-           type == Constants.CellType.DESERT or type == Constants.CellType.SEA or
-           type == Constants.CellType.OCEAN then
+           type == Constants.CellType.DESERT then
       local pos = ""
       if self:_isSurroundedLand(neighbours, type) then
         pos = Constants.TilePosition.SURROUNDED
@@ -548,11 +495,9 @@ local MapAdapter = Class {
         pos = Constants.TilePosition.SINGLE
       end
 
-      if type == Constants.CellType.SEA or type == Constants.CellType.OCEAN then
-        quad = quads[Constants.TileType.BORDER][pos]
-      else
-        quad = quads[type][pos]
-      end
+      quad = quads[type][pos]
+    else
+      quad = quads[Constants.TileType.BLANK]
     end
 
     -- Checks if exists a row index of the tilemap
@@ -573,21 +518,20 @@ local MapAdapter = Class {
   setCell = function (self, row, col, type)
     -- Update the map
     self._map:setCell(row, col, type)
+
     -- Gets all the neighbours of the cell
     local neighbours = self:_getNeighbours(row, col)
+
     -- Update all the neighbours of the cell
     for i, neighbour in pairs(neighbours) do
       local type = self._map:getCell(neighbour.row, neighbour.col)
       local neighbours = self:_getNeighbours(neighbour.row, neighbour.col)
-      if type == Constants.CellType.SEA or type == Constants.CellType.OCEAN then
-        self:_addWaterCell(neighbour.row, neighbour.col, neighbours, type)
-      end
+      self:_addWaterCell(neighbour.row, neighbour.col, neighbours, type)
       self:_addLandCell(neighbour.row, neighbour.col, neighbours, type)
     end
+
     -- Update the cell in the tilemap
-    if type == Constants.CellType.SEA or type == Constants.CellType.OCEAN then
-      self:_addWaterCell(row, col, neighbours, type)
-    end
+    self:_addWaterCell(row, col, neighbours, type)
     self:_addLandCell(row, col, neighbours, type)
   end,
 
@@ -597,12 +541,12 @@ local MapAdapter = Class {
       for col = 1, self._map.cols do
         -- Gets a cell in the map
         local type = self._map:getCell(row, col)
+
         -- Gets all the neighbours of the cell
         local neighbours = self:_getNeighbours(row, col)
+
         -- Update the cell in the tilemap
-        if type == Constants.CellType.SEA or type == Constants.CellType.OCEAN then
-          self:_addWaterCell(row, col, neighbours, type)
-        end
+        self:_addWaterCell(row, col, neighbours, type)
         self:_addLandCell(row, col, neighbours, type)
       end
     end

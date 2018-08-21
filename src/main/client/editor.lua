@@ -269,7 +269,7 @@ local Editor = Class {
       love.graphics.setColor(1, 1, 1)
 
       -- Draws the regions
-      if self._regions ~= nil then
+      if self._regions ~= nil and DEBUG then
         for i = 1, self._regions.rows do
           for j = 1, self._regions.cols do
             local width = self._quads_info.size*self._regions.width

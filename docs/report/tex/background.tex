@@ -2,7 +2,7 @@
 
 También conocidos como \textit{turn-based strategy} (TBS), son juegos donde el tiempo de juego no transcurre de forma continua, si no que se divide en partes bien definidas llamadas turnos. En un turno, un jugador dispone de un periodo de análisis antes de realizar una acción, lo cual realiza un salto de turno al siguiente jugador. Cuando todos los jugadores han terminado su turno, se comienza una nueva ronda. \\
 
-Existen varios géneros dentro de la estrategia por turnos:
+Existen varios géneros dentro de la estrategia por turnos: 
 
 \begin{itemize}
 	\item \textbf{Juegos clásicos de tablero}: Son los primeros juegos de este tipo, padres del resto de géneros. La idea es controlar la acción del propio juego mediante turnos. En este género tenemos como ejemplos el ajedrez, el Go o el Revesi.
@@ -44,11 +44,11 @@ Debido a las exigencias a la hora de desarrollar el proyecto, se ha optado por e
 
 \textit{Answer Set Programming} (ASP) es un paradigma enfocado a la resolución declarativa de problemas difíciles, combinando un lenguaje simple con el que modelar los problemas lógicos y herramientas de alto rendimiento para la resolución de estos. ASP está basado en modelos estables \cite{stablemodels}, que usa para definir la semántica declarativa en los programas lógicos, y lógica no monótono \cite{nonmonotonic}, que añade razonamiento por defecto. Con esto, ASP permite resolver problemas \textit{NP-hard} de forma uniforme. \\
 
-Mediante estos mecanismos, los problemas lógicos se reducen al cómputo de los modelos estables de un programa lógico dado, lo cual se hace mediante herramientas llamadas \textit{solvers}, que se encargan de utilizar diferentes técnicas para la expansión de lo que se llama Forma Normal Conjuntiva (FNC), que es una conjunción de clausulas.
+Mediante estos mecanismos, los problemas lógicos se reducen al cómputo de los modelos estables de un programa lógico dado, lo cual se hace mediante herramientas llamadas \textit{solvers}, que se encargan de utilizar diferentes técnicas para la expansión de lo que se llama Forma Normal Conjuntiva (FNC), que es una conjunción de clausulas. \\
 
-Para ello, se necesita que los programas lógicos estén expresados con variables libres. Como la forma de expresar un programa lógico en ASP es mediante un lenguaje de alto nivel con ciudadanos de primer orden, muchas de las variables están ligadas. Es por eso que, antes de resolver el programa, se usa unas herramientas llamadas \textit{grounders}, que permiten transformar el programa a su equivalente con variables libres. \\
+Para ello, se necesita que los programas lógicos estén expresados con variables libres. Como la forma de expresar un programa lógico en ASP es mediante un lenguaje de alto nivel con ciudadanos de primer orden, muchas de las variables están ligadas. Es por eso que, antes de resolver el programa, se usa unas herramientas llamadas \textit{grounders}, que permiten transformar el programa a su equivalente con variables libres.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[height=4em]{images/ASP}
 	\label{fig:asp}
@@ -71,6 +71,23 @@ Exiten otras implementaciones que lo único en lo que se diferencian de la imple
 
 Como ya expliqué en el apartado anterior [sección \ref{asp}], las herramientas ASP que se usarán permiten usar este como un lenguaje embebido, lo que nos permitirá controlar la ejecución de la base. Así mismo, tomaremos el \textit{engine} LÖVE para crear una interfaz gráfica para que los usuarios puedan trabajar mejor con la edición de los mapas.
 
+\subsection{JSON}
+
+JSON\footnote{https://www.json.org} (acrónimo de JavaScript Object Notation) es un formato abierto \cite{JSON} ligero de intercambio de información. Está pensado para la transmisión de objetos de datos usando texto en un formato legible por humanos, pudiendo ser leído y modificado fácilmente. \\
+
+A demás, puedes ser fácilmente analizado y generado por máquinas, de ahí que a pesar de que en sus inicios fue pensado como un subconjunto del lenguaje de programación JavaScript/ECMAScript, actualmente es un lenguaje independiente debido a que muchos otros lenguajes incluyen actualmente herramientas para poder leerlo y modificarlo de forma nativa. \\
+
+JSON se basa en dos tipos de estructuras:
+
+\begin{itemize}
+	\item Un mapa asociativo que guarda pares (nombre, valor). Esta estructura se reconoce en el estándar como \textit{object}.
+	\item Una lista ordenada que guarda valores. Esta estructura se reconoce en el estándar como \textit{array}.
+\end{itemize}
+
+Estas estructuras se pueden mezclar independientemente, pudiendo generar listas de objetos u objetos que contienen listas de elementos. \\
+
+Debido estas características, y a que Lua soporta este estándar mediante bibliotecas externas, se usará para el intercambio de datos entre el programa principal y la parte lógica, así como será utilizado para almacenar temporalmente los escenarios antes de ser exportados al software final.
+
 \section{Herramientas}
 
 Aparte de las tecnologías usadas para la construcción del proyecto, se ha usado distintas herramientas que nos han servido a la hora de elaborar y desarrollar el sistema planteado.
@@ -89,7 +106,7 @@ Debido a estas características, Git es uno de los sistemas de control de versio
 	\item GitLab\footnote{https://gitlab.com}, creado por dos programadores ucranianos y que hoy en día es gestionado por GitLab Inc. Es usado por organizaciones como Sony, IBM, NASA, CERN o GNOME Foundation. Permite realizar gratuitamente repositorios privados, gestionar grupos y realizar rastreo de \textit{issues} y funcionalidades de CI/CD.
 	\item Phabricator\footnote{https://www.phacility.com}, creado por Facebook como herramienta interna que integra también Mercurial y Subversion. Actualmente es de código abierto y lo usan empresas como Blender, Cisco Systems, Dropbox o KDE.
 	\item Bitbucket\footnote{https://bitbucket.org}, creado por Atlassian. Este sistema integra Mercurial desde sus inicios y Git desde 2011, y está pensado para ser integrado con el resto de productos como Atlassian como Jira, Confluence y Bamboo.
-	\item GitHub\footnote{text}, creado por tres estudiantes estadounidenses, hoy en día es gestionado por GitHub Inc. empresa que fue adquirida por Microsoft en 2018. Permite realizar rastreo de \textit{bugs}, wikis, gestión de tareas y petición de funcionalidades. Es usado por empresas como Microsoft, Google, Travis CI, Bitnami, DigitalOcean y Unreal Engine. Con la popularidad de GitHub nacieron varios servicios, como el Education Program, que permite a estudiantes el acceso gratuito a herramientas de GitHub y de partners; Gist, que permite usar GitHub como un hosting de \textit{snippets} y GitHub Marketplace, que permite comprar servicios con los que aumentar las funcionalidades en los proyectos y que muchos de ellos son gestionados por partners.
+	\item GitHub\footnote{https://www.github.com}, creado por tres estudiantes estadounidenses, hoy en día es gestionado por GitHub Inc. empresa que fue adquirida por Microsoft en 2018. Permite realizar rastreo de \textit{bugs}, wikis, gestión de tareas y petición de funcionalidades. Es usado por empresas como Microsoft, Google, Travis CI, Bitnami, DigitalOcean y Unreal Engine. Con la popularidad de GitHub nacieron varios servicios, como el Education Program, que permite a estudiantes el acceso gratuito a herramientas de GitHub y de partners; Gist, que permite usar GitHub como un hosting de \textit{snippets} y GitHub Marketplace, que permite comprar servicios con los que aumentar las funcionalidades en los proyectos y que muchos de ellos son gestionados por partners.
 \end{itemize}
 
 \subsection{LÖVE}\label{subsec:love2d}

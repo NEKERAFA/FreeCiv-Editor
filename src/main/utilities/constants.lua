@@ -7,6 +7,7 @@ local Constants = {
   CellType = {
     SEA      = "sea",      -- Represents a sea bioma cell
     OCEAN    = "ocean",    -- Represents a ocean bioma cell
+    GLACIER  = "glacier",  -- Represents a glacier bioma cell
     LAKE     = "lake",     -- Represents a lake bioma cell
     PLAIN    = "plain",    -- Represents a plain bioma cell
     GRASS    = "grass",    -- Represents a grass bioma cell
@@ -24,6 +25,7 @@ local Constants = {
     SELECTOR = "selector", -- Represents the selector image
     SEA      = "sea",      -- Represents a sea bioma tile
     OCEAN    = "ocean",    -- Represents a ocean bioma tile
+    GLACIER  = "glacier",  -- Represents a glacier bioma tile
     LAKE     = "lake",     -- Represents a lake bioma tile
     PLAIN    = "plain",    -- Represents a plain bioma tile
     GRASS    = "grass",    -- Represents a grass bioma tile
@@ -33,7 +35,7 @@ local Constants = {
     SWAMP    = "swamp",    -- Represents a swamp bioma tile
     MOUNTAIN = "mountain", -- Represents a mountain bioma tile
     VOID     = "void",     -- Represents a void tile
-    BORDER   = "border",   -- Represents a border tile (this is for set water cells)
+    BLANK    = "blank",   -- Represents a border tile (this is for set water cells)
     SPAWN    = "spawn"     -- Represents the spawn image
   },
 
