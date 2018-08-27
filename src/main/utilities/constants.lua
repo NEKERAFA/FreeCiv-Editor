@@ -16,6 +16,7 @@ local Constants = {
     TRUNDA   = "trunda",   -- Represents a trunda bioma cell
     SWAMP    = "swamp",    -- Represents a swamp bioma cell
     DESERT   = "desert",   -- Represents a desert bioma cell
+    HILLS    = "hills",    -- Represents a hill bioma cell
     MOUNTAIN = "mountain", -- Represents a mountain bioma cell
     VOID     = "void"      -- Represents a void cell
   },
@@ -33,6 +34,7 @@ local Constants = {
     JUNGLE   = "jungle",   -- Represents a jungle bioma tile
     TRUNDA   = "trunda",   -- Represents a trunda bioma tile
     SWAMP    = "swamp",    -- Represents a swamp bioma tile
+    HILLS    = "hills",    -- Represents a hill bioma tile
     MOUNTAIN = "mountain", -- Represents a mountain bioma tile
     VOID     = "void",     -- Represents a void tile
     BLANK    = "blank",   -- Represents a border tile (this is for set water cells)
@@ -73,9 +75,8 @@ local Constants = {
   -- into a valid Freeciv map
   TemplateRegex = {
     NAME        = "::NAME::",
+    PLAYER_NUM  = "::PLAYER_NUM::",
     PLAYERS     = "::PLAYERS::",
-    ROWS        = "::ROWS::",
-    COLUMNS     = "::COLUMNS::",
     TERRAIN     = "::TERRAIN::",
     PLAYER_LIST = "::PLAYER_LIST::",
     LAYER_B     = "::LAYER_B::",

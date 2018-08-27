@@ -12,7 +12,8 @@ install:
 	sudo luarocks install busted
 
 run:
-	love ./src/
+	cd src
+	love ./
 
 test:
 	busted

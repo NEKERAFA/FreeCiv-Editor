@@ -454,7 +454,8 @@ local MapAdapter = Class {
     -- Draws a grass or a void cell
     if type == Constants.CellType.GRASS or type == Constants.CellType.VOID or
        type == Constants.CellType.GLACIER or type == Constants.CellType.MOUNTAIN or
-       type == Constants.CellType.FOREST or type == Constants.CellType.LAKE then
+       type == Constants.CellType.FOREST or type == Constants.CellType.HILLS or
+       type == Constants.CellType.LAKE then
       quad = quads[type]
     -- Draws a plain, jungle, trunda, swamp or desert cell
     elseif type == Constants.CellType.PLAIN or type == Constants.CellType.JUNGLE or
@@ -531,7 +532,9 @@ local MapAdapter = Class {
     end
 
     -- Update the cell in the tilemap
-    self:_addWaterCell(row, col, neighbours, type)
+    if type == Constants.CellType.SEA or type == Constants.CellType.OCEAN then
+      self:_addWaterCell(row, col, neighbours, type)
+    end
     self:_addLandCell(row, col, neighbours, type)
   end,
 
@@ -546,7 +549,9 @@ local MapAdapter = Class {
         local neighbours = self:_getNeighbours(row, col)
 
         -- Update the cell in the tilemap
-        self:_addWaterCell(row, col, neighbours, type)
+        if type == Constants.CellType.SEA or type == Constants.CellType.OCEAN then
+          self:_addWaterCell(row, col, neighbours, type)
+        end
         self:_addLandCell(row, col, neighbours, type)
       end
     end

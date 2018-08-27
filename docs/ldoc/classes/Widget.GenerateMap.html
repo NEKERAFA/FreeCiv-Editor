@@ -42,8 +42,8 @@
   <li><a href="../classes/Map.html">Map</a></li>
   <li><a href="../classes/MapAdapter.html">MapAdapter</a></li>
   <li><a href="../classes/Matrix.html">Matrix</a></li>
-  <li><strong>Widget.FileChooser</strong></li>
-  <li><a href="../classes/Widget.GenerateMap.html">Widget.GenerateMap</a></li>
+  <li><a href="../classes/Widget.FileChooser.html">Widget.FileChooser</a></li>
+  <li><strong>Widget.GenerateMap</strong></li>
   <li><a href="../classes/Widget.MenuBar.html">Widget.MenuBar</a></li>
   <li><a href="../classes/Widget.NewMap.html">Widget.NewMap</a></li>
 </ul>
@@ -58,8 +58,8 @@
 
 <div id="content">
 
-<h1>Class <code>Widget.FileChooser</code></h1>
-<p>This class defines a popup window that have a file chooser dialog.</p>
+<h1>Class <code>Widget.GenerateMap</code></h1>
+<p>This class defines a popup window to modified the parameters in the generation.</p>
 <p>
 
 </p>
@@ -68,27 +68,23 @@
 <h2><a href="#Methods">Methods</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Widget.FileChooser:draw">Widget.FileChooser:draw ()</a></td>
+	<td class="name" nowrap><a href="#Widget.GenerateMap:draw">Widget.GenerateMap:draw ()</a></td>
 	<td class="summary">Draws the widget.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Widget.FileChooser:isKeyboardFocused">Widget.FileChooser:isKeyboardFocused ()</a></td>
-	<td class="summary">Checks if the keyboard has the focus in this widget.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Widget.FileChooser:isMouseFocused">Widget.FileChooser:isMouseFocused ()</a></td>
+	<td class="name" nowrap><a href="#Widget.GenerateMap:isMouseFocused">Widget.GenerateMap:isMouseFocused ()</a></td>
 	<td class="summary">Checks if the mouse has the focus in this widget.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Widget.FileChooser:new">Widget.FileChooser:new (mode, ...)</a></td>
+	<td class="name" nowrap><a href="#Widget.GenerateMap:new">Widget.GenerateMap:new (...)</a></td>
 	<td class="summary">Creates a new widget object.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Widget.FileChooser:textInput">Widget.FileChooser:textInput (t)</a></td>
+	<td class="name" nowrap><a href="#Widget.GenerateMap:textInput">Widget.GenerateMap:textInput (t)</a></td>
 	<td class="summary">Adds text to input widgets.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Widget.FileChooser:update">Widget.FileChooser:update (dt)</a></td>
+	<td class="name" nowrap><a href="#Widget.GenerateMap:update">Widget.GenerateMap:update (dt)</a></td>
 	<td class="summary">Updates the widget.</td>
 	</tr>
 </table>
@@ -101,8 +97,8 @@
 
     <dl class="function">
     <dt>
-    <a name = "Widget.FileChooser:draw"></a>
-    <strong>Widget.FileChooser:draw ()</strong>
+    <a name = "Widget.GenerateMap:draw"></a>
+    <strong>Widget.GenerateMap:draw ()</strong>
     </dt>
     <dd>
     Draws the widget.
@@ -115,27 +111,8 @@
 
 </dd>
     <dt>
-    <a name = "Widget.FileChooser:isKeyboardFocused"></a>
-    <strong>Widget.FileChooser:isKeyboardFocused ()</strong>
-    </dt>
-    <dd>
-    Checks if the keyboard has the focus in this widget.
-
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-        True if keyboard has the focus and false otherwise.
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Widget.FileChooser:isMouseFocused"></a>
-    <strong>Widget.FileChooser:isMouseFocused ()</strong>
+    <a name = "Widget.GenerateMap:isMouseFocused"></a>
+    <strong>Widget.GenerateMap:isMouseFocused ()</strong>
     </dt>
     <dd>
     Checks if the mouse has the focus in this widget.
@@ -153,8 +130,8 @@
 
 </dd>
     <dt>
-    <a name = "Widget.FileChooser:new"></a>
-    <strong>Widget.FileChooser:new (mode, ...)</strong>
+    <a name = "Widget.GenerateMap:new"></a>
+    <strong>Widget.GenerateMap:new (...)</strong>
     </dt>
     <dd>
     Creates a new widget object.
@@ -162,15 +139,8 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">mode</span>
-         A string with these options: "open" for show a open file dialog,
- and "save" for show a save file dialog.
-        </li>
         <li><span class="parameter">...</span>
-         A table with these optional parameters: If the mode is "open", the
- extra arguments are "onSuccess" and "onCancel" functions. If the mode if
- "save", the extra arguments add "filename" strig (the default name of file)
- in the dialog.
+         A table with "onSuccess" and "onCancel" functions.
         </li>
     </ul>
 
@@ -180,8 +150,8 @@
 
 </dd>
     <dt>
-    <a name = "Widget.FileChooser:textInput"></a>
-    <strong>Widget.FileChooser:textInput (t)</strong>
+    <a name = "Widget.GenerateMap:textInput"></a>
+    <strong>Widget.GenerateMap:textInput (t)</strong>
     </dt>
     <dd>
     Adds text to input widgets.  Use this function with love.textinput.
@@ -200,8 +170,8 @@
 
 </dd>
     <dt>
-    <a name = "Widget.FileChooser:update"></a>
-    <strong>Widget.FileChooser:update (dt)</strong>
+    <a name = "Widget.GenerateMap:update"></a>
+    <strong>Widget.GenerateMap:update (dt)</strong>
     </dt>
     <dd>
     Updates the widget.

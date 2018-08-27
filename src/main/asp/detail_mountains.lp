@@ -1,6 +1,6 @@
 % Type of row and columns
-row(0..ROWS-1) :- dims(ROWS, COLS, SIZE).
-col(0..COLS-1) :- dims(ROWS, COLS, SIZE).
+row(0..ROWS-1) :- dims(ROWS, COLS, SIZE, LENGHT).
+col(0..COLS-1) :- dims(ROWS, COLS, SIZE, LENGHT).
 
 % Definition of position
 pos(p(X, Y)) :- row(X), col(Y).
@@ -10,6 +10,9 @@ pos(p(X, Y)) :- row(X), col(Y).
 1 {end(P) : cell(P, l)} 1 :- start(Q).
 % Forbidden that start and end point are the same.
 :- start(P), end(Q), P==Q.
+
+lenght(|X1-X2|+|Y1-Y2|) :- start(p(X1, Y1)), end(p(X2, Y2)).
+:- lenght(N), dims(ROWS, COLS, SIZE, LENGHT), N!=LENGHT.
 
 % The start cell is reached always.
 reached(P) :- start(P).
@@ -42,8 +45,8 @@ height(P, N+M+1) :- size(P, up, N), size(P, down, M).
 width(P, N+M+1) :- size(P, left, N), size(P, right, M).
 
 % Forbidden paths smaller than the defined size in dims atom.
-:- height(P, N), dims(ROWS, COLS, SIZE), N!=SIZE.
-:- width(P, N), dims(ROWS, COLS, SIZE), N!=SIZE.
+:- height(P, N), dims(ROWS, COLS, SIZE, LENGHT), N<SIZE.
+:- width(P, N), dims(ROWS, COLS, SIZE, LENGHT), N<SIZE.
 
 % Translate reached in mountain atom.
 mountain(P) :- reached(P).

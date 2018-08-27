@@ -44,7 +44,6 @@
 %cell(p(5, 5), l).
 %-------------------------------------------------------------------------------
 
-
 % Type of row and columns
 row(0..ROWS-1) :- dims(ROWS, COLS).
 col(0..COLS-1) :- dims(ROWS, COLS).

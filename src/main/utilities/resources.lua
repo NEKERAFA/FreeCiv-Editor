@@ -4,10 +4,10 @@
 local Lfs = require "lfs"
 local Json = require "libs.json.json"
 
--- List for save the loaded resources
-local loaded = {}
--- List for save the added loaders
-local loaders = {}
+-- List for save the _loaded resources
+local _loaded = {}
+-- List for save the added _loaders
+local _loaders = {}
 
 --- This module controls all the resources.
 -- @module Resources
@@ -36,11 +36,22 @@ function Resources.appendFolders (...)
   return path
 end
 
+--------------------------------------------------------------------------------
+
+-- Path that contains the images
+local imagePath = "resources"
+-- Path that contains the configuration files
+local configPath = love.filesystem.getSaveDirectory()
+-- Path that contains the file with the scenario template
+local scenarioPath = Resources.appendFolders("resources", "scenario.txt")
+
+--------------------------------------------------------------------------------
+
 --- Adds a loader for a specific resource.
 -- @param resource Type of the resource.
 -- @param method A function that receives a name resource and returns a resource object.
 function Resources.addLoader (resource, method)
-  loaders[resource] = method
+  _loaders[resource] = method
 end
 
 --- Calls a loader and return a resource.
@@ -48,30 +59,30 @@ end
 -- @param name The name of the new resource.
 -- @return Returns a reference to the resource.
 function Resources.loadResource (resource, name)
-  assert(loaders[resource], "not loader added for " .. resource .. " resources")
+  assert(_loaders[resource], "not loader added for " .. resource .. " resources")
 
   local key = resource .. ":" .. name
 
-  if not loaded[key] then
-    loaded[key] = loaders[resource](name)
+  if not _loaded[key] then
+    _loaded[key] = _loaders[resource](name)
   end
 
-  return loaded[key]
+  return _loaded[key]
 end
 
---- Remove a loaded resource.
+--- Remove a _loaded resource.
 -- @param resource Type of the resource.
 -- @param name The name of the new resource.
 function Resources.removeResource (resource, name)
   local key = resource .. ":" .. name
 
-  assert(loaded[key], key .. " resource is not loaded")
+  assert(_loaded[key], key .. " resource is not _loaded")
 
-  if loaded[key].release then
-    loaded[key]:release()
+  if _loaded[key].release then
+    _loaded[key]:release()
   end
 
-  loaded[key] = false
+  _loaded[key] = false
 end
 
 --- Saves a configuration.
@@ -79,14 +90,13 @@ end
 -- @param conf The table with the values to save.
 function Resources.saveConfiguration (name, conf)
   local fullPath = Resources.appendFolders(configPath, name .. ".json")
-  local file = love.filesystem.newFile(fullPath, "w")
   local df = io.open(fullPath, "w+")
   df:write(Json.encode(conf))
   df:flush()
   df:close()
 
   local key = "conf:" .. name
-  if loaded[key] then loaded[key] = false end
+  if _loaded[key] then _loaded[key] = false end
 end
 
 --- Checks if a configuration exists
@@ -98,13 +108,6 @@ function Resources.existConfiguration (name)
 end
 
 --------------------------------------------------------------------------------
-
--- Path that contains the images
-local imagePath = "resources"
--- Path that contains the configuration files
-local configPath = love.filesystem.getSaveDirectory()
--- Path that contains the file with the scenario template
-local scenarioPath = Resources.appendFolders("resources", "scenario.txt")
 
 -- Adds a configuration loader
 Resources.addLoader("conf", function(name)
