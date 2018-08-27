@@ -15,7 +15,7 @@ local Validator = {
     if flags then
       if flags[name] then
         return flags[name]
-      elseif default then
+      elseif default thensetTilemap
         return default
       else
         error("bad argument #" .. pos .. " (flag " .. name .." must exist)")
