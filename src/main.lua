@@ -2,68 +2,122 @@
 -- Facultade de Informática da Coruña - Universidade da Coruña
 
 local Json = require "libs.json.json"
-local Gamestate = require "libs.hump.gamestate"
+local Class = require "libs.hump.class"
 
 local Editor = require "main.client.editor"
 local Menubar = require "main.client.widgets.menubar"
 local FileChooser = require "main.client.widgets.filechooser"
 local Newmap = require "main.client.widgets.newmap"
+local GenerateMap = require "main.client.widgets.generatemap"
 local WaitMessage = require "main.client.widgets.waitmessage"
 
 local Resources = require "main.utilities.resources"
 local Exporter = require "main.utilities.exporter"
 
--- Variables of the UI
-local map_editor, bar_editor, dialog_editor
-local map_conf = {}
-
+--- Variable global para saber si estamos en debug o no
 DEBUG = false
 
-local function reset()
-  local w_min = math.max(map_editor:getWidth() + 20, 640)
-  local h_min = math.max(40 + map_editor:getHeight() + 20, 400)
-  map_editor:resize(w_min, h_min)
+--------------------------------------------------------------------------------
+
+--- El módulo principal inicia y controla toda la aplicación general
+-- @module Main
+local Main = {
+  usage = "freeciv_gen.lua [options]:\n" ..
+          " -d, --debug\t\tEnables debugging logs.\n" ..
+          " -o, --open <file.json>\t\tOpens a map file and loads it.\n" ..
+          " -n, --new <rows> <columns>\tCreates a empty map.\n" ..
+          " -g, --generate <>\n" ..
+          " -h, --help\t\tPrints this message.",
+
+  mapEditor = Editor(),
+  mapConf = {},
+  barEditor = Menubar(),
+  dialogEditor = nil
+}
+
+--- Inicia el módulo Main.
+-- @param args Lista de argumentos pasados al intérprete.
+function Main.init(args)
+  -- Compruebo los argumentos
+  if #args > 0 then
+    local arg = 1
+
+    while arg <= #args do
+      if args[arg]:find("-d") or args[arg]:find("--debug") then
+        DEBUG = true
+        arg = arg+1
+      elseif args[arg]:find("-o") or args[arg]:find("--open") and arg+2 <= #args then
+        Main._openMap(args[1])
+        arg = arg+2
+      elseif args[arg]:find("-n") or args[arg]:find("--new") and arg+3 <= #args then
+        Main._newMap(tonumber(args[arg+1]), tonumber(args[arg+2]))
+        arg = arg+3
+      elseif args[1]:find("-g") or args[1]:find("--generate") and arg+5 <= #args then
+        Main._newMap(tonumber(args[2]), tonumber(args[3]))
+      else
+        print(Main.usage)
+        os.exit(1)
+      end
+    end
+
+    return
+  end
+
+  -- Compruebo si existe una configuración ya del programa
+  if Resources.existConfiguration("editor") then
+    local conf = Resources.loadResource("conf", "editor")
+    Main._openMap(conf.lastOpened)
+  end
+end
+
+--- Reinicia el tamaño del editor.
+function Main._resetEditor()
+  local w_min = math.max(Main.mapEditor:getWidth() + 20, 640)
+  local h_min = math.max(40 + Main.mapEditor:getHeight() + 20, 400)
+  Main.mapEditor:resize(w_min, h_min)
   love.window.setMode(w_min, h_min, {resizable = true, minwidth = w_min, minheight = h_min, centered = true})
 end
 
-local function closepop()
-  dialog_editor = nil
+--- Cierra los diálogos pendientes.
+function Main._closePop()
+  Main.dialogEditor = nil
 end
 
-local function newmap(r, q_r, q_c, c_r, c_c)
-  map_conf.regions = r
-  map_conf.q_rows, map_conf.q_cols = q_r, q_c
-  map_conf.c_rows, map_conf.c_cols = c_r, c_c
-  map_editor:newMap(q_r*c_r, q_c*c_c)
-  map_editor._regions = nil
-  bar_editor.openfile = true
-  dialog_editor = nil
-  reset()
-  closepop()
+--- Crea un mapa vacío.
+-- @param rows Número de filas del nuevo mapa.
+-- @param cols Numero de columnas del nuevo mapa.
+function Main._newMap(rows, cols)
+  Main.mapEditor:newMap(rows, cols)
+  Main.mapEditor._regions = nil
+  Main.barEditor.openfile = true
+  Main.dialogEditor = nil
+  Main._resetEditor()
+  Main._closePop()
 end
 
-local function openmap(path)
+--- Abre un mapa en formato json guardado anteriormente por la aplicación.
+-- @param path Ruta del archivo a abrir.
+function Main._openMap(path)
   local map_file = Resources.loadResource("json", path)
-  map_conf.regions = map_file.regions
-  map_conf.q_rows = map_file.q_rows
-  map_conf.q_cols = map_file.q_cols
-  map_conf.c_rows = map_file.c_rows
-  map_conf.c_cols = map_file.c_cols
-  map_editor:setMap(map_file.map)
-  bar_editor.openfile = true
+  Main.mapConf = map_file.conf
+  Main.mapEditor:setMap(map_file.map)
+  Main.mapEditor:setRegions(map_file.regions, map_file.conf.q_rows, map_file.conf.q_cols)
+  Main.mapEditor:setSpawns(map_file.startpos)
+  Main.barEditor.openfile = true
   Resources.saveConfiguration("editor", {lastOpened = path})
-  reset()
-  closepop()
+  Main._resetEditor()
+  Main._closePop()
 end
 
-local function savemap(path, name)
+--- Guarda el mapa actual en formato json para poder seguir editándolo luego.
+-- @param path Ruta del archivo a guardar.
+-- @param name Nombre del archivo.
+function Main._saveMap(path, name)
   local map = {
-    regions = map_conf.regions,
-    q_rows = map_conf.q_rows,
-    q_cols = map_conf.q_cols,
-    c_rows = map_conf.c_rows,
-    c_cols = map_conf.c_cols,
-    map = map_editor._map:getMap()
+    map = Main.mapEditor._map:getMap(),
+    regions = Main.mapEditor._regions:getMap(),
+    startpos = Main.mapEditor._startpos,
+    conf = Main.mapConf
   }
 
   local fullpath = Resources.appendFolders(path, name .. ".json")
@@ -73,136 +127,240 @@ local function savemap(path, name)
   df:flush()
   df:close()
   Resources.saveConfiguration("editor", {lastOpened = fullpath})
-  closepop()
+  Main._closePop()
 end
 
-local function exportmap(path, name)
-  local rows = map_editor._map.rows
-  local columns = map_editor._map.cols
-  local terrain = map_editor._map:getMap()
-  local startpos = {}
+--- Exporta el mapa actual a un formato reconocible por FreeCiv.
+-- @param path Ruta del archivo a guardar.
+-- @param name Nombre del archivo.
+function Main._exportMap(path, name)
+  local rows = Main.mapEditor._map.rows
+  local columns = Main.mapEditor._map.cols
+  local terrain = Main.mapEditor._map:getMap()
+  local startpos = Main.mapEditor._startpos
   local file = Resources.appendFolders(path, name .. ".txt")
   Exporter.export(file, name, rows, columns, terrain, startpos)
-  closepop()
+  Main._closePop()
 end
 
-local function loadclingoresult()
+--- Obtiene un resultado de la generación de clingo y la carga como mapa nuevo
+function Main._loadClingoResult()
   local path = Resources.appendFolders("resources", "result.json")
   local map = Resources.loadResource("json", path)
-  map_editor:setMap(map.terrain)
-  map_editor:setRegions(map.regions, map_conf.c_rows, map_conf.c_cols)
+  Main.mapEditor:setMap(map.terrain)
+  Main.mapEditor:setRegions(map.regions, Main.mapConf.q_rows, Main.mapConf.q_cols)
+  Main.mapEditor:setSpawns(map.startpos)
   Resources.removeResource("json", path)
   os.remove(path)
-  closepop()
+  Main._closePop()
 end
 
-local function generatemap()
+--- Llama al módulo de Clingo para generar un nuevo mapa.
+-- @param regions Número de islas a generar.
+-- @param land Porcentaje de tierra a generar.
+-- @param terrain Porcentaje del tamaño de los biomas.
+-- @param size_mountains Longitud de las coordilleras.
+-- @param width_mountains Ancho de las coordilleras.
+function Main._generateMap(regions, land, terrain, size_mountains, width_mountains)
+  -- Primero obtengo las divisiones enteras
+  local div_rows, div_cols = regions, regions
+  while Main.mapEditor._map.rows % div_rows ~= 0 do
+    div_rows = div_rows + 1
+  end
+  while Main.mapEditor._map.cols % div_cols ~= 0 do
+    div_cols = div_cols + 1
+  end
+
+  -- Relleno con la información del pop-up
+  Main.mapConf.regions = regions
+  Main.mapConf.q_rows = div_rows
+  Main.mapConf.q_cols = div_cols
+  Main.mapConf.c_rows = math.floor(Main.mapEditor._map.rows / div_rows)
+  Main.mapConf.c_cols = math.floor(Main.mapEditor._map.cols / div_cols)
+  Main.mapConf.land = land
+  Main.mapConf.terrain = terrain
+  Main.mapConf.size_mountains = size_mountains
+  Main.mapConf.width_mountains = width_mountains
+
   local thread = love.thread.newThread(Resources.appendFolders("main", "client", "clingo_thread.lua"))
   local to = love.thread.getChannel("toClingo")
   local from = love.thread.getChannel("fromThread")
   to:push(DEBUG)
-  to:push(map_conf.regions)
-  to:push(map_conf.q_rows)
-  to:push(map_conf.q_cols)
-  to:push(map_conf.c_rows)
-  to:push(map_conf.c_cols)
+  to:push(Main.mapConf.regions)
+  to:push(Main.mapConf.q_rows)
+  to:push(Main.mapConf.q_cols)
+  to:push(Main.mapConf.c_rows)
+  to:push(Main.mapConf.c_cols)
+  to:push(Main.mapConf.land)
+  to:push(Main.mapConf.terrain)
+  to:push(Main.mapConf.size_mountains)
+  to:push(Main.mapConf.width_mountains)
   thread:start()
 
   local value = from:demand()
   if value == "ok" then
     to:release()
-    dialog_editor = WaitMessage(from, loadclingoresult)
+    Main.dialogEditor = WaitMessage(from, Main._loadClingoResult)
   end
 end
 
--- Loads and sets elements
-function love.load(args)
-  if #args == 1 then
-    if args[1]:find("-d") or args[1]:find("--debug") then
-      DEBUG = true
+--- Función que se llama cada vez que se actualiza la interfaz.
+-- @param dt Tiempo que ha pasado desde la última vez que se llamó al update.
+function Main.update(dt)
+  local on_dialog = false
+
+  -- Si hay un pop-up, se actualiza
+  if Main.dialogEditor then
+    Main.dialogEditor:update(dt)
+
+    if Main.dialogEditor and Main.dialogEditor.isMouseFocused then
+      on_dialog = Main.dialogEditor:isMouseFocused()
     end
   end
 
-  -- Creamos la interfaz del editor
-  map_editor = Editor()
-  bar_editor = Menubar(map_editor._map ~= nil)
-  love.graphics.setBackgroundColor(0.9, 0.9, 0.9)
+  -- Actualizamos la barra de herramientas
+  local option = Main.barEditor:update(dt, on_dialog)
 
-  -- Compruebo si existe una configuración ya del programa
-  if Resources.existConfiguration("editor") then
-    local conf = Resources.loadResource("conf", "editor")
-    openmap(conf.lastOpened)
-  end
-end
-
--- Function for resize window
-function love.resize(width, height)
-  map_editor:resize(width, height)
-end
-
-function love.update(dt)
-  local option = bar_editor:update(dt, dialog_editor and dialog_editor.isMouseFocused and dialog_editor:isMouseFocused())
-
-  if dialog_editor then
-    dialog_editor:update(dt)
-  end
-
+  -- Comprobamos la opción pulsada en la barra de herramientas
   if option == 1 then
-    dialog_editor = Newmap(newmap, closepop)
+    Main.dialogEditor = Newmap(Main._newMap, Main._closePop)
   elseif option == 2 then
-    dialog_editor = FileChooser("open", openmap, closepop)
+    Main.dialogEditor = FileChooser("open", Main._openMap, Main._closePop)
   elseif option == 3 then
-    dialog_editor = FileChooser("save", "new map", savemap, closepop)
+    Main.dialogEditor = FileChooser("save", "new map", Main._saveMap, Main._closePop)
   elseif option == 4 then
-    dialog_editor = FileChooser("save", "exported", exportmap, closepop)
+    Main.dialogEditor = FileChooser("save", "exported", Main._exportMap, Main._closePop)
   elseif option == 5 then
-    generatemap()
+    Main.dialogEditor = GenerateMap(Main._generateMap, Main._closePop)
   end
 
-  if not (dialog_editor and dialog_editor.isMouseFocused and dialog_editor:isMouseFocused()) then
-    map_editor:update()
+  -- Si no hay un diálogo delante, actualizamos el editor
+  if not on_dialog then
+    Main.mapEditor:update(dt)
   end
 end
 
+--- Dibuja la interfaz del programa principal.
+function Main.draw()
+  Main.mapEditor:draw()
+  Main.barEditor:draw()
+
+  if Main.dialogEditor and Main.dialogEditor.draw then
+    Main.dialogEditor:draw()
+  end
+end
+
+--- Función que se llama cada vez que hay una entrada de texto.
+-- @param t Texto a añadir.
+function Main.textInput(t)
+  if Main.dialogEditor and Main.dialogEditor.textInput then
+    Main.dialogEditor:textInput(t)
+  end
+end
+
+--- Función que se llama cada vez que se mueve la rueda del ratón.
+-- @param dx Cantidad de movimiento en el eje x de la rueda.
+-- @param dy Cantidad de movimiento en el eje y de la rueda.
+function Main.wheelMoved(dx, dy)
+  if Main.dialogEditor and Main.dialogEditor.wheelMoved then
+    Main.dialogEditor:wheelMoved(dx, dy)
+  end
+end
+
+--- Función que se llama cada vez que se presiona una tecla en el ratón.
+-- @param key Tecla presionada.
+function Main.keyPressed(key)
+  if Main.dialogEditor and Main.dialogEditor.keyPressed then
+    Main.dialogEditor:keyPressed(key)
+  end
+end
+
+--- Función que se llama cada vez que se mueve el ratón.
+-- @param x Posición del ratón en el eje x de la pantalla.
+-- @param y posición del ratón en el eje y de la pantalla.
+-- @param dx Cantidad de movimiento en el eje x del ratón.
+-- @param dy Cantidad de movimiento en el eje y del raton.
+-- @param istouch True si es un movimiento táctil.
+function Main.mouseMoved(x, y, dx, dy, istouch)
+  if not (Main.dialogEditor and Main.dialogEditor.isMouseFocused and Main.dialogEditor:isMouseFocused()) then
+    Main.mapEditor:mousemoved(x, y, dx, dy, istouch)
+  end
+end
+
+--- Función que se llama cada vez que se pulsa un botón en el ratón.
+-- @param x Posición del ratón en el eje x de la pantalla.
+-- @param y posición del ratón en el eje y de la pantalla.
+-- @param buttom Botón pulsado en el ratón.
+-- @param istouch True si es una pulsación táctil.
+function Main.mousePressed(x, y, button, istouch)
+  if not (Main.dialogEditor and Main.dialogEditor.isMouseFocused and Main.dialogEditor:isMouseFocused()) then
+    Main.mapEditor:mousepressed(x, y, button, istouch)
+  end
+end
+
+--------------------------------------------------------------------------------
+
+--- En esta parte están las funciones propias del motor LÖVE.
+-- @section Love2D
+
+--- Carga las variables y assets usados por el programa principal.
+function love.load(args)
+  -- Seteamos el color de fondo
+  love.graphics.setBackgroundColor(0.9, 0.9, 0.9)
+  -- Cargamos el módulo principal
+  Main.init(args)
+end
+
+--- Función que se llama al redimensionar una ventana.
+function love.resize(width, height)
+  Main.mapEditor:resize(width, height)
+end
+
+-- Función que se llama en cada actualización de frame.
+-- @param dt Tiempo que ha pasado desde la última vez que se llamó al update.
+function love.update(dt)
+  Main.update(dt)
+end
+
+--- Función que se llama cada vez que hay una entrada de texto.
+-- @param t Texto a añadir.
 function love.textinput(t)
-  if dialog_editor and dialog_editor.textInput then dialog_editor:textInput(t) end
+  Main.textInput(t)
 end
 
+--- Función que se llama cada vez que se mueve la rueda del ratón.
+-- @param dx Cantidad de movimiento en el eje x de la rueda.
+-- @param dy Cantidad de movimiento en el eje y de la rueda.
 function love.wheelmoved(x, y)
-  if dialog_editor and dialog_editor.wheelMoved then dialog_editor:wheelMoved(x, y) end
+  Main.wheelMoved(x, y)
 end
 
+--- Función que se llama cada vez que se presiona una tecla en el ratón.
+-- @param key Tecla presionada.
 function love.keypressed(key)
-  if dialog_editor and dialog_editor.keyPressed then dialog_editor:keyPressed(key) end
+  Main.keyPressed(key)
 end
 
--- Triggered when the mouse is moved
+--- Función que se llama cada vez que se mueve el ratón.
+-- @param x Posición del ratón en el eje x de la pantalla.
+-- @param y posición del ratón en el eje y de la pantalla.
+-- @param dx Cantidad de movimiento en el eje x del ratón.
+-- @param dy Cantidad de movimiento en el eje y del raton.
+-- @param istouch True si es un movimiento táctil.
 function love.mousemoved(x, y, dx, dy, istouch)
-  if not (dialog_editor and dialog_editor.isMouseFocused and dialog_editor:isMouseFocused()) then
-    map_editor:mousemoved(x, y, dx, dy, istouch)
-  end
+  Main.mouseMoved(x, y, dx, dy, istouch)
 end
 
--- Triggered when a button mouse is pressed
+--- Función que se llama cada vez que se pulsa un botón en el ratón.
+-- @param x Posición del ratón en el eje x de la pantalla.
+-- @param y posición del ratón en el eje y de la pantalla.
+-- @param buttom Botón pulsado en el ratón.
+-- @param istouch True si es una pulsación táctil.
 function love.mousepressed(x, y, button, istouch)
-  if not (dialog_editor and dialog_editor.isMouseFocused and dialog_editor:isMouseFocused()) then
-    map_editor:mousepressed(x, y, button, istouch)
-  end
+  Main.mousePressed(x, y, button, istouch)
 end
 
--- Triggered when a button mouse is released
-function love.mousereleased(x, y, button, istouch)
-  if not (dialog_editor and dialog_editor.isMouseFocused and dialog_editor:isMouseFocused()) then
-    map_editor:mousereleased(x, y, button, istouch)
-  end
-end
-
--- Draw all elements in window
+--- Función que se llama en cada frame para dibujar en pantalla
 function love.draw()
-  map_editor:draw()
-  bar_editor:draw()
-
-  if dialog_editor and dialog_editor.draw then
-    dialog_editor:draw()
-  end
+  Main.draw()
 end

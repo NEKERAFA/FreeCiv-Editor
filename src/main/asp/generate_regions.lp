@@ -4,7 +4,12 @@
 #const c_rows = 4.
 #const c_cols = 4.
 #const regions = 2.
+#const land = 20.
+#const terrain = 80.
 #const m_size = 2.
+#const m_length = 3.
+#const c_players = 5.
+#const c_player_dist = 5.
 
 %%%% TYPES
 % Type of row and columns

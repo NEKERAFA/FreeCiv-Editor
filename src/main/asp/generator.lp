@@ -9,7 +9,8 @@ DEBUG = 0
 
 -- VARIABLES -------------------------------------------------------------------
 
-local q_rows, q_cols, c_rows, c_cols, regions, m_size
+local q_rows, q_cols, c_rows, c_cols, c_regions, c_lands, c_terrain, c_m_size,
+      c_m_length, c_players, c_player_dist
 local quadrants, cells, terrain
 
 -- FUNCIONES -------------------------------------------------------------------
@@ -127,7 +128,13 @@ function main(prog)
   status:close()
 
   -- Carga el programa lógico
-  prog:load("main/asp/create_regions.lp")
+  prog:load("main/asp/generate_regions.lp")
+
+  -- Obtiene si estamos en modo debug
+  debug_const = prog:get_const("debug")
+  if debug_const then
+    DEBUG = debug_const.number
+  end
 
   -- Obtiene el ancho y el alto de los cuadrantes
   q_rows = prog:get_const("q_rows").number
@@ -136,14 +143,19 @@ function main(prog)
   c_rows = prog:get_const("c_rows").number
   c_cols = prog:get_const("c_cols").number
   -- Obtiene el número de regiones
-  regions = prog:get_const("regions").number
-  -- Obtiene el tamaño de las montanas
-  m_size = prog:get_const("m_size").number
-  -- Obtiene si estamos en modo debug
-  debug_const = prog:get_const("debug")
-  if debug_const then
-    DEBUG = debug_const.number
-  end
+  c_regions = prog:get_const("regions").number
+  -- Obtiene el tamaño del terreno a abarcar
+  c_land = prog:get_const("land").number
+  -- Obtiene el número de biomas a abarcar
+  c_terrain = prog:get_const("terrain").number
+  -- Obtiene el tamaño de coordilleras
+  c_m_size = prog:get_const("m_size").number
+  -- Obtiene la longitud de coordilleras
+  c_m_length = prog:get_const("m_length").number
+  -- Obtiene el número de jugadores
+  c_players = prog:get_const("c_players").number
+  -- Obtiene la distancia mínima entre jugadores
+  c_player_dist = prog:get_const("c_player_dist").number
 
   -- Hace grounding del programa lógico
   prog:ground({{"base", {}}})
@@ -170,9 +182,9 @@ function main(prog)
 
   -- Completo con los átomos de dimensiones
   atoms = atoms .. ". dims(" .. tostring(q_rows*c_rows) .. ","  ..
-    tostring(q_cols*c_cols) ..  "). q_dims(" .. tostring(q_rows) .. "," ..
-    tostring(q_cols) .. "). c_dims(" .. tostring(c_rows) .. "," ..
-    tostring(c_cols) .. "). ratio(40, 80)."
+    tostring(q_cols*c_cols) ..  "," .. tostring(c_land) .. "). q_dims(" ..
+    tostring(q_rows) .. "," .. tostring(q_cols) .. "). c_dims(" ..
+    tostring(c_rows) .. "," .. tostring(c_cols) .. ")."
 
   -- Inicializa una matriz para guardar las celdas
   cells = Matrix(q_rows*c_rows, q_cols*c_cols, Constants.MatrixType.STRING)
@@ -182,7 +194,7 @@ function main(prog)
   local restrictions = ""
 
   -- Genero las regiones
-  for i = 0, regions-1 do
+  for i = 0, c_regions-1 do
     logger("\n____ Region ", tostring(i+1), " ____")
     status = io.open("resources/status.txt", "w+")
     status:write("Filling region " .. tostring(i+1))
@@ -247,7 +259,7 @@ function main(prog)
     -- Cargo el segundo programa
     prog2:load("main/asp/detail_terrain.lp")
     local atoms = "dims(" .. tostring(q_rows*c_rows) .. "," ..
-      tostring(q_cols*c_cols) .. "). " .. lands
+      tostring(q_cols*c_cols) .. "," .. tostring(c_terrain) .. "). " .. lands
     -- Añado los átomos obtenidos antes
     logger(atoms)
     prog2:add("base", {}, atoms)
@@ -281,7 +293,8 @@ function main(prog)
     -- Cargo el segundo programa
     prog3:load("main/asp/detail_mountains.lp")
     local atoms = "dims(" .. tostring(q_rows*c_rows) .. "," ..
-      tostring(q_cols*c_cols) .. "," .. tostring(m_size) .. "). " .. lands
+      tostring(q_cols*c_cols) .. "," .. tostring(c_m_size) .. "," ..
+      tostring(c_m_length) .. "). " .. lands
     -- Añado los átomos obtenidos antes
     logger(atoms)
     prog3:add("base", {}, atoms)
@@ -319,7 +332,7 @@ function main(prog)
 
   -- Añade el terreno generado como átomos
   atoms = "dims(" .. tostring(q_rows*c_rows) .. "," ..
-    tostring(q_cols*c_cols) .. "). "
+  tostring(q_cols*c_cols) .. "). "
 
   for row = 1, q_rows*c_rows do
     for col = 1, q_cols*c_cols do
@@ -333,9 +346,7 @@ function main(prog)
   -- Hace grounding del programa lógico
   prog1:ground({{"base", {}}})
   -- Obtengo un manejador de la solución
-  local handle = prog1:solve({yield=true})
-  -- Variable para guardar los atomos de la solución
-  local atoms = ""
+  handle = prog1:solve({yield=true})
 
   -- Recorre los modelos de la solución
   for model in handle:iter() do
@@ -351,10 +362,67 @@ function main(prog)
   -- Cierro la solución
   handle:close()
 
+  logger("\n\n__ GENERATING PLAYERS __")
+  status = io.open("resources/status.txt", "w+")
+  status:write("Generating player spawns")
+  status:close()
+
+  -- Creo un controlador del programa nuevo
+  local prog2 = clingo.Control()
+  -- Cargo el segundo programa
+  prog2:load("main/asp/generate_spawns.lp")
+
+  -- Añade el terreno generado como átomos
+  atoms = "players(" .. tostring(c_players) .. "). distance(" .. tostring(c_player_dist) .. "). "
+
+  for row = 1, q_rows*c_rows do
+    for col = 1, q_cols*c_cols do
+      local pos = "p(" .. tostring(row-1) .. "," .. tostring(col-1) .. ")"
+      local contain = ""
+
+      if terrain:getCell(row, col) == Constants.CellType.MOUNTAIN then
+        contain = "m"
+      elseif terrain:getCell(row, col) == Constants.CellType.SEA or
+             terrain:getCell(row, col) == Constants.CellType.OCEAN then
+        contain = "w"
+      else
+        contain = "l"
+      end
+
+      atoms = atoms .. "cell(" .. pos .. "," .. contain .. "). "
+    end
+  end
+
+  -- Añado los átomos obtenidos antes
+  prog2:add("base", {}, atoms)
+  -- Hace grounding del programa lógico
+  prog2:ground({{"base", {}}})
+  -- Obtengo un manejador de la solución
+  handle = prog2:solve({yield=true})
+
+  local startpos = {}
+
+  -- Recorre los modelos de la solución
+  for model in handle:iter() do
+    -- Convierto el modelo a string
+    result = tostring(model)
+    logger(result)
+    startpos = {}
+    for row_str, col_str, nat_str in string.gmatch(result, "startpos%(p%((%d+),(%d+)%),(%l+)%)") do
+      local row, col = tonumber(row_str), tonumber(col_str)
+      local nation = string.gsub(nat_str, "^%l", string.upper)
+      table.insert(startpos, {x = col, y = row, nation = nation})
+    end
+  end
+
+  -- Cierro la solución
+  handle:close()
+
   -- Serializo la matriz
   local result = {
     regions = quadrants:getTable(),
-    terrain = terrain:getTable()
+    terrain = terrain:getTable(),
+    startpos = startpos
   }
   serialize = Json.encode(result)
   -- Escribo la matriz en un archivo de resultados

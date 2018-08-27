@@ -11,30 +11,30 @@ local get_map = function (rows, columns, terrain)
   for i = 1, rows do
     map = map .. string.format("t%04i=\"", (i-1))
     for j = 1, columns do
-      value = terrain[i][j][1]
-      if value == "glacier" then
+      value = terrain[i][j]
+      if value == Constants.CellType.GLACIER then
         map = map .. "a"
-      elseif value == "ocean" then
+      elseif value == Constants.CellType.OCEAN then
         map = map .. ":"
-      elseif value == "shore" then
+      elseif value == Constants.CellType.SEA then
         map = map .. " "
-      elseif value == "desert" then
+      elseif value == Constants.CellType.DESERT then
         map = map .. "d"
-      elseif value == "forest" then
+      elseif value == Constants.CellType.FOREST then
         map = map .. "f"
-      elseif value == "plains" then
+      elseif value == Constants.CellType.PLAIN then
         map = map .. "p"
-      elseif value == "grass" then
+      elseif value == Constants.CellType.GRASS then
         map = map .. "g"
-      elseif value == "hills" then
+      elseif value == Constants.CellType.HILLS then
         map = map .. "h"
-      elseif value == "jungle" then
+      elseif value == Constants.CellType.JUNGLE then
         map = map .. "j"
-      elseif value == "mountains" then
+      elseif value == Constants.CellType.MOUNTAIN then
         map = map .. "m"
-      elseif value == "swamp" then
+      elseif value == Constants.CellType.SWAMP then
         map = map .. "s"
-      elseif value == "tundra" then
+      elseif value == Constants.CellType.TRUNDA then
         map = map .. "t"
       end
     end
@@ -57,9 +57,9 @@ local get_startpos = function (startpos)
   for i = 1, #startpos do
     local pos = startpos[i]
     if i < #startpos then
-      s_startpos = s_startpos.."#"..tostring(pos.x)..",#"..tostring(pos.y)..",FALSE,\"\"\n"
+      s_startpos = s_startpos..tostring(pos.x)..","..tostring(pos.y)..",FALSE,\""..tostring(pos.nation).."\"\n"
     else
-      s_startpos = s_startpos.."#"..tostring(pos.x)..",#"..tostring(pos.y)..",FALSE,\"\""
+      s_startpos = s_startpos..tostring(pos.x)..","..tostring(pos.y)..",FALSE,\""..tostring(pos.nation).."\""
     end
   end
 
@@ -120,8 +120,9 @@ local Exporter = {
   export = function (file, name, rows, cols, terrain, startpos)
     local s_map = get_map(rows, cols, terrain)
     local s_startpos = get_startpos(startpos)
-    local s_b_layer = get_b_layer(rows, columns)
-    local s_r_layer = get_r_layer(rows, columns)
+    local s_b_layer = get_b_layer(rows, cols)
+    local s_r_layer = get_r_layer(rows, cols)
+    local s_players = tostring(math.min(5, #startpos))
 
     -- Open files
     local template = io.open("resources/scenario.txt", "r")
@@ -130,9 +131,7 @@ local Exporter = {
     -- Replace the parameters
     for line in template:lines() do
       line = string.gsub(line, Constants.TemplateRegex.NAME, name)
-      line = string.gsub(line, Constants.TemplateRegex.PLAYERS, tostring(#startpos))
-      line = string.gsub(line, Constants.TemplateRegex.ROWS, rows)
-      line = string.gsub(line, Constants.TemplateRegex.COLUMNS, columns)
+      line = string.gsub(line, Constants.TemplateRegex.PLAYERS, s_players)
       line = string.gsub(line, Constants.TemplateRegex.TERRAIN, s_map)
       line = string.gsub(line, Constants.TemplateRegex.PLAYER_LIST, s_startpos)
       line = string.gsub(line, Constants.TemplateRegex.LAYER_B, s_b_layer)

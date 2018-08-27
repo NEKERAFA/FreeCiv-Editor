@@ -29,9 +29,9 @@ local Editor = Class {
     self._adapter = nil
     self._map = nil
     self._regions = nil
+    self._startpos = nil
     self._current_tile = nil
-    self._pressed = nil
-    self._terrain = Constants.CellType.PLAIN
+    self._terrain = Constants.CellType.GRASS
   end,
 
   --- Gets the width of the map drawn.
@@ -87,7 +87,7 @@ local Editor = Class {
     self._adapter:setTilemap()
   end,
 
-  --- Set the mapping of regions. This function is for debugging purpose.
+  --- Sets the mapping of regions. This function is for debugging purpose.
   -- @param self A controller object.
   -- @param regions A 2d array with the regions.
   -- @param c_rows The number of rows.
@@ -96,6 +96,11 @@ local Editor = Class {
     self._regions = Map(regions)
     self._regions.width = c_rows
     self._regions.height = c_cols
+  end,
+
+  --- Sets the spawn points created in the generations
+  setSpawns = function(self, spawns)
+    self._startpos = spawns
   end,
 
   --- This function loads the quads for create the tilemap
@@ -168,7 +173,7 @@ local Editor = Class {
     end
   end,
 
-  update = function(self)
+  update = function(self, dt)
     if self._map ~= nil and love.mouse.isDown(1) then
       local x, y = love.mouse.getPosition()
 
@@ -190,7 +195,9 @@ local Editor = Class {
   -- Checks where the mouse is pressed
   mousepressed = function(self, x, y, button, istouch)
     if button == 2 then
-      if self._terrain == Constants.CellType.PLAIN then
+      if self._terrain == Constants.CellType.GRASS then
+        self._terrain = Constants.CellType.PLAIN
+      elseif self._terrain == Constants.CellType.PLAIN then
         self._terrain = Constants.CellType.JUNGLE
       elseif self._terrain == Constants.CellType.JUNGLE then
         self._terrain = Constants.CellType.TRUNDA
@@ -199,33 +206,21 @@ local Editor = Class {
       elseif self._terrain == Constants.CellType.SWAMP then
         self._terrain = Constants.CellType.DESERT
       elseif self._terrain == Constants.CellType.DESERT then
+        self._terrain = Constants.CellType.FOREST
+      elseif self._terrain == Constants.CellType.FOREST then
+        self._terrain = Constants.CellType.HILLS
+      elseif self._terrain == Constants.CellType.HILLS then
+        self._terrain = Constants.CellType.GLACIER
+      elseif self._terrain == Constants.CellType.GLACIER then
         self._terrain = Constants.CellType.SEA
       elseif self._terrain == Constants.CellType.SEA then
+        self._terrain = Constants.CellType.OCEAN
+      elseif self._terrain == Constants.CellType.OCEAN then
         self._terrain = Constants.CellType.VOID
       elseif self._terrain == Constants.CellType.VOID then
-        self._terrain = Constants.CellType.PLAIN
+        self._terrain = Constants.CellType.GRASS
       end
     end
-  end,
-
-  -- Checks where the mouse is release
-  mousereleased = function(self, x, y, button, istouch)
-    --[[if self._map ~= nil and button == 1 then
-      -- Sets the variables
-      local posX = x-self.offset.x-self.pos.x
-      local posY = y-self.offset.y-self.pos.y
-      -- Gets the cell pressed
-      local row = math.ceil(posY/self._quads_info.size)
-      local col = math.ceil(posX/self._quads_info.size)
-
-      if self._pressed and self._pressed.row == row and self._pressed.col == col then
-        -- Set pressed to nil
-        self._pressed = nil
-        -- Changes the rows
-        self._map:changeCell(row, col)
-        --self:_updateTilemap()
-      end
-    end]]
   end,
 
   -- Checks where the mouse is moved
@@ -246,11 +241,74 @@ local Editor = Class {
     end
   end,
 
+  _draw_regions = function(self, x, y)
+    for i = 1, self._regions.rows do
+      for j = 1, self._regions.cols do
+        local width = self._quads_info.size*math.floor(self._map.rows/4)
+        local height = self._quads_info.size*math.floor(self._map.cols/4)
+        local x = (i-1)*width + self.offset.x + self.pos.x
+        local y = (j-1)*height + self.offset.y + self.pos.y
+        local region = self._regions:getCell(i, j)
+        local font = love.graphics.getFont()
+        local text = love.graphics.newText(font, region)
+        local xtext = x+width/2-text:getWidth()/2
+        local ytext = y+height/2-text:getHeight()/2
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.rectangle("line", x, y, width, height)
+        love.graphics.setColor(255, 255, 255)
+        love.graphics.draw(text, xtext, ytext, 0, 2, 2)
+      end
+    end
+  end,
+
+  _draw_selection = function(self, x, y)
+    local tile_x = x + self._current_tile.col * self._quads_info.size
+    local tile_y = y + self._current_tile.row * self._quads_info.size
+    local quads =  self._quads_info.quads
+    local water_size = self._quads_info.size / 2
+
+    -- Background
+    love.graphics.setColor(1, 1, 1, 0.5)
+    if self._terrain == Constants.CellType.GRASS or
+       self._terrain == Constants.CellType.VOID or
+       self._terrain == Constants.CellType.GLACIER or
+       self._terrain == Constants.CellType.MOUNTAIN or
+       self._terrain == Constants.CellType.FOREST or
+       self._terrain == Constants.CellType.HILLS or
+       self._terrain == Constants.CellType.LAKE then
+      love.graphics.draw(self._tile_image, quads[self._terrain], tile_x, tile_y)
+    elseif self._terrain == Constants.CellType.PLAIN or
+           self._terrain == Constants.CellType.JUNGLE or
+           self._terrain == Constants.CellType.TRUNDA or
+           self._terrain == Constants.CellType.SWAMP or
+           self._terrain == Constants.CellType.DESERT then
+      love.graphics.draw(self._tile_image, quads[self._terrain][Constants.TilePosition.SINGLE], tile_x, tile_y)
+    else
+      local quad_upper_left = quads[self._terrain][Constants.TilePosition.UPPER_LEFT]
+      local quad_upper_right = quads[self._terrain][Constants.TilePosition.UPPER_RIGHT]
+      local quad_bottom_left = quads[self._terrain][Constants.TilePosition.BOTTOM_LEFT]
+      local quad_bottom_right = quads[self._terrain][Constants.TilePosition.BOTTOM_RIGHT]
+      love.graphics.draw(self._tile_image, quad_upper_left, tile_x, tile_y)
+      love.graphics.draw(self._tile_image, quad_upper_right, tile_x+water_size, tile_y)
+      love.graphics.draw(self._tile_image, quad_bottom_left, tile_x, tile_y+water_size)
+      love.graphics.draw(self._tile_image, quad_bottom_right, tile_x+water_size, tile_y+water_size)
+    end
+    -- Tile
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(self._tile_image, self._quads_info.quads[Constants.TileType.SELECTOR], tile_x, tile_y)
+  end,
+
+  _draw_spawns = function(self, x, y)
+    local quads =  self._quads_info.quads
+    for k, spawn in ipairs(self._startpos) do
+      local tile_x = x + spawn.x * self._quads_info.size
+      local tile_y = y + spawn.y * self._quads_info.size
+      love.graphics.draw(self._tile_image, quads[Constants.TileType.SPAWN], tile_x, tile_y)
+    end
+  end,
+
   -- Draws the editor
   draw = function(self)
-    -- Clears the window
-    --love.graphics.clear(0.8, 0.8, 0.8)
-
     -- Draws the map
     if self._map ~= nil then
       local x = self.offset.x + self.pos.x
@@ -268,37 +326,19 @@ local Editor = Class {
       love.graphics.rectangle("line", x, y, width, height)
       love.graphics.setColor(1, 1, 1)
 
+      -- Draws the spawn points
+      if self._startpos ~= nil then
+        self:_draw_spawns(x, y)
+      end
+
       -- Draws the regions
       if self._regions ~= nil and DEBUG then
-        for i = 1, self._regions.rows do
-          for j = 1, self._regions.cols do
-            local width = self._quads_info.size*self._regions.width
-            local height = self._quads_info.size*self._regions.height
-            local x = (i-1)*width + self.offset.x + self.pos.x
-            local y = (j-1)*height + self.offset.y + self.pos.y
-            local region = self._regions:getCell(i, j)
-            local font = love.graphics.getFont()
-            local text = love.graphics.newText(font, region)
-            local xtext = x+width/2-text:getWidth()/2
-            local ytext = y+height/2-text:getHeight()/2
-            love.graphics.setColor(0, 0, 0)
-            love.graphics.rectangle("line", x, y, width, height)
-            love.graphics.setColor(255, 255, 255)
-            love.graphics.draw(text, xtext, ytext, 0, 2, 2)
-          end
-        end
+        self:_draw_regions(x, y)
       end
 
       -- If the mouse is in a tile, remarks this tile
       if self._current_tile then
-        local tile_x = x + self._current_tile.col * self._quads_info.size
-        local tile_y = y + self._current_tile.row * self._quads_info.size
-        -- Background
-        love.graphics.setColor(1, 1, 1, 0.25)
-        love.graphics.rectangle("fill", tile_x, tile_y, self._quads_info.size, self._quads_info.size)
-        -- Tile
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.draw(self._tile_image, self._quads_info.quads[Constants.TileType.SELECTOR], tile_x, tile_y)
+        self:_draw_selection(x, y)
       end
     end
   end
