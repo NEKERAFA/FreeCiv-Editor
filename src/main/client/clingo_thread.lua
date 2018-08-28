@@ -27,11 +27,12 @@ local land            = to:demand()
 local terrain         = to:demand()
 local size_mountains  = to:demand()
 local width_mountains = to:demand()
+local players         = to:demand()
 from:push("ok")
 
 -- Hago modificaciones aleatorias en las variables para generar mapas distintos
-land = max(land + math.random(-30, 30), 10)
-terrain = max(terrain + math.random(-30, 30), 10)
+land = max(land + math.random(-20, 20), 10)
+terrain = max(terrain + math.random(-20, 20), 10)
 size_mountains = max(size_mountains + math.random(-2, 2), 2)
 width_mountains = max(width_mountains + math.random(-2, 2), 1)
 
@@ -40,7 +41,8 @@ cmd = "clingo -c regions=" .. regions ..  " -c q_rows=" .. q_rows ..
       " -c q_cols=" .. q_cols .. " -c c_rows=" .. c_rows ..
       " -c c_cols=" .. c_cols .. " -c land=" .. land ..
       " -c terrain=" .. terrain .. " -c size_mountains=" .. size_mountains ..
-      " -c width_mountains=" .. width_mountains .. " "
+      " -c width_mountains=" .. width_mountains .. " -c players=" .. players ..
+      " "
 
 if DEBUG then
   cmd = cmd .. "-c debug=1 "

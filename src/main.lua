@@ -31,7 +31,7 @@ local Main = {
 
   mapEditor = Editor(),
   mapConf = {},
-  barEditor = Menubar(),
+  barEditor = Menubar(false),
   dialogEditor = nil
 }
 
@@ -89,8 +89,10 @@ end
 function Main._newMap(rows, cols)
   Main.mapEditor:newMap(rows, cols)
   Main.mapEditor._regions = nil
-  Main.barEditor.openfile = true
+  Main.mapEditor._startpos = nil
+  Main.barEditor._fileopened = true
   Main.dialogEditor = nil
+  Main.mapConf = {}
   Main._resetEditor()
   Main._closePop()
 end
@@ -103,7 +105,7 @@ function Main._openMap(path)
   Main.mapEditor:setMap(map_file.map)
   Main.mapEditor:setRegions(map_file.regions, map_file.conf.q_rows, map_file.conf.q_cols)
   Main.mapEditor:setSpawns(map_file.startpos)
-  Main.barEditor.openfile = true
+  Main.barEditor._fileopened = true
   Resources.saveConfiguration("editor", {lastOpened = path})
   Main._resetEditor()
   Main._closePop()
@@ -161,7 +163,7 @@ end
 -- @param terrain Porcentaje del tamaño de los biomas.
 -- @param size_mountains Longitud de las coordilleras.
 -- @param width_mountains Ancho de las coordilleras.
-function Main._generateMap(regions, land, terrain, size_mountains, width_mountains)
+function Main._generateMap(regions, land, terrain, size_mountains, width_mountains, players)
   -- Primero obtengo las divisiones enteras
   local div_rows, div_cols = regions, regions
   while Main.mapEditor._map.rows % div_rows ~= 0 do
@@ -181,6 +183,7 @@ function Main._generateMap(regions, land, terrain, size_mountains, width_mountai
   Main.mapConf.terrain = terrain
   Main.mapConf.size_mountains = size_mountains
   Main.mapConf.width_mountains = width_mountains
+  Main.mapConf.players = players
 
   local thread = love.thread.newThread(Resources.appendFolders("main", "client", "clingo_thread.lua"))
   local to = love.thread.getChannel("toClingo")
@@ -195,6 +198,7 @@ function Main._generateMap(regions, land, terrain, size_mountains, width_mountai
   to:push(Main.mapConf.terrain)
   to:push(Main.mapConf.size_mountains)
   to:push(Main.mapConf.width_mountains)
+  to:push(Main.mapConf.players)
   thread:start()
 
   local value = from:demand()

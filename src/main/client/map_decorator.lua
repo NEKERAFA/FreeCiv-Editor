@@ -4,11 +4,11 @@
 local Class = require "libs.hump.class"
 local Constants = require "main.utilities.constants"
 
---- This class defines a adapter class to connect the map model and the tilemap.
+--- This class defines a decorator class to connect the map model and the tilemap.
 -- @classmod MapAdapter
-local MapAdapter = Class {
-  --- Creates new adapter object.
-  -- @param self The new adapter object.
+local MapDecorator = Class {
+  --- Creates new decorator object.
+  -- @param self The new decorator object.
   -- @param map A map object. @see model/map.lua.
   -- @param quads_info A table with the quad representation of the tiles.
   -- @param tilemap A SpriteBatch LÖVE object that represents the tilemap to draw.
@@ -29,7 +29,7 @@ local MapAdapter = Class {
   end,
 
   --- This function gets all the neighbours.
-  -- @param self A adapter object.
+  -- @param self A decorator object.
   -- @param row A number that represents the row of the cell.
   -- @param col A number that represents the column of the cell.
   _getNeighbours = function(self, row, col)
@@ -558,4 +558,4 @@ local MapAdapter = Class {
   end
 }
 
-return MapAdapter
+return MapDecorator

@@ -131,18 +131,18 @@ function FileChooser:_openFolder (file)
   self:_updateFiles()
 end
 
-FileChooser.fileIcon = Resources.loadResource("image", "icons/file")
-FileChooser.folderIcon = Resources.loadResource("image", "icons/folder")
+FileChooser._fileIcon = Resources.loadResource("image", "icons/file")
+FileChooser._folderIcon = Resources.loadResource("image", "icons/folder")
 
-function FileChooser._drawButton(text, opt, x, y, w, h)
+function FileChooser.drawButton(text, opt, x, y, w, h)
 	local c = Suit.theme.getColorForState(opt)
   local hfont = opt.font:getHeight()
   local icon
 
   if opt.dir then
-    icon = FileChooser.folderIcon
+    icon = FileChooser._folderIcon
   else
-    icon = FileChooser.fileIcon
+    icon = FileChooser._fileIcon
   end
 
 	Suit.theme.drawBox(x, y, w, h, c, opt.cornerRadius)
@@ -257,7 +257,7 @@ function FileChooser:update (dt)
         local options = {
           dir = self._items[i].mode == "directory",
           align = "left",
-          draw = FileChooser._drawButton,
+          draw = FileChooser.drawButton,
           color = {
             normal  = {bg = {0, 0, 0, 0},   fg = {1, 1, 1}},
             hovered = {bg = {1, 1, 1, .25}, fg = {1, 1, 1}},

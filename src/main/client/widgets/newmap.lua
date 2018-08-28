@@ -19,13 +19,10 @@ function NewMap:new (...)
   obj._gui = Suit.new()
   obj._gui.theme = setmetatable({}, {__index = Suit.theme})
   obj._gui.theme.Input = NewMap.drawInput
-  obj._canvas = love.graphics.newCanvas()
 
   -- Texto que sale en los inputs
   obj._rows = {text = "20"}
   obj._cols = {text = "20"}
-  -- Mira si se ha introducido un elemento no numérico
-  obj._nan_input = false
   -- Si se ha cerrado el popup
   obj._closed = false
   return obj
@@ -80,12 +77,8 @@ function NewMap:isMouseFocused ()
   local width, height = love.window.getMode()
   local posX, posY = love.mouse.getPosition()
   local x, y = width/2-105, height/2-15
-  local h = 55
-  if self._nan_input then
-    h = h+25
-  end
 
-  return posX >= x and posX <= x + width and posY >= y and posY <= y + h
+  return posX >= x and posX <= x + 210 and posY >= y and posY <= y + 55
 end
 
 --- Adds text to input widgets. Use this function with love.textinput.
@@ -188,9 +181,6 @@ function NewMap:draw ()
     local width, height = love.window.getMode()
     local x, y = width/2-105, height/2-15
     local h = 55
-    if self._nan_input then
-      h = h+25
-    end
 
     love.graphics.setColor(0, 0, 0, .5)
     love.graphics.rectangle("fill", x, y, 210, h, 5, 5)

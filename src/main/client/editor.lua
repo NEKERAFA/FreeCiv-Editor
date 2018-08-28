@@ -3,7 +3,7 @@
 
 local Class = require "libs.hump.class"
 local Map = require "main.model.map"
-local Adapter = require "main.client.map_adapter"
+local MapDecorator = require "main.client.map_decorator"
 local Constants = require "main.utilities.constants"
 local Validator = require "main.utilities.validator"
 local Resources = require "main.utilities.resources"
@@ -26,7 +26,7 @@ local Editor = Class {
     self._quads_info = {size = 30, quads = {}}
     self:_setQuads(self._tile_image:getWidth(), self._tile_image:getHeight())
 
-    self._adapter = nil
+    self._decorator = nil
     self._map = nil
     self._regions = nil
     self._startpos = nil
@@ -65,10 +65,10 @@ local Editor = Class {
     self._tilemap = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols)
     self._background = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols * 4)
 
-    self._adapter = Adapter(self._map, self._quads_info, self._tilemap, self._background)
+    self._decorator = MapDecorator(self._map, self._quads_info, self._tilemap, self._background)
 
     -- Sets all the tilemaps in the spritesbatches
-    self._adapter:setTilemap()
+    self._decorator:setTilemap()
   end,
 
   --- Clears the current map and add a loaded map.
@@ -81,10 +81,10 @@ local Editor = Class {
     self._tilemap = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols)
     self._background = love.graphics.newSpriteBatch(self._tile_image, self._map.rows * self._map.cols * 4)
 
-    self._adapter = Adapter(self._map, self._quads_info, self._tilemap, self._background)
+    self._decorator = MapDecorator(self._map, self._quads_info, self._tilemap, self._background)
 
     -- Sets all the tilemaps in the spritesbatches
-    self._adapter:setTilemap()
+    self._decorator:setTilemap()
   end,
 
   --- Sets the mapping of regions. This function is for debugging purpose.
@@ -186,7 +186,7 @@ local Editor = Class {
 
       if row > 0 and col > 0 and row <= self._map.rows and col <= self._map.cols then
         if self._map:getCell(row, col) ~= self._terrain then
-          self._adapter:setCell(row, col, self._terrain)
+          self._decorator:setCell(row, col, self._terrain)
         end
       end
     end

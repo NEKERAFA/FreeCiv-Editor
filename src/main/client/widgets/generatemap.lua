@@ -27,6 +27,7 @@ function GenerateMap:new (...)
   obj._terrain = {value = 20, min = 10, max = 100, step = 10}
   obj._size_mountains = {text = "2"}
   obj._length_mountains = {value = 4, min = 1, max = 10, step = 1}
+  obj._players = {text = "3"}
   -- Si se ha cerrado el popup
   obj._closed = false
   return obj
@@ -80,13 +81,9 @@ end
 function GenerateMap:isMouseFocused ()
   local width, height = love.window.getMode()
   local posX, posY = love.mouse.getPosition()
-  local x, y = width/2-105, height/2-77.5
-  local h = 155
-  --[[if self._nan_input then
-    h = h+25
-  end]]
+  local x, y = width/2-150, height/2-90
 
-  return posX >= x and posX <= x + width and posY >= y and posY <= y + h
+  return posX >= x and posX <= x + 300 and posY >= y and posY <= y + 180
 end
 
 --- Adds text to input widgets. Use this function with love.textinput.
@@ -108,7 +105,7 @@ end
 function GenerateMap:update (dt)
   if not self._closed then
     local width, height = love.window.getMode()
-    local x, y = width/2-150, height/2-77.5
+    local x, y = width/2-150, height/2-90
 
     local red_input = {color = {normal = {bg = {1, 0.25, 0.25}, fg = {1, 1, 1}}}}
     local red_button = {
@@ -122,10 +119,6 @@ function GenerateMap:update (dt)
           color = {normal = {fg = {1, 1, 1}}},
           align = "left"
     }
-    local white_center_text = {
-          color = {normal = {fg = {1, 1, 1}}},
-          align = "center"
-    }
     local white_right_text = {
           color = {normal = {fg = {1, 1, 1}}},
           align = "right"
@@ -136,38 +129,48 @@ function GenerateMap:update (dt)
               hovered = {bg = {0, .9, .0}, fg = {1, 1, 1}},
               active  = {bg = {1, .6,  0}, fg = {1, 1, 1}}
           }
-        }
+    }
 
-    -- Mostramos los inputs del número de cuadrantes
+    -- Número de islas
     self._gui.layout:reset(x+5, y+5)
-    self._gui.layout:padding(100, 0)
+    self._gui.layout:padding(90, 0)
     self._gui:Label("Number of islands: ", Class.clone(white_left_text), self._gui.layout:col(160, 20))
-    self._gui:Input(self._regions, Class.clone(white_right_input), self._gui.layout:col(30, 20))
+    self._gui:Input(self._regions, Class.clone(white_right_input), self._gui.layout:col(40, 20))
 
+    -- Cantidad de tierra que se alcanza
     self._gui.layout:push(x+5, y+30)
     self._gui.layout:padding(0, 0)
     self._gui:Label("Land reached: ", Class.clone(white_left_text), self._gui.layout:col(160, 20))
     self._gui:Slider(self._land, self._gui.layout:col(80, 20))
     self._gui:Label(tostring(math.floor(self._land.value/10)*10) .. "%", Class.clone(white_right_text), self._gui.layout:col(50, 20))
 
+    -- Tamaño de las celdas de los biomas
     self._gui.layout:push(x+5, y+55)
     self._gui:Label("Size of biomas: ", Class.clone(white_left_text), self._gui.layout:col(160, 20))
     self._gui:Slider(self._terrain, self._gui.layout:col(80, 20))
     self._gui:Label(tostring(math.floor(self._terrain.value/10)*10) .. "%", Class.clone(white_right_text), self._gui.layout:col(50, 20))
 
+    -- Ancho de las coordilleras
     self._gui.layout:push(x+5, y+80)
-    self._gui.layout:padding(100, 0)
+    self._gui.layout:padding(90, 0)
     self._gui:Label("Width of mountains: ", Class.clone(white_left_text), self._gui.layout:col(160, 20))
-    self._gui:Input(self._size_mountains, Class.clone(white_right_input), self._gui.layout:col(30, 20))
+    self._gui:Input(self._size_mountains, Class.clone(white_right_input), self._gui.layout:col(40, 20))
 
+    -- Longitud de las coordilleras
     self._gui.layout:push(x+5, y+105)
     self._gui.layout:padding(0, 0)
     self._gui:Label("Length of mountains: ", Class.clone(white_left_text), self._gui.layout:col(160, 20))
     self._gui:Slider(self._length_mountains, self._gui.layout:col(80, 20))
     self._gui:Label(math.floor(self._length_mountains.value), Class.clone(white_right_text), self._gui.layout:col(50, 20))
 
-
+    -- Longitud de las coordilleras
     self._gui.layout:push(x+5, y+130)
+    self._gui.layout:padding(90, 0)
+    self._gui:Label("Number of players: ", Class.clone(white_left_text), self._gui.layout:col(160, 20))
+    self._gui:Input(self._players, self._gui.layout:col(40, 20))
+
+    -- Botones de la
+    self._gui.layout:push(x+5, y+155)
     self._gui.layout:padding(130, 5)
 
     -- Botón para cancelar
@@ -184,7 +187,8 @@ function GenerateMap:update (dt)
         local terrain = math.floor(self._terrain.value/10)*10
         local size_mountains = tonumber(self._size_mountains.text)
         local width_mountains = math.floor(self._length_mountains.value)
-        self._onSuccess(regions, land, terrain, size_mountains, width_mountains)
+        local players = tonumber(self._players.text)
+        self._onSuccess(regions, land, terrain, size_mountains, width_mountains, players)
       end
       self._closed = true
     end
@@ -196,14 +200,10 @@ end
 function GenerateMap:draw ()
   if not self._closed then
     local width, height = love.window.getMode()
-    local x, y = width/2-150, height/2-77.5
-    local h = 155
-    --[[if self._nan_input then
-      h = h+25
-    end]]
+    local x, y = width/2-150, height/2-90
 
     love.graphics.setColor(0, 0, 0, .5)
-    love.graphics.rectangle("fill", x, y, 300, h, 5, 5)
+    love.graphics.rectangle("fill", x, y, 300, 180, 5, 5)
 
     love.graphics.setColor(1, 1, 1)
     self._gui:draw()

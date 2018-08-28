@@ -21,7 +21,7 @@ function MenuBar:new (fileopened)
   obj._gui = Suit.new()
   obj._gui.theme = setmetatable({}, {__index = Suit.theme})
   obj._gui.theme.Button = MenuBar.drawButton
-  obj.openfile = fileopened
+  obj._fileopened = fileopened
 
   return obj
 end
@@ -61,7 +61,7 @@ function MenuBar:update (dt, isHover)
     option = 2
   end
 
-  if self.openfile then
+  if self._fileopened then
     status = self._gui:Button("Save", {icon = MenuBar._save, draw = MenuBar.drawButton}, self._gui.layout:col(30, 30))
     if status.hit and not isHover then
       option = 3
