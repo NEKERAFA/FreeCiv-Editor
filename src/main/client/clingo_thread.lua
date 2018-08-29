@@ -44,17 +44,12 @@ cmd = "clingo -c regions=" .. regions ..  " -c q_rows=" .. q_rows ..
       " -c width_mountains=" .. width_mountains .. " -c players=" .. players ..
       " "
 
-if DEBUG then
+if debug then
   cmd = cmd .. "-c debug=1 "
 end
 cmd = cmd .. "main/asp/generator.lp"
 print("> " .. cmd)
-ret, msg, n = os.execute(cmd)
+os.execute(cmd)
 
 -- Una vez termina se lo comunico a la interfaz
-if ret then
-  from:push("finish")
-else
-
-  error(msg)
-end
+from:push("finish")

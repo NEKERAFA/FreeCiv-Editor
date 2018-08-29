@@ -262,6 +262,7 @@ El proyecto propuesto está pensado para ser usado a través de una interfaz gr�
 \end{itemize}
 
 \subsection{Implementación}
+\label{subsec:implementacion}
 
 Una vez analizado el proyecto en cuestión, pasaré a detallar el diseño de cada uno de los diferentes componentes del sistema en su construcción, indicando mediante diagramas como se integran los diferentes elementos. \\
 
@@ -274,6 +275,13 @@ Por último, indicar que para la realización de las vistas de la interfaz de us
 
 Como se puede ver en la Figura \ref{fig:mainclass} se ha diseñado la clase principal \texttt{Main}, la cual es una clase estática que sirve de controlador para las vistas y el modelo. Implementa los casos de uso de la interfaz descritos en la Sección \ref{subsec:cases} en los métodos \texttt{\_newMap}, \texttt{\_openMap}, \texttt{\_saveMap}, \texttt{\_exportMap} y \texttt{\_generateMap}, que son eventos que se llaman desde los diálogos emergentes tal y como se explica desde la Sección \ref{subsubsec:widgets}. Para el caso de uso de modificar el mapa, la tarea recae en la clase \texttt{Editor}, que se explica en detalle en la Sección \ref{subsubsec:client}. \\
 
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{images/clase-principal.pdf}
+	\caption{Diagrama de clases del paquete principal}
+	\label{fig:mainclass}
+\end{figure}
+
 Con respecto al motor gráfico LÖVE, este usa varias funciones predefinidas cuando se activan distintos eventos, los cuales llaman a los métodos públicos de la clase principal:
 
 \begin{itemize}
@@ -283,43 +291,46 @@ Con respecto al motor gráfico LÖVE, este usa varias funciones predefinidas cua
 	\item Existen otros eventos, los cuales LÖVE tiene contempladas varias funciones por defecto adicionales que se lanzan para contestar a estos. Es el caso de cuando se redimensiona la ventana (\texttt{love.resize}), se introduce un texto mediante un teclado virtual (\texttt{love.textinput}), se realiza un movimiento de la rueda del ratón (\texttt{love.wheelmoved}), se presiona una tecla (\texttt{love.keypressed}), se mueve el ratón (\texttt{love.mousemoved}) o se presiona un botón del ratón (\texttt{love.mousepressed}). Estas llaman a los métodos correspondientes de la clase principal.
 \end{itemize}
 
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{images/clase-principal.pdf}
-	\caption{Diagrama de clases del paquete principal}
-	\label{fig:mainclass}
-\end{figure}
-
 \subsubsection{Editor gráfico}
 \label{subsubsec:client}
 
-La clase \texttt{Editor} sirve como un subcontrolador para responder a las modificaciones y cambios de representación del mapa, ya sea cuando se actualiza este mediante uno de los casos de uso que recoge la clase principal [ver Sección \ref{subsubsec:main}] o cuando el usuario procede a la modificación del mapa, tal y como se explica en la Sección \ref{subsec:cases}. \\
+La clase \texttt{Editor} sirve como un controlador para responder a las modificaciones y cambios de representación del mapa, ya sea cuando se actualiza este mediante uno de los casos de uso que recoge la clase principal [ver Sección \ref{subsubsec:main}] o cuando el usuario procede a la modificación del mapa, tal y como se explica en la Sección \ref{subsec:cases}.
 
-Para ello, siguiendo el patrón decorador, esta se apoya en la clase \texttt{MapDecorator}, la cual se encarga de actualizar la vista del mapa, que es representada mediante una rejilla con los distintos terrenos mediante el objeto \texttt{love.SpriteBatch}, el cual es un mapa de \textit{tiles} bidimensional. Debido a que hay terrenos que contienen diferentes imágenes para las posiciones de un \textit{tile}, \texttt{MapDecorator} contiene varios métodos que permiten discretizarlas conociendo los vecinos de una celda. Finalmente esta clase llama al modelo en si, representado por la clase \texttt{Map}, la cual tiene una representación del mapa en forma de tabla. \\
-
-Finalmente todas estas clases usan constantes que están definidas el módulo \texttt{Constants}.
-
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/clase-editor.pdf}
 	\caption{Diagrama de clases del paquete \texttt{Client}}
 	\label{fig:editorclass}
 \end{figure}
 
+Para ello, siguiendo el patrón decorador, esta se apoya en la clase \texttt{MapDecorator}, la cual se encarga de actualizar la vista del mapa, que es representada mediante una rejilla con los distintos terrenos mediante el objeto \texttt{love.SpriteBatch}, el cual es un mapa de \textit{tiles} bidimensional. Debido a que hay terrenos que contienen diferentes imágenes para las posiciones de un \textit{tile}, \texttt{MapDecorator} contiene varios métodos que permiten discretizarlas conociendo los vecinos de una celda. Finalmente esta clase llama al modelo en si, representado por la clase \texttt{Map}, la cual tiene una representación del mapa en forma de tabla. \\
+
+Finalmente todas estas clases usan constantes que están definidas el módulo \texttt{Constants}.
+
 \subsubsection{Elemento gráficos complejos}
 \label{subsubsec:widgets}
 
-\begin{figure}
+Como ya expliqué en la entrada de la Sección \ref{subsec:implementacion}, debido a las limitaciones de la biblioteca \textit{SUIT}, hay varios elementos gráficos que no se incluyen en ella debido a que son complejos y no es del ámbito de esta bibloteca, es por eso que se han realizado a mano. Estos elementos tienen su propio controlador para poder usarlos más fácilmente dentro del programa.
+
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/clases-widgets.pdf}
 	\caption{Diagrama de clases del paquete \texttt{Widget}}
 	\label{fig:widgetclasses}
 \end{figure}
 
+\begin{itemize}
+	\item Para la barra de herramientas se ha realizado la clase \texttt{MenuBar}, la cual controla y muestra la lista de botones que accionan los principales casos de uso. Al constructor se le pasa las funciones para los eventos de aceptar y cancelar diálogo. Tiene un método \texttt{update} que devuelve un número que se corresponde con el botón pulsado en la barra.
+	\item La clase \texttt{NewMap} controla y muestra la ventana emergente que se puede ver en la Figura \ref{fig:newmock}. Al constructor se le pasa las funciones para los eventos de aceptar y cancelar diálogo. Contiene el método \texttt{isMouseFocused} que indica si el ratón está encima de la ventana, y los métodos \texttt{textInput} y \texttt{keyPressed} para introducir texto en las entradas de la ventana.
+	\item La clase \texttt{GenerateMap} controla y muestra la ventana emergente con el diálogo de generar mapa, tal y como se puede ver en la Figura \ref{fig:generatemock}. Contiene los mismos métodos que la clase \texttt{NewMap}.
+	\item La clase \texttt{WaitMessage} controla y muestra la ventana emergente que se puede ver en la Figura \ref{fig:waitingmock}. Al constructor se le pasa el canal del \textit{thread} que se usa en la generación del mapa, tal y como se expone en la Sección \ref{subsubsec:generator}, y la función que se lanza cuando la generación termina. Contiene el método \texttt{isMouseFocused} que indica si el ratón está encima de la ventana.
+	\item La clase \texttt{FileChooser} controla y muestra la ventana emergente correspondiente a un diálogo de selección de archivo, tal y como se puede ver en las Figuras \ref{fig:openmock}, \ref{fig:savemock} y \ref{fig:exportmock}. Contiene varios métodos privados para la ordenación y la apertura de carpetas en disco, así como el método \texttt{isMouseFocused} que indica si el ratón está encima de la ventana, los métodos \texttt{textInput} y \texttt{keyPressed} para introducir texto en las entradas de la ventana y el método \texttt{wheelMoved} que permite subir y bajar la lista de carpetas y ficheros mediante la rueda del ratón.
+\end{itemize}
+
 \subsubsection{Generador de mapas}
 \label{subsubsec:generator}
 
-\begin{figure}
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/secuencia.pdf}
 	\caption{Diagrama de secuencia de la ejecución del generador}

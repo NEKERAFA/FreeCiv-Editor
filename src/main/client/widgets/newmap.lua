@@ -21,8 +21,8 @@ function NewMap:new (...)
   obj._gui.theme.Input = NewMap.drawInput
 
   -- Texto que sale en los inputs
-  obj._rows = {text = "20"}
-  obj._cols = {text = "20"}
+  obj._rows = {text = "12"}
+  obj._cols = {text = "12"}
   -- Si se ha cerrado el popup
   obj._closed = false
   return obj

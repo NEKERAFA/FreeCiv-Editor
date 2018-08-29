@@ -150,7 +150,7 @@ function Main._loadClingoResult()
   local path = Resources.appendFolders("resources", "result.json")
   local map = Resources.loadResource("json", path)
   Main.mapEditor:setMap(map.terrain)
-  Main.mapEditor:setRegions(map.regions, Main.mapConf.q_rows, Main.mapConf.q_cols)
+  Main.mapEditor:setRegions(map.regions, Main.mapConf.c_rows, Main.mapConf.c_cols)
   Main.mapEditor:setSpawns(map.startpos)
   Resources.removeResource("json", path)
   os.remove(path)
@@ -165,10 +165,13 @@ end
 -- @param width_mountains Ancho de las coordilleras.
 function Main._generateMap(regions, land, terrain, size_mountains, width_mountains, players)
   -- Primero obtengo las divisiones enteras
-  local div_rows, div_cols = regions, regions
+  local div_rows = math.floor(math.sqrt(Main.mapEditor._map.rows) - 1)
+  local div_cols = math.floor(math.sqrt(Main.mapEditor._map.cols) - 1)
+
   while Main.mapEditor._map.rows % div_rows ~= 0 do
     div_rows = div_rows + 1
   end
+
   while Main.mapEditor._map.cols % div_cols ~= 0 do
     div_cols = div_cols + 1
   end

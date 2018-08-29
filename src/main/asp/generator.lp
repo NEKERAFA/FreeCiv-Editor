@@ -406,7 +406,7 @@ function main(prog)
   for model in handle:iter() do
     -- Convierto el modelo a string
     result = tostring(model)
-    logger(result)
+    -- logger(result)
     startpos = {}
     for row_str, col_str, nat_str in string.gmatch(result, "startpos%(p%((%d+),(%d+)%),(%l+)%)") do
       local row, col = tonumber(row_str), tonumber(col_str)

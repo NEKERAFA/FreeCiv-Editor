@@ -23,11 +23,11 @@ function GenerateMap:new (...)
 
   -- Texto que sale en los inputs
   obj._regions = {text = "2"}
-  obj._land = {value = 40, min = 10, max = 100, step = 10}
-  obj._terrain = {value = 20, min = 10, max = 100, step = 10}
+  obj._land = {value = 20, min = 10, max = 100, step = 10}
+  obj._terrain = {value = 80, min = 10, max = 100, step = 10}
   obj._size_mountains = {text = "2"}
-  obj._length_mountains = {value = 4, min = 1, max = 10, step = 1}
-  obj._players = {text = "3"}
+  obj._length_mountains = {value = 3, min = 1, max = 10, step = 1}
+  obj._players = {text = "5"}
   -- Si se ha cerrado el popup
   obj._closed = false
   return obj

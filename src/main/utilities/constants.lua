@@ -75,6 +75,8 @@ local Constants = {
   -- into a valid Freeciv map
   TemplateRegex = {
     NAME        = "::NAME::",
+    ROWS        = "::ROWS::",
+    COLS        = "::COLS::",
     PLAYER_NUM  = "::PLAYER_NUM::",
     PLAYERS     = "::PLAYERS::",
     TERRAIN     = "::TERRAIN::",

@@ -131,7 +131,10 @@ local Exporter = {
     -- Replace the parameters
     for line in template:lines() do
       line = string.gsub(line, Constants.TemplateRegex.NAME, name)
+      line = string.gsub(line, Constants.TemplateRegex.ROWS, rows)
+      line = string.gsub(line, Constants.TemplateRegex.COLS, cols)
       line = string.gsub(line, Constants.TemplateRegex.PLAYERS, s_players)
+      line = string.gsub(line, Constants.TemplateRegex.PLAYER_NUM, #startpos)
       line = string.gsub(line, Constants.TemplateRegex.TERRAIN, s_map)
       line = string.gsub(line, Constants.TemplateRegex.PLAYER_LIST, s_startpos)
       line = string.gsub(line, Constants.TemplateRegex.LAYER_B, s_b_layer)
