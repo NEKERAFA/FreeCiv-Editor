@@ -10,6 +10,9 @@ install:
 	sudo apt-get update
 	sudo apt-get install gringo clasp lua5.3 love luarocks
 	sudo luarocks install busted
+	sudo luarocks install luafilesystem
+	sudo luarocks install lalarm
+	sudo luarocks install ldoc
 
 run:
 	cd src
@@ -17,6 +20,9 @@ run:
 
 test:
 	busted
+
+performance:
+	lua5.1 benchmarks/run.lua
 
 clean:
 	rm -f *.sav

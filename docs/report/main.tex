@@ -6,12 +6,13 @@
 \usepackage[spanish, es-tabla]{babel}
 \usepackage[dvips]{graphicx}
 \usepackage{epsfig}
-\usepackage{eurosym}
+\usepackage[right]{eurosym}
 \usepackage{geometry}
 \usepackage{graphics}
 \usepackage{tabularx}
 \usepackage{svg}
 \usepackage{adjustbox}
+\usepackage{threeparttable}
 \usepackage{amssymb}
 \usepackage{listings}
 \usepackage{amsmath}
@@ -22,7 +23,7 @@
 		pdfauthor={Rafael Alcalde Azpiazu},
 		pdftitle={Scenario Generation for a 2D Videogame using Logic Programming},
 		pdfsubject={Trabajo de Fin de Grado},
-		pdfkeywords={},
+		pdfkeywords={Answer Set Programming, Programación Lógica, Representación del Conocimiento, Lógica proposicional, Modelo Declaratico, Resolución de problemas lógicos, Generación de mapas por ordenador, Modelado de escenarios de entretenimiento, Videojuegos, Freeciv, Lua},
 		pdfproducer={LaTeX},
 		pdfcreator={pdflatex}]{hyperref}
 
@@ -68,8 +69,7 @@
 \def \title     {Generación de Escenarios de un Videojuego 2D mediante Programación Lógica}
 \def \authors   {Rafael Alcalde Azpiazu}
 \def \directors {José Pedro Cabalar Fernández}
-\def \keywords  {Keyword one, keyword two, etc.}
-\def \abstractContent {Abstract}
+\def \keywords  {Answer Set Programming, Programación Lógica, Representación del Conocimiento, Lógica proposicional, Modelo Declaratico, Resolución de problemas lógicos, Generación de mapas por ordenador, Modelado de escenarios de entretenimiento, Videojuegos, Freeciv, Lua}
 
 % ---- Document ----
 
@@ -93,7 +93,9 @@
 	\cleardoublepage
 	
 	% ---- Gratitudes ----
+	\def\baselinestretch{1}\selectfont
 	\input{tex/gratitudes}
+	\def\baselinestretch{1.5}\selectfont
 	\cleardoublepage
 	
 	% ---- Sumary ----
@@ -117,7 +119,7 @@
 			{\thesection\  #1}}{}}
 	\chapter{Introducción}
 	\label{introduction}
-	%\input{tex/introduction}
+	\input{tex/introduction}
 	\cleardoublepage
 	
 	\chapter{Contexto}
@@ -132,12 +134,12 @@
 	
 	\chapter{Evaluación}
 	\label{evaluation}
-	%\input{tex/evaluation}
+	\input{tex/evaluation}
 	\cleardoublepage
 	
 	\chapter{Conclusiones}
 	\label{conclusions}
-	%\input{tex/conclusions}
+	\input{tex/conclusions}
 	\cleardoublepage
 	
 	\listoftables
@@ -146,12 +148,33 @@
 	\listoffigures
 	\cleardoublepage
 	
+	\clearpage
+	
 	% ------- Appendices -------
 	\appendix
 	\addcontentsline{toc}{chapter}{Apéndices}
 	\label{appendices}
 	
+	%\chapter{Diagramas}
+	%\label{diagrams}
+	%\input{tex/diagrams}
+	%\cleardoublepage
+	
+	%\chapter{Manual de uso}
+	%\label{manual}
+	%\input{tex/manual}
+	%\cleardoublepage
+	
+	%\chapter{Información de Lua}
+	%\label{lua}
+	%\input{tex/lua}
+	%\cleardoublepage
+	
+	\clearpage
+	
 	% ------- Biliography -------
 	\bibliographystyle{IEEEtran-spanish}
 	\bibliography{bib/references}
+	\addcontentsline{toc}{chapter}{A. Bibliografía}
+	\label{bibliography}
 \end{document}

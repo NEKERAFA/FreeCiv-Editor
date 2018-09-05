@@ -15,15 +15,16 @@ biomas(plain; hills; forest; jungle; trunda; swamp; desert).
 max_cells(MAX) :- #count{P : cell(P, l)} = MAX.
 
 % Generate glacier regions
-%reached(p(X, Y), glacier) :- cell(p(X, Y), l), ice(N), X <= N.
-%reached(p(X, Y), glacier) :- cell(p(X, Y), l), ice(N), dims(ROWS, COLS), X >= ROWS-N-1.
-%n_ice(N) :- #count{P : reached(P, glacier)} = N.
+%land(p(X, Y), glacier) :- cell(p(X, Y), l), ice(N), X < N-1.
+%land(p(X, Y), glacier) :- cell(p(X, Y), l), ice(N), dims(ROWS, COLS, TERRAIN), X > ROWS-N-1.
 
 % The root of a bioma
 0 { root(P, T) : cell(P, l) } 1 :- biomas(T).
 :- root(P, T), root(P, U), T!=U.
 
+% Defines which cells could be reached
 reached(P, T) :- root(P, T).
+%{ reached(P, T) } :- not land(P, glacier), biomas(T), cell(P, l), adj(P, Q), reached(Q, T).
 { reached(P, T) } :- biomas(T), cell(P, l), adj(P, Q), reached(Q, T).
 :- reached(P, T), reached(P, U), T!=U.
 
@@ -34,7 +35,6 @@ adj(P, Q) :- adj(Q, P).
 
 % Preference in the size of regions
 n_cells(Z) :- #count{C, I : reached(C, I)} = Z.
-
 :- n_cells(Z), max_cells(MAX), dims(ROWS, COLS, TERRAIN), Z!=MAX*TERRAIN/100.
 
 % Gets the number of root cells
@@ -47,5 +47,3 @@ size_bioma(T, N) :- root(Q, T), cell(Q, l), #count{P: reached(P, T)} = N.
 
 % Translate quadrant reached in a quadrant
 land(P, T) :- reached(P, T).
-
-% 1 {land(P, T) : types(T)} 1 :- cell(P, l).

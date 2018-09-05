@@ -2,7 +2,7 @@ En este capítulo se detalla cada uno de los puntos llevados a cabo para la real
 
 \section{Propuesta}
 
-El trabajo propuesto tiene como objetivo la creación de un elemento software funcional que, usando el paradigma lógico explicado en la Sección \ref{asp}, permita la generación de un escenario jugable que pueda ser ejecutado en el juego Freeciv, como se indica en la Sección \ref{subsec:freeciv}. Así mismo incluirá una interfaz gráfica interactuable que permitan al usuario marcar que zonas del terreno deben generarse y cuales no, indicando su contenido antes de lanzar el proceso de generación.
+El trabajo propuesto tiene como objetivo la creación de un elemento software funcional que, usando el paradigma lógico explicado en la Sección \ref{subsec:asp}, permita la generación de un escenario jugable que pueda ser ejecutado en el juego Freeciv, como se indica en la Sección \ref{subsec:freeciv}. Así mismo incluirá una interfaz gráfica interactuable que permitan al usuario marcar que zonas del terreno deben generarse y cuales no, indicando su contenido antes de lanzar el proceso de generación.
 
 \subsection{Formato del escenario de Freeciv}
 
@@ -10,7 +10,7 @@ Como uno de los puntos fuerte de este trabajo tiene que ver con la generación d
 
 Para empezar, el formato se basa en archivo de texto plano que contiene varios campos, haciendo que sea lo más simple posible y que en la teoría se pueda modificar a mano.
 
-\begin{lstlisting}[caption=Ejemplo de formato de mapa,label=lst:format]
+\begin{lstlisting}[caption=Ejemplo de formato de mapa,label=lst:format,captionpos=b]
 [scenario]
 is_scenario=TRUE
 name=_("My map")
@@ -112,6 +112,7 @@ En Freeciv, cada celda de la rejilla del mapa contiene una baldosa de terreno ú
 		\textit{Pantano}: Se puede irrigar rápidamente. Puede producir de 5 a 9 unidades de producción si se encuentra con recursos como tundra o con especias. & \texttt{s} & \adjustimage{height=2em,valign=t}{images/swamp.png} \\
 		\textit{Tundra}: Solo se pueden crear carreteras. & \texttt{t} & \adjustimage{height=2em,valign=t}{images/tundra.png} \\
 		\textit{Glacier}: Ninguna de las unidades puede cruzarlo. & \texttt{a} & \adjustimage{height=2em,valign=t}{images/glacier.png} \\
+		\hline
 	\end{tabular}
 	\caption{Tipos de terreno}\label{table:terrains1}
 \end{table}
@@ -122,15 +123,124 @@ En Freeciv, cada celda de la rejilla del mapa contiene una baldosa de terreno ú
 		\hline
 		\textit{Mar}: Todas las unidades acuáticas pueden cruzarlo. Puede producir 2 unidades de producción si se encuentra con un banco de peces & & \adjustimage{height=2em,valign=t}{images/sea.png} \\
 		\textit{Océano}: Solo las grandes embarcaciones y submarinos pueden pasar por encima. & \texttt{:} & \adjustimage{height=2em,valign=t}{images/ocean.png} \\
+		\hline
 	\end{tabular}
 	\caption{Tipos de terreno}\label{table:terrains2}
 \end{table}
 
 \section{Proceso de ingeniería}
 
-\subsection{Metodología}
+En este capítulo se explica el proceso que se ha seguido para realizar el proyecto descrito. Se empezará explicando la metodología de desarrollo escogida y a continuación se expondrá y se desgranará la gestión de este trabajo.
+
+\subsection{Metodología de desarrollo}
+\label{subsec:metodologia}
+
+A pesar de que en un primer se ha pensado que para la planificación de este proyecto se usaría la metodología de desarrollo Scrum \cite{Schwaber:2001:ASD:559553} \cite{Schwaber:2004:APM:984028}, finalmente se ha optado por usar una amalgama entre distintas metodologías de desarrollo en espiral. Esto es debido a que Scrum tiene unas características básicas que no se han tenido en cuenta a la hora de diseñar y desarrollar el proyecto, por lo que no sería correcto decir que se ha utilizado este tipo de metodología ágil:
+
+\begin{itemize}
+	\item \textbf{Flujo de trabajo}: El trabajo se divide en varias iteraciones entre una y cuatro semanas llamadas \textit{Sprint}, en donde en cada una de ellas se obtiene un incremento funcional del producto. Al comienzo de cada iteración se realiza una reunión en donde se identifican las tareas a realizar en esa iteración, realizando una estimación de todas; durante la realización de la iteración se realiza cada día una pequeña reunión en donde se comunica el estado actual; y, al finalizar una iteración se realiza una reunión que sirve como retrospectiva y alimentación para la próxima iteración. \\
+	
+	A la hora de realizar este proyecto, a pesar de que se ha dividido en varias iteraciones de entre 1 semana y media, realizando una reunión al principio de estos, y en cada iteración se finaliza con un producto funcional, el resto de elementos de la metodología Scrum no se han llevado a cabo en la práctica.
+	\item \textbf{Gestión de riesgos}: Uno de lo puntos de desarrollo con una metodología ágil es la de mantener una gestión de temprana de riesgos para evitar una gran desviación de la planificación. Esto se realiza mediante un panel que presenta listado ordenado de las tareas a realizar en el desarrollo total del proyecto, llamado \textit{Product backlog}. Estas tareas son las que estiman su duración y se incluyen en otro listado de tareas a realizar en cada iteración, llamado \textit{Sprint backlog}. Con esto se puede obtener una gráfica de evolución del proyecto llamado \textit{Burn down chart}, pudiendo detectar desviaciones y sobreasignaciones de forma visual debido a que también se marca el trabajo ideal de proyecto. \\
+	
+	Para este proyecto no se ha usado ninguno de estos elementos porque no se ha realizado un seguimiento exhaustivo del mismo a causa de la escasa experiencia de alumno a la hora de realizar una planificación y estimación del proyecto, sobre todo a la hora de seguir y diseñar un proyecto con una metodología de desarrollo ágil.
+\end{itemize}
+
+Debido a todos estos factores expuestos, se podría indicar que la metodología usada finalmente está más cerca de una basada en modelos de prototipos en donde se tiene en cuenta que cada prototipo resultante de una iteración es un modelo funcional del mismo, y en donde es revisado en la reunión de la siguiente iteración sin estar presente el cliente final, si no que solo con el director del proyecto. También en esta reunión se definen las tareas a realizar para el desarrollo del proyecto de cara a la nueva iteración. \\
 
 \subsection{Gestión del proyecto}
+\label{subsec:gestion}
+
+A continuación se describirá la planificación llevada a cabo para cumplir con el tiempo estimado de realización del proyecto, así como el coste y los recursos necesarios para la construcción del mismo.
+
+\subsubsection{Planificación}
+
+Volviendo a lo comentado en la Sección \ref{subsec:metodologia}, con respecto la planificación del desarrollo del trabajo en cuestión, se ha dividido en varias iteraciones que han ido incrementando las funcionalidades del producto final. Estas iteraciones vienen expresados de una forma gráfica en la Figura \ref{fig:gantt} y explicados en detalle en la Tabla \ref{table:iteraciones}.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{images/gantt.pdf}
+	\caption{Diagrama de Gantt con las iteraciones del proyecto}
+	\label{fig:gantt}
+\end{figure}
+
+Cabe destacar que el proyecto en cuestión ha tenido dos aproximaciones diferentes. La primera aproximación tiene que ver con las iteraciones 1-3, en donde el sistema generaba todos los tipos de terrenos del mapa. El problema de esta aproximación es que ocasionaba que la generación de mapa tardase mucho más de lo que alguien puede considerar razonable. Esto es debido a la naturaleza de ASP, que tal como se describe en la Sección \ref{subsec:asp}, provoca que el conjunto de reglas a tener en cuenta sea exponencial, dando como resultado una explosión combinatoria de hechos y que la herramienta no sea usable. \\
+
+\def\arraystretch{1}%  1 is the default, change whatever you need
+
+\begin{table}
+	\centering
+	\begin{tabular}{ c c }
+		\bfseries{Iteración} & \bfseries{Tiempo (h)} \\
+		\hline
+		1 & 30 \\
+		2 & 30 \\
+		3 & 30 \\
+		4 & 20 \\
+		5 & 20 \\
+		6 & 32 \\
+		7 & 32 \\
+		8 & 32 \\
+		9 & 32 \\
+		10 & 32 \\
+		11 & 32 \\
+		12 & 40 \\
+		\hline
+		\bfseries{Total} & 362 \\
+		\hline
+	\end{tabular}
+	\caption{Desglose de las iteraciones}\label{table:iteraciones}
+\end{table}
+
+Como segunda aproximación, la cual comprende el resto de iteraciones, se ha decidido dividir el programa en distintos módulos independientes que se encargan de generar distintas partes del mapa. Esto hace que el tiempo sea mucho más razonable y sea más manejable. Aún así, el hecho de cambiar de aproximación, como puede entenderse, hizo que se tuviera que cambiar la parte declarativa de la herramienta.
+
+\subsubsection{Coste y recursos}
+
+Para calcular el coste de los recursos humanos que ha supuesto este proyecto, además de las 362 horas totales del proyecto, también se han llevado a cabo reuniones de una hora a la hora de iniciar cada iteración, así como una al inicial el proyecto y otra al terminar el mismo, dando un total de 14 horas a mayores al proyecto. Teniendo esto en cuenta y siguiendo la Guía Salarial del Sector TI en Galicia \cite{guiasalarial}, se ha estimado los costes que se pueden ven en la Tabla \ref{table:costehumano}.
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{ c c c c }
+		\bfseries{Recurso} & \bfseries{Tiempo (h)} & \bfseries{Coste (\euro/h)} & \bfseries{Total} \\
+		\hline
+		Doctor Investigador & 14 & 24,00 & 336,00 \\
+		Analista Programador & 376 & 9,00 & 3384,00 \\
+		\hline
+		\bfseries{Total} & 376 & & 3720,00 \\
+		\hline
+	\end{tabular}
+	\caption{Coste de los recursos humanos del proyecto}\label{table:costehumano}
+\end{table}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabularx}{\textwidth}{ X X X X X }
+		\bfseries{Recurso} & \bfseries{Vida (mes)} & \bfseries{Uso (mes)} & \bfseries{Coste (\euro)} & \bfseries{Total (\euro)} \\
+		\hline
+		Portátil & 48 & 7 & 800,00 & 116,67 \\
+		Freeciv & $\infty$ & 7 & - & 0 \\
+		Clingo & $\infty$ & 7 & - & 0 \\
+		LÖVE & $\infty$ & 7 & - & 0 \\
+		HUMP & $\infty$ & 7 & - & 0 \\
+		SUIT & $\infty$ & 7 & - & 0 \\
+		json.lua & $\infty$ & 7 & - & 0 \\
+		busted & $\infty$ & 7 & - & 0 \\
+		luaproc & $\infty$ & 7 & - & 0 \\
+		LDoc & $\infty$ & 7 & - & 0 \\
+		Github & $\infty$ & 7 & - & 0 \\
+		Travis-CI & $\infty$ & 7 & - & 0 \\
+		Coveralls & $\infty$ & 7 & - & 0 \\
+		LaTeX & $\infty$ & 7 & - & 0 \\
+		\hline
+		\bfseries{Total} & & & & 116,67 \\
+		\hline
+	\end{tabularx}
+	\caption{Coste de los recursos humanos del proyecto}\label{table:costematerial}
+\end{table}
+
+Por otro lado, en la \ref{table:costematerial} se recoge la lista de recursos materiales y lógicos necesarios para el desarrollo de este proyecto. Para el caso de los recursos \textit{hardware} se ha tenido en cuenta el tiempo de uso para este proyecto con respecto a su vida útil, mientras para los recursos \textit{software}, se ha preferido por usar herramientas y bibliotecas de uso libre y gratuitas, de ahí que el coste no esté contado para el resultado final. \\
+
+Con todo esto se puede concluir que el coste total del proyecto asciende hasta \EUR{3836,67} en total.
 
 \section{Análisis del software}
 
@@ -250,7 +360,7 @@ El proyecto propuesto está pensado para ser usado a través de una interfaz gr�
 		\label{fig:exportmock}
 	\end{figure}
 	
-	\item 6. Modificar mapa: Se inicia cuando el usuario presiona sobre una de las celdas de la rejilla como en la Figura \ref{fig:mainmock}. El sistema pasará a cambiar el terreno de la celda por otro, realizando un ciclo en el momento en el que no quede ninguna opción nueva.
+	\item 6. Modificar mapa: Se inicia cuando el usuario presiona sobre una de las celdas de la rejilla expuesta en la Figura \ref{fig:mainmock}. El sistema pasará a cambiar el terreno de la celda por otro, realizando un ciclo en el momento en el que no quede ninguna opción nueva.
 	
 	\begin{figure}[!h]
 		\centering
@@ -260,6 +370,274 @@ El proyecto propuesto está pensado para ser usado a través de una interfaz gr�
 	\end{figure}
 
 \end{itemize}
+
+\subsection{Diseño del programa lógico}
+\label{subsubsec:generator}
+
+Retornando a lo comentado en la Sección \ref{subsec:arquitectura}, una de las piezas fundamentales de este proyecto es la definición de un generador de mapas en formato declarativo. Este módulo está pensado mediante el paradigma de programación lógica que usa la tecnología ASP, tal y como se expone en la Sección \ref{subsec:asp}. \\
+
+El objetivo de este generador es intentar dar un modelo declarativo basado en reglas que corresponda en mayor o menor medida con la definición de un mapa de Freeciv. Es por esto que, como se ha contado en la Sección \ref{subsec:gestion}, para evitar los problemas que puede suponer este proyecto en cuanto a evitar tener una explosión combinatoria de soluciones válidas, se ha decidido finalmente realizar una aproximación dividiendo este módulo en varios programas independientes que generan partes concretas del escenario. \\
+
+\subsubsection{Generación de regiones}
+\label{subsubsec:regiones}
+
+Como primer paso para la generación del mapa, se ha pensado en usar un programa lógico que, dada una división grande del mapa (la cual llamaremos cuadrante), identifica para cada una de ellas a que región o isla pertenece, tal y como se puede ver en la Figura \ref{fig:regiones}.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.4\textwidth]{images/regiones.pdf}
+	\caption{Ejemplo de mapa dividido en cuadrantes}
+	\label{fig:regiones}
+\end{figure}
+
+Para ello elige un cuadrante único para isla, el cual va a ser la raíz desde donde se vaya expandiendo toda la región. Esto se ha implementado mediante siguientes reglas, en donde primeramente se selecciona una raíz dado un cuadrante y se prohíbe que dos raíces de distintos cuadrantes tengan la misma posición: \\
+
+\begin{lstlisting}[label=lst:qroot]
+1 { q_root(C, I): q_pos(C) } 1 :- region(I).
+:- q_root(C, I), q_root(C, J), I!=J.
+\end{lstlisting}
+
+\hspace{1em}
+
+Para que cada raíz se expanda por el mapa, se ha planteado que las celdas contiguas sean alcanzables, es decir, que si está adyacente (se tiene en cuenta 4-adyacente) a la raíz o a otra celda conectada a la raíz, esta pueda o no ser alcanzada siempre que no se haya escogido para otra región. Esto en ASP se traduce en estas reglas: \\
+
+\begin{lstlisting}[label=lst:qreached]
+q_reached(C, I) :- q_root(C, I).
+{q_reached(C, I)} :- q_reached(D, I), region(I), 
+   not existsanother(I, C), q_adj(D, C).
+existsanother(I, C) :- q_reached(C, J), region(J), region(I),
+   J!=I.
+\end{lstlisting}
+
+\hspace{1em}
+
+Finalmente, para que todo el mapa esté completo y no haya cuadrantes sin definir a una región, se ha añadido una restricción que evita las soluciones en donde el número de elementos \texttt{q\_reached} no es igual al máximo número de cuadrantes: \\
+
+\begin{lstlisting}[label=lst:qmax]
+n_quadrants(Z) :- #count{C, I: q_reached(C,I)} = Z.
+:- n_quadrants(Z), max_quadrants(MAX), Z!=MAX.
+\end{lstlisting}
+
+\subsubsection{Definición de regiones}
+\label{subsubsec:cuadrantes}
+
+Como segundo paso que se realiza, se procede a detallar cada una de las regiones por separado, indicando qué celdas del mapa que corresponde a esa región son de agua y cuales son de tierra. Para ello se realiza una aproximación parecida explicada en la generación de regiones, en donde se toma una celda que cae dentro de la región como celda raíz que contendrá tierra: \\
+
+\begin{lstlisting}[label=lst:croot]
+1 {rootcell(P) : c_pos(P)} 1.
+\end{lstlisting}
+
+\hspace{1em}
+
+Con esto la celda raíz de la isla intenta alcanzar al resto de celdas adyacentes usando una definición similar a la explicada en el apartado anterior: \\
+
+\begin{lstlisting}[label=lst:croot]
+reached(P) :- rootcell(P).
+{reached(P)} :- reached(Q), adj(Q, P).
+\end{lstlisting}
+
+\hspace{1em}
+
+Aún así, en este caso no queremos que la tierra rellene completamente la isla, el tamaño de la selección de celdas viene condicionado por una constante que indica la cantidad de tierra que se tiene que alcanzar. Por defecto está establecida para un 20\% del número de celdas totales de la región: \\
+
+\begin{lstlisting}[label=lst:cmax]
+cells_reached(Z) :- #count{P: reached(P)}=Z.
+:- cells_reached(Z), n_cells(MAX), dims(ROWS, COLS, LAND),
+   Z!=MAX*LAND/100.
+\end{lstlisting}
+
+\hspace{1em}
+
+Cabe destacar que en este apartado también se han añadido restricciones evitar la generación de formas o zonas que no sean del todo creíbles. Estas restricciones son las siguientes y pueden comentarse en cualquier momento sin peligrar el resto del programa: \\
+
+\begin{lstlisting}[label=lst:crestriccions]
+% Forbidden create lakes with 1 cell
+:- c_pos(P), not reached(P), top(P, T), T!=w, left(P,L), L!=w,
+   bottom(P,B), B!=w, right(P,R), R!=w.
+
+% Forbidden create bridges
+:- reached(P), top(P, w), left(P, L), L!=w, bottom(P, w),
+   right(P, R), R!=w.
+:- reached(P), top(P, T), T!=w, left(P, w), bottom(P, B), B!=w,
+   right(P,w).
+\end{lstlisting}
+
+\hspace{1em}
+
+Finalmente hay que destacar que, como la generación de regiones es independiente, para evitar que las islas de tierra se solapen, el programa principal genera unas restricciones que corresponden con las celdas adyacentes a las que están en borde de una región y han sido seleccionadas como tierra. Estas restricciones se tienen en cuenta en la siguiente generación, evitando que esto suceda.
+
+\subsubsection{Rellenado del terreno}
+
+Una vez se ha terminado la ejecución del apartado anterior, se procede a la selección de los biomas, es decir, las zonas de tierra con un tipo de terreno en concreto, que contendrá esa región. Para ello, de un modo similar al que se viene explicando, se elige una celda que será la raíz del bioma y se extiende mediante las celdas adyacentes. Aún así hay que destacar que, por defecto, el bioma de una celda de tierra es de hierba, por lo tanto aquí caben dos afirmaciones que se han supuesto en esta generación:
+
+\begin{itemize}
+	\item La hierba es el único bioma que no se genera, si no que todas las celdas contienen hierba a siempre y cuando no se exprese lo contrario.
+	\item Puede existir islas que no tengan todos los tipos de biomas, por lo que puede o no generarse un tipo concreto de bioma.
+\end{itemize}
+
+Con esta información se han llevado a cabo las siguiente reglas: \\
+
+\begin{lstlisting}[label=lst:biomas]
+% The root of a bioma
+{root(P, T) : cell(P, l)} :- biomas(T).
+:- root(P, T), root(P, U), T!=U.
+
+% Defines which cells could be reached
+reached(P, T) :- root(P, T).
+{reached(P, T)} :- biomas(T), cell(P, l), adj(P, Q),
+   reached(Q, T).
+:- reached(P, T), reached(P, U), T!=U.
+\end{lstlisting}
+
+\hspace{1em}
+
+Por otra parte, pueden existir ciertos biomas que solo se generen en una latitudes concretas, como los casquetes polares. Para ello se pueden crear ciertas reglas especiales que generen estos terrenos en función de la fila del mapa en la que se encuentra. En el siguiente ejemplo se ha recogido las reglas que generarían los casquetes en la zona norte y en la zona sur del mapa, siendo de ancho un 10\% del alto del mapa: \\
+
+\begin{lstlisting}[label=lst:glaciers]
+ice(ROWS*10/100) :- dims(ROWS, COLS, TERRAIN).
+
+land(p(X, Y), glacier) :- cell(p(X, Y), l), ice(N), X < N-1.
+land(p(X, Y), glacier) :- cell(p(X, Y), l), ice(N),
+   dims(ROWS, COLS, TERRAIN), X > ROWS-N-1.
+\end{lstlisting}
+
+\hspace{1em}
+
+Para terminar con este apartado, se ha añadido varias restricciones de tamaño. Las primeras reglas tienen que ver con la cantidad de tipos de terrenos generados, la cual sigue con el esquema propuesto en el apartado anterior (por defecto está establecida para un 20\% del número de celdas totales de la región): \\
+
+\begin{lstlisting}[label=lst:tmax]
+n_cells(Z) :- #count{C, I : reached(C, I)} = Z.
+:- n_cells(Z), max_cells(MAX), dims(ROWS, COLS, TERRAIN),
+   Z!=MAX*TERRAIN/100.
+\end{lstlisting}
+
+\hspace{1em}
+
+Finalmente se ha decidido que un bioma tiene que ocupar al menos dos casillas. Debido a eso, para los biomas generados se cuenta el número de celdas alcanzadas y se añade una restricción que evita que esta cuenta sea menor a dos celdas: \\
+
+\begin{lstlisting}[label=lst:tmax]
+size_bioma(T, N) :- root(Q, T), cell(Q, l), 
+   #count{P: reached(P, T)} = N.
+:- size_bioma(T, N), N < 2.
+\end{lstlisting}
+
+\subsubsection{Definición de cordilleras}
+
+Para la definición de cordilleras (el tipo de terreno montaña), esta se realiza una vez se ha completado la definición de los biomas de una isla, evitando así que el módulo anterior tenga una explosión combinatoria fuerte de resultados. Así mismo, esto nos permite tener en cuenta que, para dar un mayor realismo a la generación, en la vida real puede existir un sistema montañoso que divida ecosistemas con el mismo tipo de bioma debido al acercamiento de dos placas tectónicas. \\
+
+Después de esta breve explicación, para la definición de las reglas de generación de cordilleras se ha propuesto que esta generación tenga dos puntos, un punto inicial y un punto final que comprenda el inicio y el final de la coordillera: \\
+
+\begin{lstlisting}[label=lst:pointsystem]
+% Generate the start and the end position
+1 {start(P) : cell(P, l)} 1.
+1 {end(P) : cell(P, l)} 1 :- start(Q).
+% Forbidden that start and end points are the same.
+:- start(P), end(Q), P==Q.
+\end{lstlisting}
+
+\hspace{1em}
+
+Con esto lo que se pretende es hacer un camino que vaya de un punto a otro, para ello, de la misma forma que se ha generado las islas, se parte del punto inicial y se van alcanzando las celdas de tierra adyacentes: \\
+
+\begin{lstlisting}[label=lst:mreached]
+% The start cell is reached always.
+reached(P) :- start(P).
+% A cell next to a reached cell could be reached
+{reached(P)} :- cell(P, l), reached(Q), adj(P, Q).
+\end{lstlisting}
+
+\hspace{1em}
+
+Lo siguiente es evitar todas las soluciones en donde no se haya alcanzado el punto final, para ello se define el átomo \texttt{complete} en función de esto y se prohibe las soluciones que no tienen este átomo: \\
+
+\begin{lstlisting}[label=lst:mend]
+% The path is complete if the end is reached.
+complete :- end(P), reached(P).
+% Forbidden the paths that don't reach the end point.
+:- not complete.
+\end{lstlisting}
+
+\hspace{1em}
+
+Con esto generará un camino de coordilleras con cualquier ancho. Aún así se ha preferido acotar este camino a un ancho máximo. Para ello se han añadido unas reglas para obtener el número de vecinos adyacentes, en donde se parte de un borde del camino que tiene valor 0 y se avanza en un sentido, por ejemplo, partiendo de un borde, sus vecinos adyacentes hacia arriba serían: \\
+
+\begin{lstlisting}[label=lst:msizedef]
+size(p(X, Y), up, 0) :- reached(p(X, Y)), not reached(p(X-1, Y)).
+size(p(X, Y), up, N+1) :- reached(p(X, Y)), size(p(X-1, Y), up, N).
+\end{lstlisting}
+
+\hspace{1em}
+
+Esto se realiza para todos los sentidos correspondientes a la definición de adyacencia (arriba, abajo, izquierda y derecha). Con esto se puede obtener el ancho del camino en cualquier punto sumando los elementos en una dirección concreta de la siguiente forma:
+
+\begin{lstlisting}[label=lst:msize]
+height(P, N+M+1) :- size(P, up, N), size(P, down, M).
+width(P, N+M+1) :- size(P, left, N), size(P, right, M).
+\end{lstlisting}
+
+\hspace{1em}
+
+Dadas estas reglas, se puede construir restricciones para delimitar el tamaño máximo de la coordillera: \\
+
+\begin{lstlisting}[label=lst:msizeforbidden]
+:- height(P, N), dims(ROWS, COLS, SIZE, LENGHT), N>SIZE.
+:- width(P, N), dims(ROWS, COLS, SIZE, LENGHT), N>SIZE.
+\end{lstlisting}
+
+\subsubsection{Rellenado de agua}
+
+Con respecto a este módulo, lo que hace es añadir una plataforma continental cerca de la costa y el resto dejarlo como mar profundo. Para ello, en vez de usar un 4-adyacente se usa un 8-adyacente para que la plataforma bordee todas las islas. Las reglas son las siguientes: \\
+
+\begin{lstlisting}[label=lst:water]
+% Draw sea if there are near land
+water(P, sea) :- cell(P, w), adj(P, Q), cell(Q, l).
+% Draw ocean if there are near sea or near ocean
+water(P, ocean) :- cell(P, w), adj(P, Q), water(Q, sea),
+   not arround_land(P).
+water(P, ocean) :- cell(P, w), adj(P, Q), water(Q, ocean),
+   not arround_land(P).
+\end{lstlisting}
+
+\subsubsection{Generación de puntos de inicio}
+
+Para generar los puntos iniciales desde donde partirán los jugadores se tiene en cuenta lo cerca que están de las montañas y lo cerca que están del agua para intentar crear asentamientos lejos de coordilleras y cercanas al mar. \\
+
+Para ello se realiza primero la generación de un punto de inicio en una posición aleatoria mediante la siguiente regla: \\
+
+\begin{lstlisting}[label=lst:water]
+N { player(P) : cell(P, l) } N :- players(N).
+\end{lstlisting}
+
+\hspace{1em}
+
+Luego se procede a obtener la distancia desde un punto de inicio a la celda más próxima con agua. Para ello primero se ha planteado una regla que obtiene, dado un punto de incio, todas las distancias que tienen una distancia más pequeña a esta. Con esto se plantea otra regla que define que la distancia más cercana al agua es aquella que no tiene un elemento más pequeño: \\
+
+\begin{lstlisting}[label=lst:water]
+greater_dist_water(J, N) :- player(J), cell(P1, w), cell(P2, w),
+   manhattan(J, P1, N), manhattan(J, P2, M), N>M.
+water_distance(J, D) :- player(J), cell(P, w),
+   manhattan(J, P, D), not greater_dist_water(J, D).
+\end{lstlisting}
+
+\hspace{1em}
+
+Esto mismo se realiza con la distancia a la celda de montaña mas próxima. Con esto, se pueden añadir reglas de maximización de la distancia a la montaña y minimización de la distancia al agua de la siguiente forma: \\
+
+\begin{lstlisting}[label=lst:water]
+#minimize{D : player(J), water_distance(J,D)}.
+#maximize{D : player(J), mountain_distance(J,D)}.
+\end{lstlisting}
+
+\hspace{1em}
+
+Finalmente, teniendo esto en cuenta, para interconectar todos estos programas se ha creado un controlador que usa la API \textit{built-in} de clingo\footnote{https://potassco.org/clingo/python-api/current/clingo.html}, la cual permite usar Lua dentro de un programa lógico. Este controlador sigue el flujo de información que se describe en la Figura \ref{fig:sequence}, en donde podemos ver como se va realizando las llamadas a los diferentes módulos explicados anteriormente.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{images/secuencia.pdf}
+	\caption{Diagrama de secuencia de la ejecución del generador}
+	\label{fig:sequence}
+\end{figure}
 
 \subsection{Implementación}
 \label{subsec:implementacion}
@@ -273,14 +651,14 @@ Por último, indicar que para la realización de las vistas de la interfaz de us
 \subsubsection{Clase principal}
 \label{subsubsec:main}
 
-Como se puede ver en la Figura \ref{fig:mainclass} se ha diseñado la clase principal \texttt{Main}, la cual es una clase estática que sirve de controlador para las vistas y el modelo. Implementa los casos de uso de la interfaz descritos en la Sección \ref{subsec:cases} en los métodos \texttt{\_newMap}, \texttt{\_openMap}, \texttt{\_saveMap}, \texttt{\_exportMap} y \texttt{\_generateMap}, que son eventos que se llaman desde los diálogos emergentes tal y como se explica desde la Sección \ref{subsubsec:widgets}. Para el caso de uso de modificar el mapa, la tarea recae en la clase \texttt{Editor}, que se explica en detalle en la Sección \ref{subsubsec:client}. \\
-
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/clase-principal.pdf}
 	\caption{Diagrama de clases del paquete principal}
 	\label{fig:mainclass}
 \end{figure}
+
+Como se puede ver en la Figura \ref{fig:mainclass} se ha diseñado la clase principal \texttt{Main}, la cual es una clase estática que sirve de controlador para las vistas y el modelo. Implementa los casos de uso de la interfaz descritos en la Sección \ref{subsec:cases} en los métodos \texttt{\_newMap}, \texttt{\_openMap}, \texttt{\_saveMap}, \texttt{\_exportMap} y \texttt{\_generateMap}, que son eventos que se llaman desde los diálogos emergentes tal y como se explica desde la Sección \ref{subsubsec:widgets}. Para el caso de uso de modificar el mapa, la tarea recae en la clase \texttt{Editor}, que se explica en detalle en la Sección \ref{subsubsec:client}. \\
 
 Con respecto al motor gráfico LÖVE, este usa varias funciones predefinidas cuando se activan distintos eventos, los cuales llaman a los métodos públicos de la clase principal:
 
@@ -294,14 +672,14 @@ Con respecto al motor gráfico LÖVE, este usa varias funciones predefinidas cua
 \subsubsection{Editor gráfico}
 \label{subsubsec:client}
 
-La clase \texttt{Editor} sirve como un controlador para responder a las modificaciones y cambios de representación del mapa, ya sea cuando se actualiza este mediante uno de los casos de uso que recoge la clase principal [ver Sección \ref{subsubsec:main}] o cuando el usuario procede a la modificación del mapa, tal y como se explica en la Sección \ref{subsec:cases}.
-
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/clase-editor.pdf}
 	\caption{Diagrama de clases del paquete \texttt{Client}}
 	\label{fig:editorclass}
 \end{figure}
+
+La clase \texttt{Editor} sirve como un controlador para responder a las modificaciones y cambios de representación del mapa, ya sea cuando se actualiza este mediante uno de los casos de uso que recoge la clase principal [ver Sección \ref{subsubsec:main}] o cuando el usuario procede a la modificación del mapa, tal y como se explica en la Sección \ref{subsec:cases}. \\
 
 Para ello, siguiendo el patrón decorador, esta se apoya en la clase \texttt{MapDecorator}, la cual se encarga de actualizar la vista del mapa, que es representada mediante una rejilla con los distintos terrenos mediante el objeto \texttt{love.SpriteBatch}, el cual es un mapa de \textit{tiles} bidimensional. Debido a que hay terrenos que contienen diferentes imágenes para las posiciones de un \textit{tile}, \texttt{MapDecorator} contiene varios métodos que permiten discretizarlas conociendo los vecinos de una celda. Finalmente esta clase llama al modelo en si, representado por la clase \texttt{Map}, la cual tiene una representación del mapa en forma de tabla. \\
 
@@ -310,14 +688,14 @@ Finalmente todas estas clases usan constantes que están definidas el módulo \t
 \subsubsection{Elemento gráficos complejos}
 \label{subsubsec:widgets}
 
-Como ya expliqué en la entrada de la Sección \ref{subsec:implementacion}, debido a las limitaciones de la biblioteca \textit{SUIT}, hay varios elementos gráficos que no se incluyen en ella debido a que son complejos y no es del ámbito de esta bibloteca, es por eso que se han realizado a mano. Estos elementos tienen su propio controlador para poder usarlos más fácilmente dentro del programa.
-
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/clases-widgets.pdf}
 	\caption{Diagrama de clases del paquete \texttt{Widget}}
 	\label{fig:widgetclasses}
 \end{figure}
+
+Como ya expliqué en la entrada de la Sección \ref{subsec:implementacion}, debido a las limitaciones de la biblioteca \textit{SUIT}, hay varios elementos gráficos que no se incluyen en ella debido a que son complejos y no es del ámbito de esta bibloteca, es por eso que se han realizado a mano. Estos elementos tienen su propio controlador para poder usarlos más fácilmente dentro del programa.
 
 \begin{itemize}
 	\item Para la barra de herramientas se ha realizado la clase \texttt{MenuBar}, la cual controla y muestra la lista de botones que accionan los principales casos de uso. Al constructor se le pasa las funciones para los eventos de aceptar y cancelar diálogo. Tiene un método \texttt{update} que devuelve un número que se corresponde con el botón pulsado en la barra.
@@ -326,13 +704,3 @@ Como ya expliqué en la entrada de la Sección \ref{subsec:implementacion}, debi
 	\item La clase \texttt{WaitMessage} controla y muestra la ventana emergente que se puede ver en la Figura \ref{fig:waitingmock}. Al constructor se le pasa el canal del \textit{thread} que se usa en la generación del mapa, tal y como se expone en la Sección \ref{subsubsec:generator}, y la función que se lanza cuando la generación termina. Contiene el método \texttt{isMouseFocused} que indica si el ratón está encima de la ventana.
 	\item La clase \texttt{FileChooser} controla y muestra la ventana emergente correspondiente a un diálogo de selección de archivo, tal y como se puede ver en las Figuras \ref{fig:openmock}, \ref{fig:savemock} y \ref{fig:exportmock}. Contiene varios métodos privados para la ordenación y la apertura de carpetas en disco, así como el método \texttt{isMouseFocused} que indica si el ratón está encima de la ventana, los métodos \texttt{textInput} y \texttt{keyPressed} para introducir texto en las entradas de la ventana y el método \texttt{wheelMoved} que permite subir y bajar la lista de carpetas y ficheros mediante la rueda del ratón.
 \end{itemize}
-
-\subsubsection{Generador de mapas}
-\label{subsubsec:generator}
-
-\begin{figure}[!h]
-	\centering
-	\includegraphics[width=\textwidth]{images/secuencia.pdf}
-	\caption{Diagrama de secuencia de la ejecución del generador}
-	\label{fig:sequence}
-\end{figure}

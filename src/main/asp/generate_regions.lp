@@ -3,13 +3,13 @@
 #const q_cols = 3.
 #const c_rows = 4.
 #const c_cols = 4.
-#const regions = 2.
+#const regions = 3.
 #const land = 20.
-#const terrain = 80.
+#const terrain = 20.
 #const m_size = 2.
 #const m_length = 3.
-#const c_players = 5.
-#const c_player_dist = 5.
+#const c_players = 2.
+#const c_player_dist = 2.
 
 %%%% TYPES
 % Type of row and columns

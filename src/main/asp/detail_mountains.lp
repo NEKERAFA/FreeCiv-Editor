@@ -8,7 +8,7 @@ pos(p(X, Y)) :- row(X), col(Y).
 % Generate the start and the end position
 1 {start(P) : cell(P, l)} 1.
 1 {end(P) : cell(P, l)} 1 :- start(Q).
-% Forbidden that start and end point are the same.
+% Forbidden that start and end points are the same.
 :- start(P), end(Q), P==Q.
 
 lenght(|X1-X2|+|Y1-Y2|) :- start(p(X1, Y1)), end(p(X2, Y2)).
@@ -27,7 +27,7 @@ adj(P, Q) :- adj(Q, P).
 % The path is complete if the end is reached.
 complete :- end(P), reached(P).
 % Forbidden the paths that don't reach the end point.
-:- start(P), not complete.
+:- not complete.
 
 % Count the number of neighbour cells reached.
 size(p(X, Y), up, 0) :- reached(p(X, Y)), not reached(p(X-1, Y)).
@@ -44,9 +44,9 @@ size(p(X, Y), right, N+1) :- reached(p(X, Y)), size(p(X, Y+1), right, N).
 height(P, N+M+1) :- size(P, up, N), size(P, down, M).
 width(P, N+M+1) :- size(P, left, N), size(P, right, M).
 
-% Forbidden paths smaller than the defined size in dims atom.
-:- height(P, N), dims(ROWS, COLS, SIZE, LENGHT), N<SIZE.
-:- width(P, N), dims(ROWS, COLS, SIZE, LENGHT), N<SIZE.
+% Forbidden paths greaters than the defined size in dims atom.
+:- height(P, N), dims(ROWS, COLS, SIZE, LENGHT), N>SIZE.
+:- width(P, N), dims(ROWS, COLS, SIZE, LENGHT), N>SIZE.
 
 % Translate reached in mountain atom.
 mountain(P) :- reached(P).

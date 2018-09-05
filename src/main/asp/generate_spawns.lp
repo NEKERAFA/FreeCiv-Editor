@@ -20,7 +20,7 @@ N { player(P) : cell(P, l) } N :- players(N).
 greater_dist_water(J, N) :- player(J), cell(P1, w), cell(P2, w), manhattan(J, P1, N), manhattan(J, P2, M), N>M.
 water_distance(J, D) :- player(J), cell(P, w), manhattan(J, P, D), not greater_dist_water(J, D).
 
-% Gets tje distance to thee mountains
+% Gets the distance to the mountains
 greater_dist_mountain(J, N) :- player(J), cell(P1, m), cell(P2, m), manhattan(J, P1, N), manhattan(J, P2, M), N>M.
 mountain_distance(J, D) :- player(J), cell(P, m), manhattan(J, P, D), not greater_dist_mountain(J, D).
 
@@ -29,6 +29,6 @@ mountain_distance(J, D) :- player(J), cell(P, m), manhattan(J, P, D), not greate
 
 % Maximize the distance to the mountains and minimize the distance to the water
 #minimize{D : player(J), water_distance(J,D)}.
-#maximize{D : player(J), mountain_distance(J,D)}.
+%#maximize{D : player(J), mountain_distance(J,D)}.
 
 1 { startpos(P, N) : nation(N) } 1 :- player(P).

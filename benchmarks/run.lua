@@ -1,92 +1,33 @@
-local Json = require "src.libs.json.json"
-
-local bench = {}
-local bench_num = 1
+local benchmarks = require "benchmarks.benchmarks"
 
 --------------------------------------------------------------------------------
 
--- Función que mide el tiempo de ejecución de una llamada
-function getTime(f)
-  collectgarbage()
+print("Benchmarks with diferents percentages of land and biomas.")
 
-  local time, executions = 0, 0
-  local continue = true
+local startTime = os.time()
+do
+  local islands = math.floor(math.sqrt(25) - 1)
 
-  while continue do
-    local startTime, endTime
-
-    startTime = os.clock(); f(); endTime = os.clock()
-
-    time = time + endTime - startTime
-    executions = executions + 1
-
-    continue = (executions < 1000) and ((endTime - startTime) < 5) and (time < 120)
+  local n1 = islands
+  while 25 % n1 ~= 0 do
+    n1 = n1 + 1
   end
 
-  return time / executions, executions
-end
+  local n2 = math.floor(25 / n1)
 
--- Se
-function log(t)
-  print("Bench " .. tostring(bench_num) .. ". " .. t.name .. ": " ..
-          tostring(t.time) .. "s in " .. tostring(t.executions) .. " executions")
-  bench_num = bench_num + 1
-end
+  local div = math.min(n1, n2)
+  local cells = math.max(n1, n2)
 
---------------------------------------------------------------------------------
-
-print("Benchs with diferents sizes")
-
--- Comprueba cuanto tarda en ejecutar con distintos tamaños de mapa
-for size = 10, 80, 5 do
-  local div = math.floor(math.sqrt(size) - 1)
-
-  while size % div ~= 0 do
-    div = div + 1
+  for land = 70, 80, 5 do
+    for bioma = 10, 80, 5 do
+      benchmarks.addbenchmark("Land and bioma: " .. tostring(land) .. "%, " ..
+          tostring(bioma) .. "%", 5, {q_rows=div, q_cols=div, c_rows=cells,
+          c_cols=cells, land=land, terrain=bioma, regions=islands})
+    end
   end
-
-  local cells = math.floor(size / div)
-  local constants = "-c q_rows=" .. div ..
-        " -c q_cols=" .. div .. " -c c_rows=" .. cells ..
-        " -c c_cols=" .. cells
-
-  local function f()
-    df = assert(io.popen("cd src && clingo " .. constants .." main/asp/generator.lp"))
-    df:close()
-  end
-
-  local time, executions = getTime(f)
-
-  new_bench = {name = "Tamaño " .. tostring(size) .. "x" .. tostring(size), time = time, executions = executions}
-  table.insert(bench, new_bench)
-  log(new_bench)
 end
+local endTime = os.time()
 
-print("\nBenchs with diferents percentages of land")
+print("Completed in " .. os.difftime(endTime, startTime) .. " s")
 
-local div = math.floor(math.sqrt(20) - 1)
-while 20 % div ~= 0 do
-  div = div + 1
-end
-local cells = math.floor(20 / div)
-
-for percentaje = 10, 60, 5 do
-  local constants = "-c q_rows=" .. div ..
-        " -c q_cols=" .. div .. " -c c_rows=" .. cells ..
-        " -c c_cols=" .. cells .. " -c land=" .. percentaje
-
-  local function f()
-    df = assert(io.popen("cd src && clingo 1 " .. constants .." main/asp/generator.lp"))
-    df:close()
-  end
-
-  local time, executions = getTime(f)
-
-  new_bench = {name = "Porcentaje de tierra " .. tostring(percentaje) .. "%", time = time, executions = executions}
-  table.insert(bench, new_bench)
-  log(new_bench)
-end
-
-local result = io.open("result.json", "w+")
-result:write(Json.encode(bench))
-result:close()
+benchmarks.writeresults("performance.json")

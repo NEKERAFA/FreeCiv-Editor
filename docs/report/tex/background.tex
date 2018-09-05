@@ -14,7 +14,7 @@ Existen varios géneros dentro de la estrategia por turnos:
 
 \subsection{Sid Meier's: Civilization}\label{subsec:civ}
 
-Como ya comenté, Civilization es un videojuego de estrategia por turnos que cae dentro del género X4, lanzado por primera ver en 1991 por el programador y diseñador Sid Meier. El objetivo del juego es construir una civilización y avanzarla desde la prehistoria y hasta un futuro cercano. En cada turno, el jugador puede mover unidades por el mapa, construir o mejorar ciudades y unidades, y realizar negociaciones con el resto de jugadores. Una vez se realiza una ronda, el juego avanza unos años en la historia. Actualmente existen seis títulos principales (el último, Civilization VI, lanzado en 2016) y varios spin-off que se centran en potenciar distintos aspectos de los títulos principales. \\
+Como ya comenté, Civilization\footnote{https://civilization.com} es un videojuego de estrategia por turnos que cae dentro del género X4, lanzado por primera ver en 1991 por el programador y diseñador Sid Meier. El objetivo del juego es construir una civilización y avanzarla desde la prehistoria y hasta un futuro cercano. En cada turno, el jugador puede mover unidades por el mapa, construir o mejorar ciudades y unidades, y realizar negociaciones con el resto de jugadores. Una vez se realiza una ronda, el juego avanza unos años en la historia. Actualmente existen seis títulos principales (a la hora de escribir esta memoria el último juego lanzado fue Civilization VI en 2016) y varios spin-off que se centran en potenciar distintos aspectos de los títulos principales. \\
 
 Al empezar la partida, el jugador se encuentra en un mapa basado en casillas generado proceduralmente, el cual contiene distintos biomas (praderas, desierto, montañas, ríos, lagos, etc...) con una serie de recursos (vino, caballos, trigo, fuel, carbón, etc...). La posición inicial normalmente es aleatoria, y el jugador puede controlar con una serie de colonos. En el resto del mapa cercano a los colonos, existe una niebla de guerra para evitar que el jugador pueda ver que hay cerca de el. \\
 
@@ -32,7 +32,7 @@ Debido al éxito de las entregas de Civilization y las diputas legales sobre el 
 
 Freeciv\footnote{http://www.freeciv.org} \footnote{https://github.com/freeciv} es un videojuego de código abierto basado en la serie de Sid Meier's Civilization, sobre todo en Civilization II. Fue creado por tres estudiantes del departamento de computación de la universidad de Aarhus debido al bajo rendimiento de Openciv. Basándose en la arquitectura de X11, escribieron un sencillo cliente en donde se ejecutaría una prueba de concepto, la cual tuvo una enorme acogida y rápidamente se creó una comunidad, la cual pasó a gestionar el proyecto debido a que sus autores desecharon la idea de continuar. Debido a esto expandiendo el juego al incluir elementos online, mejoras en la interfaz gráfica, mejor rendimiento, traducción para 30 idiomas distintos (entre ellos el castellano) y nuevos elementos al juego. \\
 
-El juego está escrito en C y tiene compatibilidad con el estandar POSIX para ser lo más portable posible. Contiene un intérprete de Lua [ver seccion \ref{subsec:lua}] que permite cargar scripts con el que dar un componente dinámico a las partidas (lo usa sobre todo para tutoriales) y desde el 2006 IANA asignó el puerto TCP/UDP 5556 a Freeciv \cite{iana_2006}. \\
+El juego está escrito en C y tiene compatibilidad con el estándar POSIX para ser lo más portable posible. Contiene un intérprete de Lua, el cual se explicará en la Sección \ref{subsec:lua}, que permite cargar scripts con el que dar un componente dinámico a las partidas (lo usa sobre todo para tutoriales) y desde el 2006 IANA asignó el puerto TCP/UDP 5556 a Freeciv \cite{iana_2006}. \\
 
 Como el proyecto es de código abierto (tiene una licencia GPL \cite{gplv3}), cualquiera puede descargar el código fuente y modificarlo. Es por eso que se ha conseguido que el juego tenga diferentes tecnologías de interfaz gráfica, pasando por bibliotecas específicas como GTK\footnote{https://www.gtk.org} y Qt\footnote{https://www.qt.io}, bibliotecas gráficas generales como SDL\footnote{https://www.libsdl.org} o OpenGL\footnote{https://www.opengl.org}, e incluso bibliotecas del estándar web como WebGL\footnote{https://www.khronos.org/webgl}.
 
@@ -40,13 +40,52 @@ Como el proyecto es de código abierto (tiene una licencia GPL \cite{gplv3}), cu
 
 Debido a las exigencias a la hora de desarrollar el proyecto, se ha optado por elegir un lenguaje de programación lógico sobre el que realizar la base declarativa del proyecto, ya que nos permitirá expresar las reglas de generación del mapa de forma matemática. También se ha escogido un segundo lenguaje multipropósito que nos servirá como soporte para crear un entorno gráfico con el que poder editar, guardar y cargar los mapas creados.
 
-\subsection{Answer Set Programming}\label{asp}
+\subsection{Answer Set Programming}\label{subsec:asp}
 
-\textit{Answer Set Programming} (ASP) es un paradigma enfocado a la resolución declarativa de problemas difíciles, combinando un lenguaje simple con el que modelar los problemas lógicos y herramientas de alto rendimiento para la resolución de estos. ASP está basado en modelos estables \cite{stablemodels}, que usa para definir la semántica declarativa en los programas lógicos, y lógica no monótono \cite{nonmonotonic}, que añade razonamiento por defecto. Con esto, ASP permite resolver problemas \textit{NP-hard} de forma uniforme. \\
+\textit{Answer Set Programming} (ASP) \cite{asp} es un paradigma enfocado a la resolución declarativa de problemas difíciles, combinando un lenguaje simple con el que modelar los problemas lógicos y herramientas de alto rendimiento para la resolución de estos. ASP está basado en modelos estables \cite{stablemodels}, que usa para definir la semántica declarativa mediante programas lógicos normales, que son un conjunto de reglas de la forma de la Ecuación \ref{eq:logicprogram}. Esto se añade a que incorpora lógica no monótono \cite{nonmonotonic}, que añade razonamiento por defecto. Con esto, ASP permite resolver problemas \textit{NP-hard} de forma uniforme.
 
-Mediante estos mecanismos, los problemas lógicos se reducen al cómputo de los modelos estables de un programa lógico dado, lo cual se hace mediante herramientas llamadas \textit{solvers}, que se encargan de utilizar diferentes técnicas para la expansión de lo que se llama Forma Normal Conjuntiva (FNC), que es una conjunción de clausulas. \\
+\begin{equation}\label{eq:logicprogram}
+	p \leftarrow q_1 , ... , q_m , \lnot q_{m+1} , ... , \lnot q_{n}.
+\end{equation}
 
-Para ello, se necesita que los programas lógicos estén expresados con variables libres. Como la forma de expresar un programa lógico en ASP es mediante un lenguaje de alto nivel con ciudadanos de primer orden, muchas de las variables están ligadas. Es por eso que, antes de resolver el programa, se usa unas herramientas llamadas \textit{grounders}, que permiten transformar el programa a su equivalente con variables libres.
+La fórmula \ref{eq:logicprogram} en ASP quedaría escrita como:
+
+\begin{lstlisting}[label=lst:qreached]
+p :- q1, ... , qm, not qm1, ..., not qn.
+\end{lstlisting}
+
+Mediante estos mecanismos, los problemas lógicos se reducen al cómputo de los modelos estables de un programa lógico dado, lo cual se hace mediante herramientas llamadas \textit{solvers}, que se encargan de utilizar diferentes técnicas para la expansión de lo que se llama Forma Normal Conjuntiva (FNC), que es una conjunción de clausulas. En la Ecuación \ref{eq:cnf} se puede observar la transformación de una fórmula a formato FNC \cite{Robinson65}.
+
+\begin{align}\label{eq:cnf}
+	& \lnot((\lnot p \rightarrow q) \land (q \rightarrow r) \rightarrow (\lnot r \rightarrow p))\\
+	\equiv & \lnot(\lnot((\lnot \lnot p \lor q) \land (\lnot q \lor r)) \lor (\lnot \lnot r \lor p)) \\
+	\equiv & ((p \lor q) \land (\lnot q \lor r)) \land \lnot (r \lor p) \\
+	\equiv & (p \lor q) \land (\lnot q \lor r) \land \lnot r \land \lnot p
+\end{align}
+
+Para ello, se necesita que los programas lógicos estén expresados con variables libres. Como la forma de expresar un programa lógico en ASP es mediante un lenguaje de alto nivel con ciudadanos de primer orden, muchas de las variables están ligadas. Es por eso que, antes de resolver el programa, se usa unas herramientas llamadas \textit{grounders}, que permiten transformar el programa a su equivalente con variables libres. \\
+
+Para ello se obtiene primeramente el \textit{Completion} \cite{negation} del programa lógico $P$, el cual se define como $P \land Q$, en donde $Q$ es la conjunción de:
+
+\begin{equation*}
+	p \rightarrow B_1 \lor ... \lor B_n
+\end{equation*}
+
+Para cada átomo $p$, y $B_1, ... b_N$ son cuerpos de las reglas $p \leftarrow B_i$ en $P$. \\
+
+Una vez hecho se pueden obtener las fórmulas \textit{loops}, en donde $L$ es un conjunto maximal de átomos que dependen unos de los otros. Esto da como resultado una fórmula del tipo:
+
+\begin{equation*}
+	B_1 \lor ... \lor B_m \leftarrow p_1 \lor .. p_n
+\end{equation*}
+
+En donde $B_i$ son los cuerpos de las reglas con cabeza en $L$ y ninguno de los átomos de $L$ en los cuerpos positivos. \\
+
+Con estas dos cosas se pueden generas los modelos estables teniendo en cuenta:
+
+\begin{equation}
+	SM(P) = M(COMP()P) \land L(P)).
+\end{equation}
 
 \begin{figure}[h]
 	\centering
@@ -55,7 +94,7 @@ Para ello, se necesita que los programas lógicos estén expresados con variable
 	\caption{Ejemplo de ejecución de ASP}
 \end{figure}
 
-Unas de las herramientas más importantes de ASP son la de Potassco\footnote{http://potassco.org}, la cual son un conjunto de herramientas para ASP desarrolladas en la Universidad de Postdam. Contienen las herramientas fundamentales como un grounder llamado \textit{gringo}; un solver que es \textit{clasp}; y una herramienta que aguntina todo el sistema ASP, \textit{clingo}. Así mismo, añade más funcionalidades al lenguaje ASP, como puede ser al resolución iterativa, debido a que permite embeber otros lenguajes como Lua [ver sección \ref{subsec:lua}] o Python, que pueden interactuar con el programa escrito en ASP mediante la interfaz o \textit{API} de clingo. \\
+Unas de las herramientas más importantes de ASP son la de Potassco\footnote{http://potassco.org}, la cual son un conjunto de herramientas para ASP desarrolladas en la Universidad de Postdam. Contienen las herramientas fundamentales como un grounder llamado \textit{gringo}; un solver que es \textit{clasp}; y una herramienta que aguntina todo el sistema ASP, \textit{clingo}. Así mismo, añade más funcionalidades al lenguaje ASP, como puede ser al resolución iterativa, debido a que permite embeber otros lenguajes como Lua, el cual está explicado en la Sección \ref{subsec:lua}, o Python, que pueden interactuar con el programa escrito en ASP mediante la interfaz o \textit{API built-in} de clingo. \\
 
 Estas herramientas serán claves a la hora de realizar este proyecto, ya que, como veremos más adelante, debido a la naturaleza de ASP, serán la base sobre la que se construirá todo el proyecto.
 
@@ -69,7 +108,7 @@ A parte de esto, existen otras implementaciones y dialectos basados en Lua, como
 
 Exiten otras implementaciones que lo único en lo que se diferencian de la implementación estándar es que expanden las funciones básicas o implementan bibliotecas por defecto. A estas implementaciones se llaman \textit{Lua Players} o \textit{Lua Engines}, que principalmente son destinadas para la creación de videojuegos, ya que añaden la implementación de las bibliotecas gráficas para una plataforma concreta, como pueden ser SDL o OpenGL. Los más destacados son los intérpretes no oficiales para consolas de Sony y Nintendo, y los intérpretes para ordenador y móviles como Corona, Cocos-2D, Moai y LÖVE [ver sección \ref{subsec:love2d}]. \\
 
-Como ya expliqué en el apartado anterior [sección \ref{asp}], las herramientas ASP que se usarán permiten usar este como un lenguaje embebido, lo que nos permitirá controlar la ejecución de la base. Así mismo, tomaremos el \textit{engine} LÖVE para crear una interfaz gráfica para que los usuarios puedan trabajar mejor con la edición de los mapas.
+Como ya expliqué en la Sección \ref{subsec:asp}, las herramientas ASP que se usarán permiten usar este como un lenguaje embebido, lo que nos permitirá controlar la ejecución de la base. Así mismo, tomaremos el \textit{engine} LÖVE para crear una interfaz gráfica para que los usuarios puedan trabajar mejor con la edición de los mapas.
 
 \subsection{JSON}
 
@@ -111,6 +150,6 @@ Debido a estas características, Git es uno de los sistemas de control de versio
 
 \subsection{LÖVE}\label{subsec:love2d}
 
-LÖVE\footnote{https://love2d.org} (o también conocido como Love2D) es un motor de código libre multiplataforma para la creación de juegos en 2D mediante el lenguaje Lua. Está hecho en C++ y añade una API al lenguaje Lua para que el programador pueda usar las bibliotecas OpenGL ES y SDL de una forma muy simplificada mediante funciones y tipos creados en Lua. Con el paso del tiempo también fue incluyendo un motor de físicas 2D o biliotecas para el manejo de fuentes FreeType, manejo de strings en UTF-8, funciones para usar sockets y una biblioteca especializada en conexión a videojuegos llamada ENet. Así mismo, debido al crecimiento de la comunidad, esta fue creando bibliotecas no oficiales que expanden el funcionamiento del motor, como bibliotecas para añadir interfaces inmediatas, soporte para técnicas usadas en videojuegos, orientación a objetos basada en clases o incluso portar el motor a otras plataformas o lenguajes. \\
+LÖVE\footnote{https://love2d.org} (o también conocido como Love2D) es un motor de código libre multiplataforma para la creación de juegos en 2D mediante el lenguaje Lua. Está hecho en C++ y añade una API al lenguaje Lua para que el programador pueda usar las bibliotecas OpenGL ES y SDL de una forma muy simplificada mediante funciones y tipos creados en Lua. Con el paso del tiempo también fue incluyendo un motor de físicas 2D o bibliotecas para el manejo de fuentes FreeType, manejo de strings en UTF-8, funciones para usar sockets y una biblioteca especializada en conexión a videojuegos llamada ENet. Así mismo, debido al crecimiento de la comunidad, esta fue creando bibliotecas no oficiales que expanden el funcionamiento del motor, como bibliotecas para añadir interfaces inmediatas, soporte para técnicas usadas en videojuegos, orientación a objetos basada en clases o incluso portar el motor a otras plataformas o lenguajes. \\
 
 Debido a la sencillez para poder dibujar en pantalla, así como poder integrar las bibliotecas gráficas creadas para LÖVE, este motor va a ser una de las herramientas principales que se usarán para la construcción de la interfaz de usuario en este proyecto.
