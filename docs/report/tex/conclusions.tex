@@ -1,39 +1,19 @@
-En este proyecto se ha llevado a cabo una herramienta declarativa con la que elaborar, mediante lógica proposicional, nuevos escenarios para el videojuego Freeciv. Para ello se usó el paradigma de \textit{Answer Set Programming}, una variante de Programación Lógica de uso frecuente para la Representación del Conocimiento y la resolución de problemas. La principal ventaja de \textit{Answer Set Programming} para este caso fue la facilidad que otorgaba el uso de predicados simples a la hora de definir ciertos sucesos dentro de un escenario concreto, así como añadir directamente reglas de restricción para ciertos elementos del mapa bajo la forma de reglas de programación lógica. Esto proporcionó una gran flexibilidad, ya que con ello sólo se necesita realizar la especificación del problema sin importar el método de resolución que se aplicará. \\
+En este proyecto se construido una herramienta declarativa con la que elaborar, mediante programación lógica, nuevos escenarios para el videojuego Freeciv. Para ello se usó el paradigma de \textit{Answer Set Programming}, una variante de Programación Lógica de uso frecuente para la Representación del Conocimiento y la resolución de problemas. La principal ventaja de \textit{Answer Set Programming} para este caso fue la facilidad que otorgaba el uso de predicados simples a la hora de definir ciertas propiedades dentro de un escenario concreto, así como añadir directamente reglas de restricción para ciertos elementos del mapa bajo la forma de reglas de programación lógica. Esto proporcionó una gran flexibilidad, ya que con ello sólo se necesita realizar la especificación del problema sin importar el método de resolución que se aplicará. \\
 
-Para evitar el problema de cara a la eficiencia de las soluciones al tener en cuenta que, dependiendo de los valores y el tamaño del tablero del mapa, puede ocasionar que se tenga en cuenta un enorme número de posibles combinaciones de cada uno de los elementos del escenario, se ha divido la generación en distintas etapas, cada una representada por módulos creados en \textit{Answer Set Programming}. Esto ha permitido facilitar la definición del conocimiento a la hora de generar el mapa, ya que cada uno de los módulos actúan independientemente. A pesar de esto, con los resultados de este trabajo presentados en la Sección \ref{evaluation}, se demuestra que aún puede haber una gran mejora a la generación propuesta, ya que en muchos casos puede llegar a haber problemas con mapas mayores de 45x45 celdas en cuanto a eficiencia y tiempo de ejecución. \\
+También se ha reducido el problema que surge al tener en cuenta todas las reglas y restricciones del mapa, lo cual produce una explosión combinatoria de soluciones, y ocasionaba que el sistema tardase en encontrar. Para ello se ha separado el problemas de búsqueda del modelo declarativo en distintos módulos independientes: un generador de regiones, un módulo para rellenar las regiones, un generador de biomas, un módulo que define cordilleras, un módulo para definir las celdas de agua y por último un módulo para definir los puntos iniciales de los jugadores. \\
 
-Realizando un resumen, los módulos implementados para este proyecto son:
+A pesar de todo esto, existen algunas limitaciones de cara la finalización de este proyecto, las cuales pueden ser resueltas en un futuro inmediato:
 
 \begin{itemize}
-	\item \textbf{Entrada de datos:} Se ha desarrollado una interfaz gráfica sencilla en la que se puede modificar los valores de generación e incluso realizar una edición del mapa.
-	\item \textbf{Generación de regiones:} Escrito en \textit{Answer Set Programming}, mediante las opciones marcadas en la interfaz gráfica, este módulo produce como solución la selección de las regiones que formarán el escenario.
-	\item  \textbf{Rellenado de regiones:} Este módulo, también hecho en ASP, rellena las regiones generadas por el módulo anterior, indicado para cada región que celda es tierra o agua.
-	\item \textbf{Generado de terreno:} También definido como programa lógico, este módulo se encarga de generar biomas en cada una de las regiones anteriormente definidas.
-	\item \textbf{Definición de cordilleras:} Para este módulo se definen las lineas de cordilleras que recorrerán el mapa mediante reglas.
-	\item \textbf{Rellenado de agua:} Mediante ASP, este módulo define las celdas de costa que están cercanas a las islas y las masas de océano.
-	\item \textbf{Definición de jugadores:} Con todo esto en cuenta, este módulo trata de indicar los puntos iniciales de donde partirán los jugadores, todo mediante programación lógica.
-	\item \textbf{Salida y exportado:} Este módulo se encarga de transformar la solución del mapa generado exportándolo en un formato compatible para el videojuego Freeciv.
+	\item El sistema no tiene en cuenta todos los elementos que proporciona el videojuego, por lo que no soporta actualmente la generación de ríos, ni la generación de recursos ni la generación de puntos de inicio para bárbaros o aldeas perdidas. Esto se podría solucionar añadiendo nuevos módulos a la generación del mismo.
+	\item El sistema presenta graves problemas de eficiencia a la hora de generar grandes porciones de mapas, mermando la funcionalidad de la herramienta. Esto se puede observar en la Sección \ref{evaluation}, en donde había problemas con mapas mayores de 45x45 celdas en cuanto a tiempo de ejecución. Esto se podría resolver intentando pulir las reglas actuales de los módulos o replanteando la forma en la que se han definido, en algunos casos dividiendo más para reducir la carga de estos.
 \end{itemize}
 
-A pesar de todo esto, existen algunas limitaciones de cara la finalización de este proyecto, ya sea por la falta de tiempo, la falta de recursos o la pobre de experiencia del alumno que también merece una especial mención:
+Para finalizar, se puede marcar una serie de líneas, tanto para solucionar y mejorar el sistema propuesto como para ampliar y extender las funcionalidades actuales de cara a largo plazo:
 
 \begin{itemize}
-	\item El sistema no tiene en cuenta todos los elementos que proporciona el videojuego, por lo que no soporta actualmente la generación de ríos, ni la generación de recursos ni la generación de puntos de inicio para bárbaros o aldeas perdidas.
-	\item La interfaz gráfica, a pesar de ser plenamente funcional, es muy pobre. No permite que los usuarios añadan restricciones manualmente ni que se indique que regiones debería generar el módulo en ASP.
-	\item Pese a la flexibilidad que nos proporciona el paradigma lógico usado, aún son necesarios conocimiento en ASP para la modificación de ciertas restricciones que vienen impuestas por defecto.
-	\item La aplicación necesita ser pulida y realizar más pruebas de validación con respecto a la salida del programa.
-	\item No ha sido probado por los usuarios finales a los que está destinado el proyecto.
-	\item El sistema presenta graves problemas de eficiencia a la hora de generar grandes porciones de mapas, mermando la funcionalidad de la herramienta.
-\end{itemize}
-
-\section{Trabajo futuro}
-
-Finalizado este proyecto, se puede marcar una serie de líneas, tanto para solucionar y mejorar el sistema propuesto como para ampliar y extender las funcionalidades actuales:
-
-\begin{itemize}
-	\item Añadir a la generación del escenario la capacidad de definir los ríos, los recursos y las aldeas del mapa.
 	\item Mejorar la interfaz gráfica, incluyendo distintos elementos gráficos con los que manejar de forma más efectiva el mapa, como puede ser herramientas para ampliar y disminuir el mapa, mover el mapa o marcar de forma más visual el tipo de terreno marcar.
 	\item Indicar de forma más visual restricciones en el mapa, así como zonas que tendrá en cuenta el generador para completar. Estas zonas incluso pueden tener restricciones de que piezas no poner o preferencias de los tipos de terrenos a generar.
-	\item Mejorar el rendimiento de la herramiento, intentando reducir la explosión combinatoria en todo momento.
 	\item Publicar y anunciar la herramienta para tener una buena base de usuarios que puedan producir un \textit{feedback} del uso y características de la misma.
+	\item Añadir a la base de conocimiento estilos personalizados, ya sea incluyéndolos dentro de las reglas o importándolos como perfiles. Estos permitirían que un usuario pueda tener preferencias de cara a la generación (que no le guste generar cordilleras cerca del agua, que los usuarios estén lo más cercano a bosques o recursos, etc).
 \end{itemize}

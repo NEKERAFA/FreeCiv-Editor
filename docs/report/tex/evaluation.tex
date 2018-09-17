@@ -24,21 +24,21 @@ Con esto se procede a obtener el número de cuadrantes y el tamaño del cuadrant
 \end{align}
 
 \begin{table}[!h]
-	\begin{tabularx}{\textwidth}{ X X X X X X X }
-		\bfseries{Tamaño} & \bfseries{Islas} & $\mathbf{q_{num}}$ & $\mathbf{q_{size}}$ & \bfseries{Total}  & \bfseries{clingo} & \bfseries{Ejecución} \\
+	\begin{tabularx}{\textwidth}{ X X X X X X }
+		\bfseries{Tamaño} & \bfseries{Islas} & $\mathbf{q_{num}}$ & $\mathbf{q_{size}}$ & \bfseries{Total} & \bfseries{Ejecución} \\
 		\hline
-		10 x 10 & 2 & 2 & 5 & 6 s & 117 ms & 0.24 s \\
-		15 x 15 & 2 & 3 & 5 & 17 s & 145 ms & 0.68 s  \\
-		20 x 20 & 3 & 4 & 5 & 88 s & 296 ms & 3.52 s \\
-		25 x 25 & 4 & 5 & 5 & 200 s & 675 ms & 8.00 s \\
-		30 x 30 & 4 & 5 & 6 & 1137 s & 731 ms & 45.48 s \\
-		35 x 35* & 4 & 5 & 7 & - & - & - \\
-		40 x 40 & 5 & 5 & 8 & 1791 s & 1050 ms & 71.64 s \\
-		45 x 45 & 5 & 5 & 9 & 4627 s & 1047 ms & 185.08 s \\
+		10 x 10 & 2 & 2 & 5 & 6 s & 117 ms \\
+		15 x 15 & 2 & 3 & 5 & 17 s & 145 ms \\
+		20 x 20 & 3 & 4 & 5 & 88 s & 296 ms \\
+		25 x 25 & 4 & 5 & 5 & 200 s & 675 ms \\
+		30 x 30 & 4 & 5 & 6 & 1137 s & 731 ms \\
+		35 x 35* & 4 & 5 & 7 & - & - \\
+		40 x 40 & 5 & 5 & 8 & 1791 s & 1050 ms \\
+		45 x 45 & 5 & 5 & 9 & 4627 s & 1047 ms \\
 		\hline
 	\end{tabularx}
 	\begin{tablenotes}
-		\item[1] Las filas indicadas con * se refieren a las pruebas en donde una ejecución no se han podido completan en menos de 5 minutos.
+		\item[1] Las filas indicadas con - se refieren a las pruebas en donde una ejecución no se han podido completan en menos de 5 minutos.
 	\end{tablenotes}
 	\caption{Resultado del \textit{benchmark} con diferentes tamaños de mapa.}\label{table:mapresult}
 \end{table}
@@ -60,24 +60,24 @@ Para la primera parte de la prueba se ha usado distintos porcentajes de tierra, 
 
 \begin{table}[!h]
 	\centering
-	\begin{tabular}{ c c c c }
-		\bfseries{Porcentaje} & \bfseries{Total}  & \bfseries{clingo} & \bfseries{Ejecución} \\
+	\begin{tabular}{ c c c }
+		\bfseries{Porcentaje} & \bfseries{Total} & \bfseries{Ejecución} \\
 		\hline
-		10\% & 174 s & 565 ms & 6,96 s \\
-		15\% & 178 s & 601 ms & 7,12 s \\
-		20\% & 178 s & 612 ms & 7,12 s \\
-		25\% & 179 s & 599 ms & 7,16 s \\
-		30\% & 181 s & 674 ms & 7,24 s \\
-		35\% & 178 s & 565 ms & 7,12 s \\
-		40\% & 179 s & 634 ms & 7,16 s \\
-		45\% & 178 s & 611 ms & 7,12 s \\
-		50\% & 181 s & 627 ms & 7,24 s \\
-		55\% & 179 s & 644 ms & 7,16 s \\
-		60\% & 178 s & 629 ms & 7,12 s \\
-		65\% & 179 s & 598 ms & 7,16 s \\
-		70\% & 178 s & 582 ms & 7,12 s \\
-		75\% & 180 s & 588 ms & 7,20 s \\
-		80\% & 180 s & 636 ms & 7,20 s \\
+		10\% & 174 s & 6,96 s \\
+		15\% & 178 s & 7,12 s \\
+		20\% & 178 s & 7,12 s \\
+		25\% & 179 s & 7,16 s \\
+		30\% & 181 s & 7,24 s \\
+		35\% & 178 s & 7,12 s \\
+		40\% & 179 s & 7,16 s \\
+		45\% & 178 s & 7,12 s \\
+		50\% & 181 s & 7,24 s \\
+		55\% & 179 s & 7,16 s \\
+		60\% & 178 s & 7,12 s \\
+		65\% & 179 s & 7,16 s \\
+		70\% & 178 s & 7,12 s \\
+		75\% & 180 s & 7,20 s \\
+		80\% & 180 s & 7,20 s \\
 		\hline
 	\end{tabular}
 	\caption{Resultado del \textit{benchmark} con diferentes porcentajes de tierra.}\label{table:landresult}
@@ -85,34 +85,34 @@ Para la primera parte de la prueba se ha usado distintos porcentajes de tierra, 
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=.9\textwidth]{tables/land-size.pdf}
+	\includegraphics[width=.8\textwidth]{tables/land-size.pdf}
 	\caption{Tiempos del \textit{benchmark} con diferentes porcentajes de tierra.}\label{fig:landresult}
 \end{figure}
 
 En la Tabla \ref{table:landresult} podemos ver los resultados de la realización de esta prueba de rendimiento ejecutando 25 ejecuciones cada una de las medidas, en donde se recoge el tiempo total de todas las ejecuciones, el tiempo total que ha usado clingo para obtener una solución y el tiempo medio de una ejecución. Por otra parte en la Figura \ref{fig:landresult} podemos ver una comparativa entre el tiempo medio entre ejecuciones y el tiempo medido arrojado por clingo. \\
 
-En el caso de la segunda parte de la prueba se ha usado distintos porcentajes de cantidad de bioma que alcanza una isla, usando los mismos datos que para la prueba anterior. En la Tabla \ref{table:biomaresult} podemos ver los resultados de la realización de esta prueba de rendimiento ejecutando 25 ejecuciones cada una de las medidas, en donde se recoge el tiempo total de todas las ejecuciones, el tiempo total que ha usado clingo para obtener una solución y el tiempo medio de una ejecución. Por otra parte en la Figura \ref{fig:biomaresult} podemos ver una comparativa entre el tiempo medio entre ejecuciones y el tiempo medido arrojado por clingo.
+En el caso de la segunda parte de la prueba se ha usado distintos porcentajes de cantidad de bioma que alcanza una isla, usando los mismos datos que para la prueba anterior. En la Tabla \ref{table:biomaresult} podemos ver los resultados de la realización de esta prueba de rendimiento ejecutando 25 ejecuciones cada una de las medidas, en donde se recoge el tiempo total de todas las ejecuciones, el tiempo total que ha usado clingo para obtener una solución y el tiempo medio de una ejecución. Por otra parte en la Figura \ref{fig:biomaresult} podemos ver una comparativa entre el tiempo medio entre ejecuciones y el tiempo medido arrojado por clingo. \\
 
 \begin{table}[!h]
 	\centering
-	\begin{tabular}{ c c c c }
-		\bfseries{Porcentaje} & \bfseries{Total}  & \bfseries{clingo} & \bfseries{Ejecución} \\
+	\begin{tabular}{ c c c }
+		\bfseries{Porcentaje} & \bfseries{Total} & \bfseries{Ejecución} \\
 		\hline
-		10\% & 178 s & 635 ms & 7,12 s \\
-		15\% & 180 s & 621 ms & 7,20 s \\
-		20\% & 179 s & 603 ms & 7,16 s \\
-		25\% & 178 s & 636 ms & 7,12 s \\
-		30\% & 178 s & 614 ms & 7,12 s \\
-		35\% & 179 s & 586 ms & 7,16 s \\
-		40\% & 179 s & 612 ms & 7,16 s \\
-		45\% & 213 s & 634 ms & 8,52 s \\
-		50\% & 215 s & 675 ms & 8,60 s \\
-		55\% & 216 s & 758 ms & 8.64 s \\
-		60\% & 207 s & 705 ms & 8,28 s \\
-		65\% & 192 s & 683 ms & 7,68 s \\
-		70\% & 187 s & 688 ms & 7,48 s \\
-		75\% & 208 s & 693 ms & 8,32 s \\
-		80\% & 204 s & 658 ms & 8,16 s \\
+		10\% & 178 s & 7,12 s \\
+		15\% & 180 s & 7,20 s \\
+		20\% & 179 s & 7,16 s \\
+		25\% & 178 s & 7,12 s \\
+		30\% & 178 s & 7,12 s \\
+		35\% & 179 s & 7,16 s \\
+		40\% & 179 s & 7,16 s \\
+		45\% & 213 s & 8,52 s \\
+		50\% & 215 s & 8,60 s \\
+		55\% & 216 s & 8.64 s \\
+		60\% & 207 s & 8,28 s \\
+		65\% & 192 s & 7,68 s \\
+		70\% & 187 s & 7,48 s \\
+		75\% & 208 s & 8,32 s \\
+		80\% & 204 s & 8,16 s \\
 		\hline
 	\end{tabular}
 	\caption{Resultado del \textit{benchmark} con diferentes porcentajes de tierra.}\label{table:biomaresult}
@@ -120,7 +120,7 @@ En el caso de la segunda parte de la prueba se ha usado distintos porcentajes de
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[width=0.9\textwidth]{tables/bioma-size.pdf}
+	\includegraphics[width=0.8\textwidth]{tables/bioma-size.pdf}
 	\caption{Tiempos del \textit{benchmark} con diferentes porcentajes de tierra.}\label{fig:biomaresult}
 \end{figure}
 
@@ -133,24 +133,24 @@ En esta última prueba se ha tenido en cuenta los datos de la prueba relatada en
 
 \begin{table}[!h]
 	\centering
-	\begin{tabularx}{\textwidth}{c|cccccccccccc}
-	 & \multicolumn{2}{c}{10\%} & \multicolumn{2}{c}{15\%} & \multicolumn{2}{c}{20\%} & \multicolumn{2}{c}{25\%} & \multicolumn{2}{c}{30\%} & \multicolumn{2}{c}{35\%} \\
+	\begin{tabular}{c|cccccc}
+	 & 10\% & 15\% & 20\% & 25\% & 30\% & 35\% \\
 	\hline
-	10\% & 42 & 148 & 41 & 167 & 35 & 152 & 88 & 187 & 117 & 189 & 214 & 183 \\
-	15\% & 41 & 204 & 37 & 147 & 36 & 127 & 88 & 185 & 133 & 191 & 247 & 182 \\
-	20\% & 37 & 165 & 43 & 155 & 37 & 139 & 105 & 188 & 123 & 191 & 224 & 185 \\
-	25\% & 29 & 140 & 51 & 171 & 43 & 138 & 92 & 185 & 123 & 190 & 220 & 181 \\
-	30\% & 42 & 193 & 43 & 159 & 138 & 131 & 95 & 189 & - & - & - & - \\
-	35\% & 41 & 171 & 40 & 175 & 38 & 139 & 90 & 186 & - & - & 241 & 183 \\
-	40\% & 43 & 203 & 46 & 188 & 36 & 134 & - & - & - & - & 217 & 183 \\
-	45\% & 69 & 203 & 49 & 186 & 36 & 156 & 737 & 192 & - & - & 220 & 184 \\
-	50\% & 100 & 179 & - & - & 1064 & 850 & - & - & - & - & - & - \\
-	55\% & 55 & 192 & 956 & 170 & - & - & - & - & - & - & - & - \\
-	60\% & 164 & 204 & 740 & 178 & - & - & - & - & - & - & - & - \\
-	65\% & 97 & 187 & 838 & 132 & - & - & - & - & - & - & - & - \\
+	10\% & 42 & 41 & 35 & 88 & 117 & 214 \\
+	15\% & 41 & 37 & 36 & 88 & 133 & 247 \\
+	20\% & 37 & 43 & 37 & 105 & 123 & 224 \\
+	25\% & 29 & 51 & 43 & 92 & 123 & 220 \\
+	30\% & 42 & 43 & 138 & 95 & - & - \\
+	35\% & 41 & 40 & 38 & 90 & - & 241 \\
+	40\% & 43 & 46 & 36 & -  & - & 217  \\
+	45\% & 69 & 49 & 36 & 737 & - & 220 \\
+	50\% & 100 & - & 1064 & - & - & - \\
+	55\% & 55 & 956 & - & - & - & - \\
+	60\% & 164 & 740 & - & - & - & - \\
+	65\% & 97 & 838 & - & - & - & - \\
 	\hline
-	\end{tabularx}
-	\caption{Resultado del \textit{benchmark} con diferentes porcentajes de tierra (las columnas) y de biomas (las filas). Los tiempos totales son en segundos (la primera celda), y los tiempos de clingo son en milisegundos (la segunda celda)}\label{table:finalresult}
+	\end{tabular}
+	\caption{Resultado del \textit{benchmark} con diferentes porcentajes de tierra (las columnas) y de biomas (las filas). Los tiempos totales son en segundos.}\label{table:finalresult}
 \end{table}
 
 Como se puede observar en los resultado mostrados en la Tabla \ref{table:finalresult}, en donde se han ejecutado 5 iteraciones por cada valor, el módulo de clingo obtiene resultados decentes cuando se establecen valores bajos para el porcentaje de tierra y de biomas, más el tiempo de ejecución se dispara en el momento de poner valores altos. Esto se debe a, como ya se ha comentado a lo largo de la memoria, el paradigma ASP puede llegar a tener en cuenta una gran combinación de datos y producirse una explosión combinatoria de soluciones, retardando en buena medida la procura de una solución.

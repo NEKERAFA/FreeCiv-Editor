@@ -4,13 +4,6 @@
 -- Este script llama al módulo de ASP y luego avisa a la interfaz de que ha acabado
 
 local timer = require("love.timer")
-local math = require("love.math")
-
--- Defines el valor máximo de dos números
-local function max(a, b) if a > b then return a end return b end
-
--- Ponemos la semilla aleatoria con el tiempo que lleva LÖVE abierto
-math.setRandomSeed(timer.getTime())
 
 -- Obtenemos los canales de los threads
 local to = love.thread.getChannel("toClingo")
@@ -29,12 +22,6 @@ local size_mountains  = to:demand()
 local width_mountains = to:demand()
 local players         = to:demand()
 from:push("ok")
-
--- Hago modificaciones aleatorias en las variables para generar mapas distintos
-land = max(land + math.random(-20, 20), 10)
-terrain = max(terrain + math.random(-20, 20), 10)
-size_mountains = max(size_mountains + math.random(-2, 2), 2)
-width_mountains = max(width_mountains + math.random(-2, 2), 1)
 
 -- Llamo a clingo
 cmd = "clingo -c regions=" .. regions ..  " -c q_rows=" .. q_rows ..

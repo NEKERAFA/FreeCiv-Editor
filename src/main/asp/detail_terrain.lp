@@ -12,20 +12,20 @@ types(plain; hills; forest; jungle; trunda; swamp; desert; glacier).
 biomas(plain; hills; forest; jungle; trunda; swamp; desert).
 
 % Number of cells
-max_cells(MAX) :- #count{P : cell(P, l)} = MAX.
+max_cells(MAX) :- #count{P : land(P)} = MAX.
 
 % Generate glacier regions
-%land(p(X, Y), glacier) :- cell(p(X, Y), l), ice(N), X < N-1.
-%land(p(X, Y), glacier) :- cell(p(X, Y), l), ice(N), dims(ROWS, COLS, TERRAIN), X > ROWS-N-1.
+%land(p(X, Y), glacier) :- land(p(X, Y)), ice(N), X < N-1.
+%land(p(X, Y), glacier) :- land(p(X, Y)), ice(N), dims(ROWS, COLS, TERRAIN), X > ROWS-N-1.
 
 % The root of a bioma
-0 { root(P, T) : cell(P, l) } 1 :- biomas(T).
+0 { root(P, T) : land(P) } 1 :- biomas(T).
 :- root(P, T), root(P, U), T!=U.
 
 % Defines which cells could be reached
 reached(P, T) :- root(P, T).
-%{ reached(P, T) } :- not land(P, glacier), biomas(T), cell(P, l), adj(P, Q), reached(Q, T).
-{ reached(P, T) } :- biomas(T), cell(P, l), adj(P, Q), reached(Q, T).
+%{ reached(P, T) } :- not bioma(P, glacier), biomas(T), land(P), adj(P, Q), reached(Q, T).
+{ reached(P, T) } :- biomas(T), land(P), adj(P, Q), reached(Q, T).
 :- reached(P, T), reached(P, U), T!=U.
 
 % Definition of array adjacent cell
@@ -42,8 +42,8 @@ roots(N) :- #count{P, T: root(P, T)} = N.
 :- roots(N), N < 1.
 
 % Gets the size of biomas
-size_bioma(T, N) :- root(Q, T), cell(Q, l), #count{P: reached(P, T)} = N.
+size_bioma(T, N) :- root(Q, T), land(Q), #count{P: reached(P, T)} = N.
 :- size_bioma(T, N), N < 2.
 
 % Translate quadrant reached in a quadrant
-land(P, T) :- reached(P, T).
+bioma(P, T) :- reached(P, T).

@@ -6,8 +6,8 @@ col(0..COLS-1) :- dims(ROWS, COLS, SIZE, LENGHT).
 pos(p(X, Y)) :- row(X), col(Y).
 
 % Generate the start and the end position
-1 {start(P) : cell(P, l)} 1.
-1 {end(P) : cell(P, l)} 1 :- start(Q).
+1 {start(P) : land(P)} 1.
+1 {end(P) : land(P)} 1 :- start(Q).
 % Forbidden that start and end points are the same.
 :- start(P), end(Q), P==Q.
 
@@ -17,7 +17,7 @@ lenght(|X1-X2|+|Y1-Y2|) :- start(p(X1, Y1)), end(p(X2, Y2)).
 % The start cell is reached always.
 reached(P) :- start(P).
 % A cell next to a reached cell could be reached
-{reached(P)} :- cell(P, l), reached(Q), adj(P, Q).
+{reached(P)} :- land(P), reached(Q), adj(P, Q).
 
 % Definition of array adjacent cell
 adj(p(X, Y), p(X, Y+1)) :- pos(p(X, Y)), pos(p(X, Y+1)).

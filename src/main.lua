@@ -1,6 +1,8 @@
 -- Rafael Alcalde Azpiazu - 22 Apr 2018
 -- Facultade de Informática da Coruña - Universidade da Coruña
 
+local Lfs = require "lfs"
+
 local Json = require "libs.json.json"
 local Class = require "libs.hump.class"
 
@@ -10,6 +12,7 @@ local FileChooser = require "main.client.widgets.filechooser"
 local Newmap = require "main.client.widgets.newmap"
 local GenerateMap = require "main.client.widgets.generatemap"
 local WaitMessage = require "main.client.widgets.waitmessage"
+local GenerateMessage = require "main.client.widgets.generatemessage"
 
 local Resources = require "main.utilities.resources"
 local Exporter = require "main.utilities.exporter"
@@ -32,12 +35,16 @@ local Main = {
   mapEditor = Editor(),
   mapConf = {},
   barEditor = Menubar(false),
-  dialogEditor = nil
+  dialogEditor = nil,
+  _generated = false
 }
 
 --- Inicia el módulo Main.
 -- @param args Lista de argumentos pasados al intérprete.
 function Main.init(args)
+  -- Ponemos la semilla aleatoria con el tiempo que lleva LÖVE abierto
+  love.math.setRandomSeed(love.timer.getTime())
+
   -- Compruebo los argumentos
   if #args > 0 then
     local arg = 1
@@ -52,8 +59,11 @@ function Main.init(args)
       elseif args[arg]:find("-n") or args[arg]:find("--new") and arg+3 <= #args then
         Main._newMap(tonumber(args[arg+1]), tonumber(args[arg+2]))
         arg = arg+3
-      elseif args[1]:find("-g") or args[1]:find("--generate") and arg+5 <= #args then
-        Main._newMap(tonumber(args[2]), tonumber(args[3]))
+      elseif args[1]:find("-g") or args[1]:find("--generate") and arg+8 <= #args then
+        Main._generateMap(tonumber(args[2]), tonumber(args[3]),
+          tonumber(args[4]), tonumber(args[5]), tonumber(args[6]),
+          tonumber(args[7]))
+        arg = arg+7
       else
         print(Main.usage)
         os.exit(1)
@@ -76,6 +86,7 @@ function Main._resetEditor()
   local h_min = math.max(40 + Main.mapEditor:getHeight() + 20, 400)
   Main.mapEditor:resize(w_min, h_min)
   love.window.setMode(w_min, h_min, {resizable = true, minwidth = w_min, minheight = h_min, centered = true})
+  Main._generated = false
 end
 
 --- Cierra los diálogos pendientes.
@@ -148,13 +159,19 @@ end
 --- Obtiene un resultado de la generación de clingo y la carga como mapa nuevo
 function Main._loadClingoResult()
   local path = Resources.appendFolders("resources", "result.json")
-  local map = Resources.loadResource("json", path)
-  Main.mapEditor:setMap(map.terrain)
-  Main.mapEditor:setRegions(map.regions, Main.mapConf.c_rows, Main.mapConf.c_cols)
-  Main.mapEditor:setSpawns(map.startpos)
-  Resources.removeResource("json", path)
-  os.remove(path)
-  Main._closePop()
+  if Lfs.attributes(path) == nil then
+    Main._closePop()
+    Main.dialogEditor = GenerateMessage(Main._closePop)
+  else
+    local map = Resources.loadResource("json", path)
+    Main.mapEditor:setMap(map.terrain)
+    Main.mapEditor:setRegions(map.regions, Main.mapConf.c_rows, Main.mapConf.c_cols)
+    Main.mapEditor:setSpawns(map.startpos)
+    Resources.removeResource("json", path)
+    os.remove(path)
+    Main._closePop()
+    Main._generated = true
+  end
 end
 
 --- Llama al módulo de Clingo para generar un nuevo mapa.
@@ -164,6 +181,8 @@ end
 -- @param size_mountains Longitud de las coordilleras.
 -- @param width_mountains Ancho de las coordilleras.
 function Main._generateMap(regions, land, terrain, size_mountains, width_mountains, players)
+  Main.mapEditor:setRestrictions()
+
   -- Primero obtengo las divisiones enteras
   local div_rows = math.floor(math.sqrt(Main.mapEditor._map.rows) - 1)
   local div_cols = math.floor(math.sqrt(Main.mapEditor._map.cols) - 1)
@@ -176,17 +195,28 @@ function Main._generateMap(regions, land, terrain, size_mountains, width_mountai
     div_cols = div_cols + 1
   end
 
+  local result_rows = math.floor(Main.mapEditor._map.rows / div_rows)
+  local result_cols = math.floor(Main.mapEditor._map.cols / div_cols)
+
   -- Relleno con la información del pop-up
   Main.mapConf.regions = regions
-  Main.mapConf.q_rows = div_rows
-  Main.mapConf.q_cols = div_cols
-  Main.mapConf.c_rows = math.floor(Main.mapEditor._map.rows / div_rows)
-  Main.mapConf.c_cols = math.floor(Main.mapEditor._map.cols / div_cols)
+  Main.mapConf.q_rows = math.min(div_rows, result_rows)
+  Main.mapConf.q_cols = math.min(div_cols, result_cols)
+  Main.mapConf.c_rows = math.max(div_rows, result_rows)
+  Main.mapConf.c_cols = math.max(div_cols, result_cols)
   Main.mapConf.land = land
   Main.mapConf.terrain = terrain
   Main.mapConf.size_mountains = size_mountains
   Main.mapConf.width_mountains = width_mountains
   Main.mapConf.players = players
+
+  -- Hago modificaciones aleatorias en las variables para generar mapas distintos
+  if Main._generated then
+    Main.mapConf.land = math.max(Main.mapConf.land + love.math.random(-20, 20), 10)
+    Main.mapConf.terrain = math.max(Main.mapConf.terrain + love.math.random(-20, 20), 10)
+    Main.mapConf.size_mountains = math.max(Main.mapConf.size_mountains + love.math.random(-2, 2), 2)
+    Main.mapConf.width_mountains = math.max(Main.mapConf.width_mountains + love.math.random(-2, 2), 1)
+  end
 
   local thread = love.thread.newThread(Resources.appendFolders("main", "client", "clingo_thread.lua"))
   local to = love.thread.getChannel("toClingo")
@@ -229,16 +259,24 @@ function Main.update(dt)
   local option = Main.barEditor:update(dt, on_dialog)
 
   -- Comprobamos la opción pulsada en la barra de herramientas
-  if option == 1 then
-    Main.dialogEditor = Newmap(Main._newMap, Main._closePop)
-  elseif option == 2 then
-    Main.dialogEditor = FileChooser("open", Main._openMap, Main._closePop)
-  elseif option == 3 then
-    Main.dialogEditor = FileChooser("save", "new map", Main._saveMap, Main._closePop)
-  elseif option == 4 then
-    Main.dialogEditor = FileChooser("save", "exported", Main._exportMap, Main._closePop)
-  elseif option == 5 then
-    Main.dialogEditor = GenerateMap(Main._generateMap, Main._closePop)
+  if Main.dialogEditor == nil then
+    if option == 1 then
+      Main.dialogEditor = Newmap(Main._newMap, Main._closePop)
+    elseif option == 2 then
+      Main.dialogEditor = FileChooser("open", Main._openMap, Main._closePop)
+    elseif option == 3 then
+      Main.dialogEditor = FileChooser("save", "new map", Main._saveMap, Main._closePop)
+    elseif option == 4 then
+      Main.dialogEditor = FileChooser("save", "exported", Main._exportMap, Main._closePop)
+    elseif option == 5 then
+      if not Main._generated then
+        Main.dialogEditor = GenerateMap(Main._generateMap, Main._closePop)
+      else
+        Main._generateMap(Main.mapConf.regions, Main.mapConf.land,
+          Main.mapConf.terrain, Main.mapConf.size_mountains,
+          Main.mapConf.width_mountains, Main.mapConf.players)
+      end
+    end
   end
 
   -- Si no hay un diálogo delante, actualizamos el editor

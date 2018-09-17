@@ -3,6 +3,7 @@
 
 local Class = require "libs.hump.class"
 local Map = require "main.model.map"
+local Matrix = require "main.model.matrix"
 local MapDecorator = require "main.client.map_decorator"
 local Constants = require "main.utilities.constants"
 local Validator = require "main.utilities.validator"
@@ -31,6 +32,8 @@ local Editor = Class {
     self._regions = nil
     self._startpos = nil
     self._current_tile = nil
+    self._modified_map = nil
+    self._modified = false
     self._terrain = Constants.CellType.GRASS
   end,
 
@@ -69,6 +72,9 @@ local Editor = Class {
 
     -- Sets all the tilemaps in the spritesbatches
     self._decorator:setTilemap()
+
+    self._modified_map = Matrix(rows, cols, Constants.MatrixType.STRING)
+    self._modified = false
   end,
 
   --- Clears the current map and add a loaded map.
@@ -85,6 +91,9 @@ local Editor = Class {
 
     -- Sets all the tilemaps in the spritesbatches
     self._decorator:setTilemap()
+
+    self._modified_map = Matrix(self._map.rows, self._map.cols, Constants.MatrixType.STRING)
+    self._modified = false
   end,
 
   --- Sets the mapping of regions. This function is for debugging purpose.
@@ -101,6 +110,28 @@ local Editor = Class {
   --- Sets the spawn points created in the generations
   setSpawns = function(self, spawns)
     self._startpos = spawns
+  end,
+
+  --- This functions save the modified map like restrictions to the generator
+  setRestrictions = function(self)
+    if self._modified then
+      local c_res = io.open("resources/c_res.lp", "w+")
+
+      for row = 1, self._modified_map.rows do
+        for col = 1, self._modified_map.cols do
+          if self._modified_map:getCell(row, col) == Constants.CellType.SEA or
+             self._modified_map:getCell(row, col) == Constants.CellType.OCEAN then
+            c_res:write("set(p("..tostring(row-1)..","..tostring(col-1).."),w). ")
+          elseif self._modified_map:getCell(row, col) ~= Constants.CellType.VOID and
+                 self._modified_map:getCell(row, col) ~= "" then
+            c_res:write("set(p("..tostring(row-1)..","..tostring(col-1).."),l). ")
+          end
+        end
+      end
+
+      c_res:flush()
+      c_res:close()
+    end
   end,
 
   --- This function loads the quads for create the tilemap
@@ -188,6 +219,9 @@ local Editor = Class {
         if self._map:getCell(row, col) ~= self._terrain then
           self._decorator:setCell(row, col, self._terrain)
         end
+
+        self._modified = true
+        self._modified_map:setCell(row, col, self._terrain)
       end
     end
   end,

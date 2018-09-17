@@ -10,7 +10,7 @@ Como uno de los puntos fuerte de este trabajo tiene que ver con la generación d
 
 Para empezar, el formato se basa en archivo de texto plano que contiene varios campos, haciendo que sea lo más simple posible y que en la teoría se pueda modificar a mano.
 
-\begin{lstlisting}[caption=Ejemplo de formato de mapa,label=lst:format,captionpos=b]
+\begin{lstlisting}[caption=Ejemplo de formato de mapa.,label=lst:format,captionpos=b]
 [scenario]
 is_scenario=TRUE
 name=_("My map")
@@ -114,7 +114,7 @@ En Freeciv, cada celda de la rejilla del mapa contiene una baldosa de terreno ú
 		\textit{Glacier}: Ninguna de las unidades puede cruzarlo. & \texttt{a} & \adjustimage{height=2em,valign=t}{images/glacier.png} \\
 		\hline
 	\end{tabular}
-	\caption{Tipos de terreno}\label{table:terrains1}
+	\caption{Tipos de terreno.}\label{table:terrains1}
 \end{table}
 
 \begin{table}[!h]
@@ -125,7 +125,7 @@ En Freeciv, cada celda de la rejilla del mapa contiene una baldosa de terreno ú
 		\textit{Océano}: Solo las grandes embarcaciones y submarinos pueden pasar por encima. & \texttt{:} & \adjustimage{height=2em,valign=t}{images/ocean.png} \\
 		\hline
 	\end{tabular}
-	\caption{Tipos de terreno}\label{table:terrains2}
+	\caption{Tipos de terreno.}\label{table:terrains2}
 \end{table}
 
 \section{Proceso de ingeniería}
@@ -160,7 +160,7 @@ Volviendo a lo comentado en la Sección \ref{subsec:metodologia}, con respecto l
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/gantt.pdf}
-	\caption{Diagrama de Gantt con las iteraciones del proyecto}
+	\caption{Diagrama de Gantt con las iteraciones del proyecto.}
 	\label{fig:gantt}
 \end{figure}
 
@@ -189,7 +189,7 @@ Cabe destacar que el proyecto en cuestión ha tenido dos aproximaciones diferent
 		\bfseries{Total} & 362 \\
 		\hline
 	\end{tabular}
-	\caption{Desglose de las iteraciones}\label{table:iteraciones}
+	\caption{Desglose de las iteraciones.}\label{table:iteraciones}
 \end{table}
 
 Como segunda aproximación, la cual comprende el resto de iteraciones, se ha decidido dividir el programa en distintos módulos independientes que se encargan de generar distintas partes del mapa. Esto hace que el tiempo sea mucho más razonable y sea más manejable. Aún así, el hecho de cambiar de aproximación, como puede entenderse, hizo que se tuviera que cambiar la parte declarativa de la herramienta.
@@ -209,7 +209,7 @@ Para calcular el coste de los recursos humanos que ha supuesto este proyecto, ad
 		\bfseries{Total} & 376 & & 3720,00 \\
 		\hline
 	\end{tabular}
-	\caption{Coste de los recursos humanos del proyecto}\label{table:costehumano}
+	\caption{Coste de los recursos humanos del proyecto.}\label{table:costehumano}
 \end{table}
 
 \begin{table}[!h]
@@ -235,7 +235,7 @@ Para calcular el coste de los recursos humanos que ha supuesto este proyecto, ad
 		\bfseries{Total} & & & & 116,67 \\
 		\hline
 	\end{tabularx}
-	\caption{Coste de los recursos humanos del proyecto}\label{table:costematerial}
+	\caption{Coste de los recursos humanos del proyecto.}\label{table:costematerial}
 \end{table}
 
 Por otro lado, en la \ref{table:costematerial} se recoge la lista de recursos materiales y lógicos necesarios para el desarrollo de este proyecto. Para el caso de los recursos \textit{hardware} se ha tenido en cuenta el tiempo de uso para este proyecto con respecto a su vida útil, mientras para los recursos \textit{software}, se ha preferido por usar herramientas y bibliotecas de uso libre y gratuitas, de ahí que el coste no esté contado para el resultado final. \\
@@ -284,7 +284,7 @@ Debido a que el sistema cuenta con una interfaz gráfica y un módulo que se enc
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/arquitectura.pdf}
-	\caption{Arquitectura del sistema}
+	\caption{Arquitectura del sistema.}
 	\label{fig:arquitectura}
 \end{figure}
 
@@ -298,7 +298,7 @@ El sistema tiene en cuenta que se usará en todo momento por un único usuario, 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/casos-de-uso.pdf}
-	\caption{Casos de uso del sistema propuesto}
+	\caption{Casos de uso del sistema propuesto.}
 	\label{fig:cases}
 \end{figure}
 
@@ -311,7 +311,7 @@ El proyecto propuesto está pensado para ser usado a través de una interfaz gr�
 	\begin{figure}[!h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{images/new-map.pdf}
-		\caption{Pantalla de nuevo mapa}
+		\caption{Pantalla de nuevo mapa.}
 		\label{fig:newmock}
 	\end{figure}
 	
@@ -320,7 +320,7 @@ El proyecto propuesto está pensado para ser usado a través de una interfaz gr�
 	\begin{figure}[!h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{images/open-map.pdf}
-		\caption{Pantalla de abrir archivo de mapa}
+		\caption{Pantalla de abrir archivo de mapa.}
 		\label{fig:openmock}
 	\end{figure}
 
@@ -329,7 +329,7 @@ El proyecto propuesto está pensado para ser usado a través de una interfaz gr�
 	\begin{figure}[!h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{images/save-map.pdf}
-		\caption{Pantalla de guardar mapa}
+		\caption{Pantalla de guardar mapa.}
 		\label{fig:savemock}
 	\end{figure}
 	
@@ -338,7 +338,7 @@ El proyecto propuesto está pensado para ser usado a través de una interfaz gr�
 	\begin{figure}[!h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{images/generate-map.pdf}
-		\caption{Pantalla de generar mapa}
+		\caption{Pantalla de generar mapa.}
 		\label{fig:generatemock}
 	\end{figure}
 	
@@ -347,7 +347,7 @@ El proyecto propuesto está pensado para ser usado a través de una interfaz gr�
 	\begin{figure}[!h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{images/waiting-mock.pdf}
-		\caption{Pantalla con el mensaje de espera}
+		\caption{Pantalla con el mensaje de espera.}
 		\label{fig:waitingmock}
 	\end{figure}
 	
@@ -356,7 +356,7 @@ El proyecto propuesto está pensado para ser usado a través de una interfaz gr�
 	\begin{figure}[!h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{images/export-map.pdf}
-		\caption{Pantalla de exportar mapa}
+		\caption{Pantalla de exportar mapa.}
 		\label{fig:exportmock}
 	\end{figure}
 	
@@ -365,7 +365,7 @@ El proyecto propuesto está pensado para ser usado a través de una interfaz gr�
 	\begin{figure}[!h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{images/aplicacion.pdf}
-		\caption{Pantalla principal de la aplicación}
+		\caption{Pantalla principal de la aplicación.}
 		\label{fig:mainmock}
 	\end{figure}
 
@@ -390,7 +390,7 @@ Como primer paso para la generación del mapa, se ha pensado en usar un programa
 	\label{fig:regiones}
 \end{figure}
 
-Para ello elige un cuadrante único para isla, el cual va a ser la raíz desde donde se vaya expandiendo toda la región. Esto se ha implementado mediante siguientes reglas, en donde primeramente se selecciona una raíz dado un cuadrante y se prohíbe que dos raíces de distintos cuadrantes tengan la misma posición: \\
+Para ello se elige un cuadrante único para isla, el cual va a ser la raíz desde donde se vaya expandiendo toda la región. Esto se ha implementado mediante siguientes reglas, en donde primeramente se selecciona una raíz (\texttt{q\_root(C,I)}) para la región \texttt{region(I)} dado un cuadrante \texttt{q\_pos(C)} mediante una \textit{choice} rule. A esta \textit{choice} rule se le indica la cardinalidad 1-1, que se expresa como \textit{min \{p\} max} e indica que solo puede haber un átomo \texttt{q\_root(C,I)} por cada región \textit{I}. Luego se añade una regla de restricción para que dos raíces de distintos cuadrantes tengan la misma posición. Para ello ASP tiene el operador \texttt{!=} que significa distinto: \\
 
 \begin{lstlisting}[label=lst:qroot]
 1 { q_root(C, I): q_pos(C) } 1 :- region(I).
@@ -399,7 +399,7 @@ Para ello elige un cuadrante único para isla, el cual va a ser la raíz desde d
 
 \hspace{1em}
 
-Para que cada raíz se expanda por el mapa, se ha planteado que las celdas contiguas sean alcanzables, es decir, que si está adyacente (se tiene en cuenta 4-adyacente) a la raíz o a otra celda conectada a la raíz, esta pueda o no ser alcanzada siempre que no se haya escogido para otra región. Esto en ASP se traduce en estas reglas: \\
+Para que cada raíz se expanda por el mapa, se ha planteado que las celdas contiguas sean alcanzables (\texttt{q\_reached(C,I)}), es decir, que si está adyacente (se tiene en cuenta 4-adyacente mediante el átomo \texttt{q\_adj(C,D)}) a la raíz o a otra celda conectada a la raíz. Esta última puede o no ser alcanzada siempre que no se haya escogido para otra región, la cual viene definido en el átomo \texttt{existanother(I,C)}: \\
 
 \begin{lstlisting}[label=lst:qreached]
 q_reached(C, I) :- q_root(C, I).
@@ -411,7 +411,7 @@ existsanother(I, C) :- q_reached(C, J), region(J), region(I),
 
 \hspace{1em}
 
-Finalmente, para que todo el mapa esté completo y no haya cuadrantes sin definir a una región, se ha añadido una restricción que evita las soluciones en donde el número de elementos \texttt{q\_reached} no es igual al máximo número de cuadrantes: \\
+Finalmente, para que todo el mapa esté completo y no haya cuadrantes sin definir a una región, se ha añadido una regla de restricción que evita las soluciones en donde el número de elementos \texttt{q\_reached(C,I)} no es igual al máximo número de cuadrantes (dados por el átomo \texttt{n\_quadrants(Z)}). Para ello se usa una función agregada o \textit{aggregate} \cite{aggregate}, que son muy similares a las correspondientes funciones de SQL en bases de datos. En el caso de \texttt{\#count(P : q(P))}, cuenta el número de átomos \textit{P} en \textit{q(P)} que son ciertos: \\
 
 \begin{lstlisting}[label=lst:qmax]
 n_quadrants(Z) :- #count{C, I: q_reached(C,I)} = Z.
@@ -421,7 +421,7 @@ n_quadrants(Z) :- #count{C, I: q_reached(C,I)} = Z.
 \subsubsection{Definición de regiones}
 \label{subsubsec:cuadrantes}
 
-Como segundo paso que se realiza, se procede a detallar cada una de las regiones por separado, indicando qué celdas del mapa que corresponde a esa región son de agua y cuales son de tierra. Para ello se realiza una aproximación parecida explicada en la generación de regiones, en donde se toma una celda que cae dentro de la región como celda raíz que contendrá tierra: \\
+Como segundo paso que se realiza, se procede a detallar cada una de las regiones por separado, indicando qué celdas del mapa que corresponde a esa región son de agua y cuales son de tierra. Para ello se realiza una aproximación parecida explicada en la generación de regiones, en donde se toma una celda que cae dentro de la región como celda raíz \texttt{rootcell(P)} que contendrá tierra. Esto se realiza mediante una regla \textit{choice} con cardinalidad 1-1: \\
 
 \begin{lstlisting}[label=lst:croot]
 1 {rootcell(P) : c_pos(P)} 1.
@@ -429,7 +429,7 @@ Como segundo paso que se realiza, se procede a detallar cada una de las regiones
 
 \hspace{1em}
 
-Con esto la celda raíz de la isla intenta alcanzar al resto de celdas adyacentes usando una definición similar a la explicada en el apartado anterior: \\
+Con esto la celda raíz de la isla intenta alcanzar al resto de celdas adyacentes usando una definición similar a la explicada en el apartado anterior, para ello se usa la relación \texttt{reached(Q)}: \\
 
 \begin{lstlisting}[label=lst:croot]
 reached(P) :- rootcell(P).
@@ -438,7 +438,7 @@ reached(P) :- rootcell(P).
 
 \hspace{1em}
 
-Aún así, en este caso no queremos que la tierra rellene completamente la isla, el tamaño de la selección de celdas viene condicionado por una constante que indica la cantidad de tierra que se tiene que alcanzar. Por defecto está establecida para un 20\% del número de celdas totales de la región: \\
+Aún así, en este caso no queremos que la tierra rellene completamente la isla, por lo que el número de las celdas que se pueden alcanzar viene condicionado por la variable \texttt{LAND} del átomo \texttt{dims(ROWS,COLS,LAND)}, que indica la cantidad de tierra que se tiene que alcanzar en tanto por cien. Por defecto está establecida para un 20\% del número de celdas totales de la región, valor que viene establecido en el átomo \texttt{n\_cells}: \\
 
 \begin{lstlisting}[label=lst:cmax]
 cells_reached(Z) :- #count{P: reached(P)}=Z.
@@ -475,7 +475,7 @@ Una vez se ha terminado la ejecución del apartado anterior, se procede a la sel
 	\item Puede existir islas que no tengan todos los tipos de biomas, por lo que puede o no generarse un tipo concreto de bioma.
 \end{itemize}
 
-Con esta información se han llevado a cabo las siguiente reglas: \\
+Con esta información se han llevado a cabo las siguiente reglas, en donde \texttt{root(P,T)} es la celda inicial del bioma y \texttt{reached(P,T)} son las celdas que se alcanzan para el bioma \textit{T}: \\
 
 \begin{lstlisting}[label=lst:biomas]
 % The root of a bioma
@@ -513,7 +513,7 @@ n_cells(Z) :- #count{C, I : reached(C, I)} = Z.
 
 \hspace{1em}
 
-Finalmente se ha decidido que un bioma tiene que ocupar al menos dos casillas. Debido a eso, para los biomas generados se cuenta el número de celdas alcanzadas y se añade una restricción que evita que esta cuenta sea menor a dos celdas: \\
+Finalmente se ha decidido que un bioma tiene que ocupar al menos dos casillas. Debido a eso, para los biomas generados se cuenta el número de celdas alcanzadas y se añade una regla de restricción que evita que la suma total de celdas alcanzadas sea menor a dos, la cual viene dada en el átomo \texttt{size\_bioma(T,N)}: \\
 
 \begin{lstlisting}[label=lst:tmax]
 size_bioma(T, N) :- root(Q, T), cell(Q, l), 
@@ -525,7 +525,7 @@ size_bioma(T, N) :- root(Q, T), cell(Q, l),
 
 Para la definición de cordilleras (el tipo de terreno montaña), esta se realiza una vez se ha completado la definición de los biomas de una isla, evitando así que el módulo anterior tenga una explosión combinatoria fuerte de resultados. Así mismo, esto nos permite tener en cuenta que, para dar un mayor realismo a la generación, en la vida real puede existir un sistema montañoso que divida ecosistemas con el mismo tipo de bioma debido al acercamiento de dos placas tectónicas. \\
 
-Después de esta breve explicación, para la definición de las reglas de generación de cordilleras se ha propuesto que esta generación tenga dos puntos, un punto inicial y un punto final que comprenda el inicio y el final de la coordillera: \\
+Después de esta breve explicación, para la definición de las reglas de generación de cordilleras se ha propuesto que esta generación tenga dos puntos, un punto inicial \texttt{start(P)} y un punto final \texttt{start(Q)} que comprenda el inicio y el final de la coordillera: \\
 
 \begin{lstlisting}[label=lst:pointsystem]
 % Generate the start and the end position
@@ -537,7 +537,7 @@ Después de esta breve explicación, para la definición de las reglas de genera
 
 \hspace{1em}
 
-Con esto lo que se pretende es hacer un camino que vaya de un punto a otro, para ello, de la misma forma que se ha generado las islas, se parte del punto inicial y se van alcanzando las celdas de tierra adyacentes: \\
+Con esto lo que se pretende es hacer un camino que vaya de un punto a otro, para ello, de la misma forma que se ha generado las islas, se parte del punto inicial y se van alcanzando las celdas de tierra adyacentes mediante el átomo \texttt{reached(P)}: \\
 
 \begin{lstlisting}[label=lst:mreached]
 % The start cell is reached always.
@@ -548,7 +548,7 @@ reached(P) :- start(P).
 
 \hspace{1em}
 
-Lo siguiente es evitar todas las soluciones en donde no se haya alcanzado el punto final, para ello se define el átomo \texttt{complete} en función de esto y se prohibe las soluciones que no tienen este átomo: \\
+Lo siguiente es evitar todas las soluciones en donde no se haya alcanzado el punto final, para ello se define el átomo \texttt{complete} en función de esto y se prohibe las soluciones que no tienen este átomo mediante una regla de restricción: \\
 
 \begin{lstlisting}[label=lst:mend]
 % The path is complete if the end is reached.
@@ -559,7 +559,7 @@ complete :- end(P), reached(P).
 
 \hspace{1em}
 
-Con esto generará un camino de coordilleras con cualquier ancho. Aún así se ha preferido acotar este camino a un ancho máximo. Para ello se han añadido unas reglas para obtener el número de vecinos adyacentes, en donde se parte de un borde del camino que tiene valor 0 y se avanza en un sentido, por ejemplo, partiendo de un borde, sus vecinos adyacentes hacia arriba serían: \\
+Con esto generará un camino de coordilleras con cualquier ancho. Aún así se ha preferido acotar este camino a un ancho máximo. Para ello se han añadido unas reglas para obtener el número de vecinos adyacentes, en donde se parte de un borde del camino para el que el átomo \texttt{size(P,D,N)}, \textit{N = 0} y se avanza en un sentido \textit{D} (arriba, abajo, izquierda, derecha). Por ejemplo, partiendo de un borde inferior, sus vecinos adyacentes en el sentido \texttt{up} serían: \\
 
 \begin{lstlisting}[label=lst:msizedef]
 size(p(X, Y), up, 0) :- reached(p(X, Y)), not reached(p(X-1, Y)).
@@ -568,7 +568,7 @@ size(p(X, Y), up, N+1) :- reached(p(X, Y)), size(p(X-1, Y), up, N).
 
 \hspace{1em}
 
-Esto se realiza para todos los sentidos correspondientes a la definición de adyacencia (arriba, abajo, izquierda y derecha). Con esto se puede obtener el ancho del camino en cualquier punto sumando los elementos en una dirección concreta de la siguiente forma:
+Esto se realiza para todos los sentidos correspondientes a la definición de 4-adyacencia. Con esto se puede obtener el ancho del camino en cualquier punto sumando los elementos en una dirección concreta mediante los átomos \texttt{height(P,N)} y \texttt{width(P,N)}, los cuales se obtienen con las reglas:
 
 \begin{lstlisting}[label=lst:msize]
 height(P, N+M+1) :- size(P, up, N), size(P, down, M).
@@ -577,7 +577,7 @@ width(P, N+M+1) :- size(P, left, N), size(P, right, M).
 
 \hspace{1em}
 
-Dadas estas reglas, se puede construir restricciones para delimitar el tamaño máximo de la coordillera: \\
+Dadas estas reglas, se puede construir restricciones para delimitar el tamaño máximo de la cordillera. Para ello el tamaño viene impuesto en la variable \texttt{SIZE} del átomo \texttt{dims(ROWS,COLS,SIZE,LENGHT)}: \\
 
 \begin{lstlisting}[label=lst:msizeforbidden]
 :- height(P, N), dims(ROWS, COLS, SIZE, LENGHT), N>SIZE.
@@ -586,7 +586,7 @@ Dadas estas reglas, se puede construir restricciones para delimitar el tamaño m
 
 \subsubsection{Rellenado de agua}
 
-Con respecto a este módulo, lo que hace es añadir una plataforma continental cerca de la costa y el resto dejarlo como mar profundo. Para ello, en vez de usar un 4-adyacente se usa un 8-adyacente para que la plataforma bordee todas las islas. Las reglas son las siguientes: \\
+Con respecto a este módulo, lo que hace es añadir una plataforma continental cerca de la costa y el resto dejarlo como mar profundo. Para ello, en vez de usar un 4-adyacente se usa un 8-adyacente para que la plataforma bordee todas las islas. Las reglas que forman los átomos de agua \texttt{water(P,C)} son las siguientes: \\
 
 \begin{lstlisting}[label=lst:water]
 % Draw sea if there are near land
@@ -602,7 +602,7 @@ water(P, ocean) :- cell(P, w), adj(P, Q), water(Q, ocean),
 
 Para generar los puntos iniciales desde donde partirán los jugadores se tiene en cuenta lo cerca que están de las montañas y lo cerca que están del agua para intentar crear asentamientos lejos de coordilleras y cercanas al mar. \\
 
-Para ello se realiza primero la generación de un punto de inicio en una posición aleatoria mediante la siguiente regla: \\
+Para ello se realiza primero la generación de un punto de inicio en una posición aleatoria mediante la siguiente regla \textit{choice}: \\
 
 \begin{lstlisting}[label=lst:water]
 N { player(P) : cell(P, l) } N :- players(N).
@@ -610,7 +610,7 @@ N { player(P) : cell(P, l) } N :- players(N).
 
 \hspace{1em}
 
-Luego se procede a obtener la distancia desde un punto de inicio a la celda más próxima con agua. Para ello primero se ha planteado una regla que obtiene, dado un punto de incio, todas las distancias que tienen una distancia más pequeña a esta. Con esto se plantea otra regla que define que la distancia más cercana al agua es aquella que no tiene un elemento más pequeño: \\
+Luego se procede a obtener la distancia desde un punto de inicio a la celda más próxima con agua. Para ello primero se ha planteado una regla que obtiene el átomo \textit{greater\_dist\_water(J,N)}, que dado un jugador \texttt{player(J)}, todas las distancias en donde existe dos átomos \texttt{cell(P1,w)} y \texttt{cell(P2,w)}, en donde uno tiene una distancia desde el jugador más pequeño a este. Con esto se plantea otra regla que define el átomo \texttt{water\_distance(J,D)}, que dado un jugador \texttt{player(J)}, obtiene la distancia más cercana al agua mediante el átomo \texttt{cell(P,w)} que no tiene una distancia más pequeña: \\
 
 \begin{lstlisting}[label=lst:water]
 greater_dist_water(J, N) :- player(J), cell(P1, w), cell(P2, w),
@@ -621,7 +621,7 @@ water_distance(J, D) :- player(J), cell(P, w),
 
 \hspace{1em}
 
-Esto mismo se realiza con la distancia a la celda de montaña mas próxima. Con esto, se pueden añadir reglas de maximización de la distancia a la montaña y minimización de la distancia al agua de la siguiente forma: \\
+Esto mismo se realiza con la distancia a la celda de montaña mas próxima. Con esto, se ha utilizado un par de funciones que corresponden con una extensión de ASP, que está basada en preferencias. Estas preferencias se pueden expresar mediante reglas \textit{\#maximize(P: q(P))} y \textit{\#minimize(P: q(P))}, que están soportadas por Clingo, y permiten obtener el modelo que optimice las preferencias dadas en \textit{P}, descartando el resto de modelos. Para este caso se quiere optimizar la menor distancia al agua por un jugador y la mayor distancia de un jugad	or a la montaña: \\
 
 \begin{lstlisting}[label=lst:water]
 #minimize{D : player(J), water_distance(J,D)}.
@@ -635,7 +635,7 @@ Finalmente, teniendo esto en cuenta, para interconectar todos estos programas se
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/secuencia.pdf}
-	\caption{Diagrama de secuencia de la ejecución del generador}
+	\caption{Diagrama de secuencia de la ejecución del generador.}
 	\label{fig:sequence}
 \end{figure}
 
@@ -654,7 +654,7 @@ Por último, indicar que para la realización de las vistas de la interfaz de us
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/clase-principal.pdf}
-	\caption{Diagrama de clases del paquete principal}
+	\caption{Diagrama de clases del paquete principal.}
 	\label{fig:mainclass}
 \end{figure}
 
@@ -675,7 +675,7 @@ Con respecto al motor gráfico LÖVE, este usa varias funciones predefinidas cua
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{images/clase-editor.pdf}
-	\caption{Diagrama de clases del paquete \texttt{Client}}
+	\caption{Diagrama de clases del paquete \texttt{Client}.}
 	\label{fig:editorclass}
 \end{figure}
 
@@ -704,3 +704,72 @@ Como ya expliqué en la entrada de la Sección \ref{subsec:implementacion}, debi
 	\item La clase \texttt{WaitMessage} controla y muestra la ventana emergente que se puede ver en la Figura \ref{fig:waitingmock}. Al constructor se le pasa el canal del \textit{thread} que se usa en la generación del mapa, tal y como se expone en la Sección \ref{subsubsec:generator}, y la función que se lanza cuando la generación termina. Contiene el método \texttt{isMouseFocused} que indica si el ratón está encima de la ventana.
 	\item La clase \texttt{FileChooser} controla y muestra la ventana emergente correspondiente a un diálogo de selección de archivo, tal y como se puede ver en las Figuras \ref{fig:openmock}, \ref{fig:savemock} y \ref{fig:exportmock}. Contiene varios métodos privados para la ordenación y la apertura de carpetas en disco, así como el método \texttt{isMouseFocused} que indica si el ratón está encima de la ventana, los métodos \texttt{textInput} y \texttt{keyPressed} para introducir texto en las entradas de la ventana y el método \texttt{wheelMoved} que permite subir y bajar la lista de carpetas y ficheros mediante la rueda del ratón.
 \end{itemize}
+
+\section{Ejemplos de uso}
+
+Ahora pasaré a explicar como usar la utilidad creada. Para ello hay que tener en cuenta que previamente tiene que estar instalado clingo 5.2, LÖVE 11.0 y la biblioteca de LuaFilesystem. Se recomienda usar un sistema GNU/Linux, ya que es donde se han realizado las pruebas. Para empezar a usar la interfaz, vamos a abrir un terminal y ejecutar LÖVE en el directorio donde esté instalada la herramienta con el comando:
+
+\begin{lstlisting}
+	love .
+\end{lstlisting}
+
+Se nos abrirá la pantalla \ref{fig:startscreen}, en donde podemos usar las funciones de crear un mapa en blanco (\makebox[1em]{\includegraphics[height=1em]{images/file-plus.png}}) o abrir un fichero (\makebox[1em]{\includegraphics[height=1em]{images/folder-open.png}}).
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{images/start.png}
+	\caption{Pantalla principal de la aplicación.}
+	\label{fig:startscreen}
+\end{figure}
+
+Si seleccionamos crear un nuevo mapa, nos preguntará por las dimensiones y aparecerá un nuevo mapa con todas las casillas vacías. Se nos activarán las opciones para guardar el mapa (\makebox[1em]{\includegraphics[height=1em]{images/content-save.png}}), exportar el mapa a formato Freeciv (\makebox[1em]{\includegraphics[height=1em]{images/export.png}}) y generar un nuevo mapa (\makebox[1em]{\includegraphics[height=1em]{images/wrench.png}}). \\
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/map.png}
+	\caption{Pantalla con un mapa vacío}
+	\label{fig:newmapscreen}
+\end{figure}
+
+Podemos seleccionar ahora generar mapa. Nos aparecerá el diálogo de la Figura \ref{fig:generatemap} preguntando por parámetros para la generación. Una vez los hayamos ajustado, aceptamos y empezará a generar el mapa. \\
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/generate-map.png}
+	\caption{Diálogo con los parámetros de generar mapa.}
+	\label{fig:generatemap}
+\end{figure}
+
+Una vez terminado nos mostrará el resultado de la generación rellenando todas las celdas. Con esto, podemos exportar para usar en Freeciv. \\
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/example-5-user.png}
+	\caption{Pantalla con un mapa vacío}
+	\label{fig:exampleexecution}
+\end{figure}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{images/freeciv-example.png}
+	\caption{Pantalla con un mapa vacío}
+	\label{fig:freecivscreen}
+\end{figure}
+
+\clearpage
+
+Podemos también pensar en modificar el modelo lógico del programa para añadir restricciones a mano. Para ello vamos a proponer que no nos gusta que el sistema genere los puntos iniciales y finales de las montañas pegadas a la costa. Para ello vamos a añadir dos restricciones al archivo \texttt{main/asp/detail\_mountains.lp} en donde usaremos los átomos \texttt{start(P)} y \texttt{end(P)} junto con las celdas adyacentes que se pueden obtener con el átomo \texttt{adj(P,Q)} y negar que tenga el átomo \texttt{land(P)}. Quedaría de la siguiente forma:
+
+\begin{lstlisting}
+:- start(P), adj(P, Q), pos(Q), not land(Q).
+:- end(P), adj(P, Q), pos(Q), not land(Q).
+\end{lstlisting}
+
+Sin cerrar el programa principal podemos volver a pulsar el botón de generar, el cual podrá dar como resultado el mapa de la Figura \ref{fig:mountains}.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{images/result-mountains.png}
+	\caption{Ejemplo de ejecución con restricciones en la generación de montañas.}
+	\label{fig:mountains}
+\end{figure}

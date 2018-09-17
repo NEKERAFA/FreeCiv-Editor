@@ -1,0 +1,96 @@
+\begin{frame}
+	\frametitle{Motivación}
+
+	\begin{itemize}
+		\item<1-> La \textcolor{UDCpink}{industria del videojuego} constituye un sector económico cada vez más relevante.
+		
+		\vspace{0.5em}
+		
+		\begin{itemize}
+			\item<2-> (En \$) Minecraft: 2500 millones, Fornite: 1000 millones, Destiny: 500 millones.
+		\end{itemize}
+	
+		\vspace{1em}
+		
+		\item<3-> Ha activado avances tecnológicos, p. ej. el uso de la {Inteligencia Artificial}, uno de los campos que más ha contribuido.
+		
+		\vspace{0.5em}
+		
+		\begin{itemize}
+			\item<4-> Diseño de enemigos inteligentes mediante programación evolutiva (p. ej. No Man's Sky).
+			
+			\vspace{0.5em}
+			
+			\item<5-> \textcolor{UDCpink}{Diseño del entorno}. Existen dos aproximaciones:
+			
+			\vspace{0.5em}
+			
+			\begin{itemize}
+				\item<5-> Generación procedimental. La más usada.
+				
+				\vspace{0.5em}
+				
+				\item<7-> \textcolor{UDCpink}{Generación declarativa} $\Leftarrow$.
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Diseño de entornos}
+	
+	\begin{itemize}
+		\item<1-> \textcolor{UDCpink}{Generación procedimental}: se basa en un algoritmo o técnica ya predefinida.
+		
+		\vspace{1em}
+		
+		\begin{enumerate}
+			\item<2-> Algoritmo ad-hoc.
+			
+			\vspace{0.5em}
+			
+			\item<3-> Programación evolutiva.
+			
+			\vspace{0.5em}
+			
+			\item<4-> Expresiones matemáticas.
+		\end{enumerate}
+	\end{itemize}
+	
+	\vspace{1em}
+	
+	\pause[5]
+	
+	\begin{block}{\normalsize Problemática}
+		\vspace{1em}
+		Para \textcolor{UDCpink}{influir} en el resultado de la generación se necesita \textcolor{UDCpink}{reprogramar} el algoritmo generador para adaptarlo a los criterios.
+		\vspace{1em}
+	\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{Diseño de entornos}
+
+	\begin{itemize}
+		\item<1-> \textcolor{UDCpink}{Generación declarativa}: existe una representación formal del entorno, p. ej. mediante \textcolor{UDCpink}{programación lógica}.
+		
+		\vspace{1em}
+		
+		\item<2-> La técnica es \textcolor{UDCpink}{independiente} del algoritmo de búsqueda usado para obtener las posibles soluciones.
+		
+		\vspace{1em}
+		
+		\item<3-> Un caso concreto de programación lógica es \textcolor{UDCpink}{\textit{Answer Set Programming}}.
+		
+		\vspace{0.5em}
+		
+		\begin{itemize}
+			\item<4-> \textit{Answer Set Programming for Procedural Content Generation: A Design Space Approach} \textcolor{UDCpink}{[Smith et al, 11]} (ASP + Warzone 2100).
+			
+			\vspace{0.5em}
+			
+			\item<5-> En este proyecto: \textcolor{UDCpink}{ASP + Freeciv} $\Leftarrow$.
+		\end{itemize}
+	\end{itemize}
+
+\end{frame}

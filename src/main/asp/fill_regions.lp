@@ -26,11 +26,16 @@ xypos(P, X, Y) :- q_pos(P), q_row(X), q_col(Y), X = P \ Q_COLS, Y = P / Q_COLS,
   n_cells(Z) :- #count{P: c_pos(P)}=Z.
 
   % Generates a rootcell
-  1 {rootcell(P) : c_pos(P)} 1.
+  {rootcell(P) : c_pos(P)} 1.
+  {rootcell(P) : set(P, l)} 1 :- c_pos(P).
+  :- #count{P: rootcell(P)} != 1.
 
   % Gets the cells reached for create the island
   reached(P) :- rootcell(P).
   {reached(P)} :- reached(Q), adj(Q, P).
+  reached(P) :- c_pos(P), set(P, l).
+
+  :- reached(P), c_pos(P), set(P, w).
 
   % Gets the neighbours
   top(p(X, Y), l) :- c_pos(p(X, Y)), c_pos(p(X-1, Y)), reached(p(X-1, Y)).

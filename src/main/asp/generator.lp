@@ -204,6 +204,12 @@ function main(prog)
     local prog1 = clingo.Control()
     -- Cargo el segundo programa
     prog1:load("main/asp/fill_regions.lp")
+    -- Cargo las restricciones del editor
+    local df = io.open("resources/c_res.lp", "r")
+    if df ~= nil then
+      df:close()
+      prog1:load("resources/c_res.lp")
+    end
     -- Añado los átomos obtenidos antes
     prog1:add("base", {}, atoms)
 
@@ -234,7 +240,7 @@ function main(prog)
         cells:setCell(row, col, contain)
 
         if contain == "l" then
-          lands = lands .. " cell(p("..row_str..","..col_str.."), l)."
+          lands = lands .. " land(p("..row_str..","..col_str.."))."
           restrictions = restrictions .. check_restrictions(row, col, i)
         end
       end
@@ -273,7 +279,7 @@ function main(prog)
       -- Convierto el modelo a string
       result = tostring(model)
       logger(result)
-      for row_str, col_str, contain in string.gmatch(result, "land%(p%((%d+),(%d+)%),(%l+)%)") do
+      for row_str, col_str, contain in string.gmatch(result, "bioma%(p%((%d+),(%d+)%),(%l+)%)") do
         local row, col = tonumber(row_str), tonumber(col_str)
         terrain:setCell(row+1, col+1, contain)
       end
@@ -417,6 +423,13 @@ function main(prog)
 
   -- Cierro la solución
   handle:close()
+
+  -- Elimino las restricciones
+  local df = io.open("resources/c_res.lp", "r")
+  if df ~= nil then
+    df:close()
+    os.remove("resources/c_res.lp")
+  end
 
   -- Serializo la matriz
   local result = {
