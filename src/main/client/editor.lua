@@ -73,8 +73,7 @@ local Editor = Class {
     -- Sets all the tilemaps in the spritesbatches
     self._decorator:setTilemap()
 
-    self._modified_map = Matrix(rows, cols, Constants.MatrixType.STRING)
-    self._modified = false
+    if self._modified_map then self._modified_map.update = false end
   end,
 
   --- Clears the current map and add a loaded map.
@@ -92,7 +91,12 @@ local Editor = Class {
     -- Sets all the tilemaps in the spritesbatches
     self._decorator:setTilemap()
 
+    if self._modified_map then self._modified_map.update = false end
+  end,
+
+  restartRestrictions = function(self)
     self._modified_map = Matrix(self._map.rows, self._map.cols, Constants.MatrixType.STRING)
+    self._modified_map.update = false
     self._modified = false
   end,
 
@@ -222,6 +226,7 @@ local Editor = Class {
 
         self._modified = true
         self._modified_map:setCell(row, col, self._terrain)
+        self._modified_map.update = true
       end
     end
   end,
@@ -341,6 +346,23 @@ local Editor = Class {
     end
   end,
 
+  _draw_restrictions = function(self, x, y)
+    local size = self._quads_info.size
+
+    love.graphics.setColor(1, 0, 0, 0.25)
+    for row = 1, self._modified_map.rows do
+      for col = 1, self._modified_map.cols do
+        if self._modified_map:getCell(row, col) == Constants.CellType.SEA or
+           self._modified_map:getCell(row, col) == Constants.CellType.OCEAN or
+           (self._modified_map:getCell(row, col) ~= Constants.CellType.VOID and
+            self._modified_map:getCell(row, col) ~= "") then
+          love.graphics.rectangle("fill", x+size*(col-1), y+size*(row-1), size, size)
+        end
+      end
+    end
+    love.graphics.setColor(1, 1, 1, 1)
+  end,
+
   -- Draws the editor
   draw = function(self)
     -- Draws the map
@@ -359,6 +381,9 @@ local Editor = Class {
       love.graphics.setColor(0.5, 0.5, 0.5)
       love.graphics.rectangle("line", x, y, width, height)
       love.graphics.setColor(1, 1, 1)
+
+      -- Draws the restrictions setted
+      self:_draw_restrictions(x, y)
 
       -- Draws the spawn points
       if self._startpos ~= nil then

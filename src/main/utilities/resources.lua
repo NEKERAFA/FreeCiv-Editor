@@ -91,9 +91,12 @@ end
 function Resources.saveConfiguration (name, conf)
   local fullPath = Resources.appendFolders(configPath, name .. ".json")
   local df = io.open(fullPath, "w+")
-  df:write(Json.encode(conf))
-  df:flush()
-  df:close()
+  
+  if df ~= nil then
+    df:write(Json.encode(conf))
+    df:flush()
+    df:close()
+  end
 
   local key = "conf:" .. name
   if _loaded[key] then _loaded[key] = false end

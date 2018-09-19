@@ -99,6 +99,7 @@ end
 -- @param cols Numero de columnas del nuevo mapa.
 function Main._newMap(rows, cols)
   Main.mapEditor:newMap(rows, cols)
+  Main.mapEditor:restartRestrictions()
   Main.mapEditor._regions = nil
   Main.mapEditor._startpos = nil
   Main.barEditor._fileopened = true
@@ -116,6 +117,7 @@ function Main._openMap(path)
   Main.mapEditor:setMap(map_file.map)
   Main.mapEditor:setRegions(map_file.regions, map_file.conf.q_rows, map_file.conf.q_cols)
   Main.mapEditor:setSpawns(map_file.startpos)
+  Main.mapEditor:restartRestrictions()
   Main.barEditor._fileopened = true
   Resources.saveConfiguration("editor", {lastOpened = path})
   Main._resetEditor()
@@ -211,7 +213,7 @@ function Main._generateMap(regions, land, terrain, size_mountains, width_mountai
   Main.mapConf.players = players
 
   -- Hago modificaciones aleatorias en las variables para generar mapas distintos
-  if Main._generated then
+  if Main._generated and not Main.mapEditor._modified_map.update then
     Main.mapConf.land = math.max(Main.mapConf.land + love.math.random(-20, 20), 10)
     Main.mapConf.terrain = math.max(Main.mapConf.terrain + love.math.random(-20, 20), 10)
     Main.mapConf.size_mountains = math.max(Main.mapConf.size_mountains + love.math.random(-2, 2), 2)

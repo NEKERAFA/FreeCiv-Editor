@@ -9,6 +9,8 @@
 \usepackage{graphics}
 \usepackage{tabularx}
 \usepackage{listings}
+\usepackage{float}
+\usepackage{multirow}
 \usepackage{noto}
 \usepackage{eurosym}
 \usepackage{epsfig}
@@ -82,7 +84,7 @@
 	Proyecto clásico de Ingeniería \\
 	Facultad de Informática \\
 	\vspace{1em}
-	Director: José Pedro Cabalar Fernández  \\
+	Director: Pedro Cabalar \\
 }
 \date[]{A Coruña, \today}
 \titlegraphic{\includegraphics[height=2em]{images/logo.png}}
@@ -116,8 +118,6 @@
 	\section{Demostración}
 	
 	\section{Trabajo desarrollado}
-	\input{tex/project}
-	\input{tex/library}
 	\input{tex/ingenieriasw}
 
 	\section{Evaluación}
@@ -145,7 +145,7 @@
 				\usebeamerfont{author}\insertauthor
 			\end{beamercolorbox}
 			\vspace{0.5em}
-			{\Large\textcolor{UDCpink}{¡Gracias por vuestra atención!}\par}
+			{\Large\textcolor{UDCpink}{¡Gracias por su atención!}\par}
 			\vspace{0.5em}
 			\begin{beamercolorbox}[sep=8pt,center]{institute}
 				\usebeamerfont{institute}\insertinstitute
@@ -247,6 +247,22 @@
 	
 	\centering
 	\includegraphics[width=0.6\textwidth]{images/diagrama-secuencia.pdf}
+	
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Ejemplo de generación 20x20}
+	
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/ejemplo-20-20.png}
+	
+	\end{frame}
+
+	\begin{frame}
+	\frametitle{Ejemplo de generación 30x30}
+	
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/ejemplo-30-30.png}
 	
 	\end{frame}
 
